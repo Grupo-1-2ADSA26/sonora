@@ -1,43 +1,37 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="pt-BR">
 
 <head>
-  <meta charset="UTF-8" />
-  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>sonora. | CADASTRO</title>
 
-  <title>AquaTech | Cadastro</title>
+    <script src="./js/sessao.js"></script>
 
-  <script src="./js/sessao.js"></script>
-
-  <link rel="stylesheet" href="./css/estilo.css" />
-  <link rel="icon" href="./assets/icon/favicon2.ico" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" />
+    <link rel="stylesheet" href="./css/home/header-footer.css">
+    <link rel="stylesheet" href="./css/home/index.css">
+    
+    <link rel="icon" href="assets/logos-sonora/play-icon.png">
 </head>
 
-<body onload="listar()">
-  <!--header inicio-->
-  <div class="header">
-    <div class="container">
-      <h1 class="titulo">AquaTech</h1>
-      <ul class="navbar">
-        <li>
-          <a href="index.html">Inicial</a>
-        </li>
-        <li>
-          <a href="simulador.html">Simulador</a>
-        </li>
-        <li>|</li>
-        <li>
-          <a href="login.html">Login</a>
-        </li>
-        <li class="agora">
-          <a href="#">Cadastro</a>
-        </li>
-      </ul>
-    </div>
-  </div>
-  <!--header fim-->
+<body>
+
+    <!-- Header / Navbar -->
+    <header class="header">
+        <div class="container header-container">
+            <h1 class="logo">sonora.</h1>
+            <nav>
+                <ul class="navbar">
+                    <li><a href="index.html">HOME</a></li>
+                    <li><a href="index.html">MISSÃO</a></li>
+                    <li><a href="index.html">CONTATO</a></li>
+                    <li><a href="cadastro.html"  class="ativo">CADASTRO</a></li>
+                    <li><a href="login.html">LOGIN</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
 
   <div class="login">
     <div class="alerta_erro">
@@ -83,14 +77,29 @@
       </div>
     </div>
   </div>
+    <footer class="footer">
+        <div class="container footer-container">
+            
+            <div class="footer-info">
+                <p><img src="assets/icons-sonora/local-icon.png" alt="Endereço" class="icon-footer"> Rua Hadock Lobo</p>
+                <p><img src="assets/icons-sonora/telefone-icon.png" alt="Telefone" class="icon-footer"> (11) 99999-9999</p>
+                <p><img src="assets/icons-sonora/rede-icon.png" alt="Website" class="icon-footer"> www.sonora.com.br</p>
+                <p><img src="assets/icons-sonora/email-icon.png" alt="E-mail" class="icon-footer"> sonora@gmail.com</p>
+            </div>
 
-  <!--footer inicio-->
-  <div class="footer">
-    <div class="container">
-      <h4>Feito com amor por aluno &hearts; SPTech &copy; 2023-2026</h4>
-    </div>
-  </div>
-  <!--footer fim-->
+            <div class="footer-logo">
+                <h2>sonora.</h2>
+                <div class="player-widget-sm">
+                    <img src="assets/logos-sonora/barra-rolagem.png" alt="Barra de Progresso Pequena" class="img-progress-bar-sm">
+                </div>
+            </div>
+
+            <div class="footer-decoracao">
+                <img src="assets/icons-sonora/elemento-icon.png" alt="Textura Sonora" class="img-textura-footer">
+            </div>
+
+        </div>
+    </footer>
 </body>
 
 </html>

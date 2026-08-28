@@ -1,81 +1,211 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-BR">
 
 <head>
     <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <title>AquaTech | Página Inicial</title>
+    <title>sonora. | HOME</title>
 
     <script src="./js/sessao.js"></script>
 
-    <link rel="stylesheet" href="./css/estilo.css">
-    <link rel="icon" href="./assets/icon/favicon2.ico">
-    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link rel="stylesheet" href="./css/home/header-footer.css">
+    <link rel="stylesheet" href="./css/home/index.css">
+
+    <link rel="icon" href="assets/logos-sonora/play-icon.png">
 </head>
 
 <body>
-    <div class="header">
-      <div class="container">
-        <h1 class="titulo">AquaTech</h1>
-        <ul class="navbar">
-          <li class="agora">
-            <a href="#">Inicial</a>
-          </li>
-          <li>
-            <a href="simulador.html">Simulador</a>
-          </li>
-          <li>|</li>
-          <li>
-            <a href="login.html">Login</a>
-          </li>
-          <li>
-            <a href="cadastro.html">Cadastro</a>
-          </li>
-        </ul>
-      </div>
-    </div>
-  
-    <div class="banner">
-      <div class="container">
-        <p>Preservando <span>hoje</span> para existirem <span>amanhã</span>.</p>
-      </div>
-    </div>
-  
-    <div class="social">
-      <div class="container">
-        <div class="boxes">
-          <div class="box">
-            <img src="assets/imgs/planet-earth_color.png">
-            <h4>Missão</h4>
-            <p>Lorem ipsum, dolor sit amet consectetur adipisicing elit. Et, quas cupiditate asperiores provident magnam
-              vitae illum iusto fugiat atque deleniti nulla sed iure suscipit, laborum, aliquid accusantium cum dicta
-              minima.</p>
-          </div>
-          <div class="box">
-            <img src="assets/imgs/lightbulb_color.png">
-            <h4>Visão</h4>
-            <p>Lorem ipsum, dolor sit amet consectetur adipisicing elit. Et, quas cupiditate asperiores provident magnam
-              vitae illum iusto fugiat atque deleniti nulla sed iure suscipit, laborum, aliquid accusantium cum dicta
-              minima.</p>
-          </div>
-          <div class="box">
-            <img src="assets/imgs/growth_color.png">
-            <h4>Valores</h4>
-            <p>Lorem ipsum, dolor sit amet consectetur adipisicing elit. Et, quas cupiditate asperiores provident magnam
-              vitae illum iusto fugiat atque deleniti nulla sed iure suscipit, laborum, aliquid accusantium cum dicta
-              minima.</p>
-          </div>
+
+    <!-- Header / Navbar -->
+    <header class="header">
+        <div class="container header-container">
+            <h1 class="logo">sonora.</h1>
+            <nav>
+                <ul class="navbar">
+                    <li><a href="#" class="ativo">HOME</a></li>
+                    <li><a href="#missao">MISSÃO</a></li>
+                    <li><a href="#contato">CONTATO</a></li>
+                    <li><a href="cadastro.html">CADASTRO</a></li>
+                    <li><a href="login.html">LOGIN</a></li>
+                </ul>
+            </nav>
         </div>
-      </div>
-    </div>
-  
-    <div class="footer">
-      <div class="container">
-        <h4>Feito com amor por aluno &hearts; SPTech &copy; 2023-2026</h4>
-      </div>
-    </div>
-  </body>
+    </header>
+
+    <main>
+
+        <!-- Banner principal -->
+        <section class="hero-banner">
+            <div class="container hero-content">
+                <h1 class="hero-logo">sonora.</h1>
+
+                <div class="player-widget">
+                    <div class="progress-bar-container">
+                        <img src="assets/logos-sonora/barra-branca.png" alt="Barra de Progresso"
+                            class="img-progress-bar">
+                    </div>
+                </div>
+
+                <h2>Seguindo a batida das suas decisões!</h2>
+            </div>
+        </section>
+
+        <!-- Depoimentos -->
+        <section class="depoimentos">
+            <div class="container depoimentos-grid">
+
+                <div class="card-depoimento">
+                    <div class="user-info">
+                        <img src="assets/icons-sonora/perfil-icon.png" alt="Usuário" class="icon-avatar">
+                        <div>
+                            <h4>Carla Mendes</h4>
+                            <span>Produtora do Rock in Rio</span>
+                        </div>
+                    </div>
+                    <p>A plataforma revolucionou nossa curadoria! Agora validamos o apelo comercial e engajamento real do artista antes de assinar contratos de alto risco.</p>
+                    <div class="stars">★★★★★</div>
+                </div>
+
+                <div class="card-depoimento">
+                    <div class="user-info">
+                        <img src="assets/icons-sonora/perfil-icon.png" alt="Usuário" class="icon-avatar">
+                        <div>
+                            <h4>Lucas Silveira</h4>
+                            <span>Diretor Operacional - Audio Club</span>
+                        </div>
+                    </div>
+                    <p>Com as métricas de BPM, energia e loudness, conseguimos dimensionar perfeitamente a equalização do som, equipe e o fluxo do bar para cada atração.</p>
+                    <div class="stars">★★★★★</div>
+                </div>
+
+                <div class="card-depoimento">
+                    <div class="user-info">
+                        <img src="assets/icons-sonora/perfil-icon.png" alt="Usuário" class="icon-avatar">
+                        <div>
+                            <h4>Beatriz Rocha</h4>
+                            <span>Curadora - Festival Lollapalooza</span>
+                        </div>
+                    </div>
+                    <p>Identificar tendências musicais emergentes de forma antecipada nos deu uma vantagem enorme no mercado frente à concorrência.</p>
+                    <div class="stars">★★★★★</div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- Sobre / Valores / Público -->
+        <section class="sobre" id="missao">
+            <!-- <img src="assets/icons-sonora/micro-icon.png" alt="Microfone Vintage" class="decoracao-mic">
+            <img src="assets/icons-sonora/disco-icon.png" alt="Toca Discos Vitrola" class="decoracao-vitrola"> -->
+
+            <div class="container sobre-grid">
+
+                <div class="card-sobre">
+                    <h3>Quem somos?</h3>
+                    <p>Somos uma plataforma inteligente dedicada a transformar o mercado de entretenimento,
+                        automatizando a coleta e o tratamento de dados de streaming, convertendo volumes brutos de
+                        informações em indicadores estratégicos de consumo musical. Nosso objetivo é simplificar a
+                        análise de tendências para apoiar o planejamento de eventos e a contratação de artistas.</p>
+                    <a href="#plataforma" class="btn-cinza">Conheça a plataforma</a>
+                </div>
+
+                <div class="card-sobre">
+                    <h3>Valores</h3>
+                    <p>Nosso maior compromisso é atuar ativamente na sua tomada de decisão, transformando o "achismo" em
+                        estratégia pura baseada em dados reais. Garantimos previsibilidade e assertividade na curadoria
+                        de eventos para que você invista nas atrações certas, mitigando riscos financeiros.</p>
+                    <a href="#plataforma" class="btn-cinza">Somos únicos</a>
+                </div>
+
+                <div class="card-sobre">
+                    <h3>Público-alvo</h3>
+                    <p>Nossa solução é desenhada exclusivamente para empresas (CNPJs) do setor de entretenimento.
+                        Atendemos produtoras de shows, casas de show, organizadoras de festivais e diretores de
+                        produção. Somos a ferramenta ideal para profissionais que precisam validar o apelo comercial de
+                        atrações musicais e dimensionar a infraestrutura de seus eventos com eficiência.</p>
+                    <a href="#plataforma" class="btn-cinza">Sua nova estratégia está aqui!</a>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- Conheça a plataforma -->
+        <section class="plataforma" id="plataforma">
+            <div class="container plataforma-container">
+
+                <div class="mockup-wrapper">
+                    <img src="assets/logos-sonora/app.gif" alt="Plataforma Sonora no Celular" class="img-mockup">
+                    <img src="assets/icons-sonora/estrela-icon.png" alt="Estrela decorativa" class="decoracao-estrela">
+                </div>
+
+                <div class="plataforma-info">
+                    <h2>Conheça a nossa plataforma:</h2>
+                    <p>
+                        A sonora. transforma dados brutos de streaming (Spotify e YouTube) em
+                        indicadores estratégicos de consumo musical. Além dos dashboards, a
+                        plataforma atua ativamente na sua tomada de decisão: com base no
+                        cadastro da sua casa de show, você recebe recomendações personalizadas
+                        de atrações, análises de gêneros em alta e notificações automáticas de
+                        tendências — reduzindo o risco na hora de contratar uma atração.
+                    </p>
+                    <div class="botoes-acao">
+                        <a href="cadastro.html" class="btn-plataforma-opcao">Começar Agora</a>
+                        <a href="login.html" class="btn-plataforma-opcao">Já tenho uma conta</a>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- Formutário de contato -->
+        <section class="fale-conosco" id="contato">
+            <img src="assets/icons-sonora/boca-icon.png" alt="Boca Pop Art" class="decoracao-boca">
+            <img src="assets/icons-sonora/seminima-icon.png" alt="Nota Musical Pop Art" class="decoracao-nota">
+
+            <div class="container contato-container">
+                <div class="contato-header">
+                    <span>Está com dúvidas?</span>
+                    <h2>FALE CONOSCO</h2>
+                </div>
+
+                <form class="contato-form">
+                    <input type="text" placeholder="Nome" required>
+                    <input type="email" placeholder="E-mail" required>
+                    <textarea placeholder="Mensagem" rows="3" required></textarea>
+                    <button type="submit" class="btn-enviar">Enviar mensagem</button>
+                </form>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Rodapé -->
+    <footer class="footer">
+        <div class="container footer-container">
+
+            <div class="footer-info">
+                <p><img src="assets/icons-sonora/local-icon.png" alt="Endereço" class="icon-footer"> Rua Hadock Lobo</p>
+                <p><img src="assets/icons-sonora/telefone-icon.png" alt="Telefone" class="icon-footer"> (11) 99999-9999
+                </p>
+                <p><img src="assets/icons-sonora/rede-icon.png" alt="Website" class="icon-footer"> www.sonora.com.br</p>
+                <p><img src="assets/icons-sonora/email-icon.png" alt="E-mail" class="icon-footer"> sonora@gmail.com</p>
+            </div>
+
+            <div class="footer-logo">
+                <h2>sonora.</h2>
+                <div class="player-widget-sm">
+                    <img src="assets/logos-sonora/barra-preta.png" alt="Barra de Progresso Pequena"
+                        class="img-progress-bar-sm">
+                </div>
+            </div>
+
+            <div class="footer-decoracao">
+                <img src="assets/icons-sonora/elemento-icon.png" alt="Textura Sonora" class="img-textura-footer">
+            </div>
+
+        </div>
+    </footer>
+
+</body>
 
 </html>

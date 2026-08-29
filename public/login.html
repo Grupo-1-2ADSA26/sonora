@@ -9,7 +9,7 @@
     <script src="./js/sessao.js"></script>
 
     <link rel="stylesheet" href="./css/home/header-footer.css">
-    <link rel="stylesheet" href="./css/home/index.css">
+    <link rel="stylesheet" href="./css/home/login.css">
     
     <link rel="icon" href="assets/logos-sonora/play-icon.png">
 </head>
@@ -32,6 +32,44 @@
         </div>
     </header>
 
+    <!-- banner login -->
+
+    <section class="secao-login">
+        <div class="login-esquerda">
+            <div class="conteudo-esquerda">
+                <h1 class="logo-login">sonora.</h1>
+                <div class="player-widget">
+                    <img src="assets/logos-sonora/barra-branca.png" alt="Barra de Progresso" class="img-progress-bar">
+                </div>
+            </div>
+        </div>
+        
+        <div class="login-direita">
+            <img src="assets/icons-sonora/disco-cortado-esquerda.png" alt="Disco" class="img-disco">
+            
+            <div class="container-formulario">
+                <h2 class="titulo-login">LOGIN</h2>
+                
+                <div class="alerta_erro">
+                    <div class="card_erro" id="cardErro">
+                        <span id="mensagem_erro"></span>
+                    </div>
+                </div>
+
+                <input type="text" id="email_input" placeholder="e-mail" class="input-escuro">
+                
+                <div class="wrapper-senha">
+                    <input type="password" id="senha_input" placeholder="senha" class="input-escuro">
+                </div>
+                
+                <button onclick="entrar()" class="btn-entrar">ENTRAR</button>
+
+                <span class="texto-cadastro">Não tem conta? <a href="cadastro.html">CLIQUE AQUI</a></span>
+            </div>
+        </div>
+    </section>
+
+    <!-- fim banner login :) -->
 
     <footer class="footer">
         <div class="container footer-container">
@@ -46,7 +84,7 @@
             <div class="footer-logo">
                 <h2>sonora.</h2>
                 <div class="player-widget-sm">
-                    <img src="assets/logos-sonora/barra-rolagem.png" alt="Barra de Progresso Pequena" class="img-progress-bar-sm">
+                    <img src="assets\logos-sonora\barra-preta.png" alt="Barra de Progresso Pequena" class="img-progress-bar-sm">
                 </div>
             </div>
 

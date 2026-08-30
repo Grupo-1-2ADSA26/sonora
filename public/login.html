@@ -101,74 +101,60 @@
 
 <script>
 
-
     function entrar() {
-        aguardar();
 
-        var emailVar = email_input.value;
-        var senhaVar = senha_input.value;
+        var email = email_input.value;
+        var senha = senha_input.value;
 
-        if (emailVar == "" || senhaVar == "") {
+        if (email == "" || senha == "") {
             cardErro.style.display = "block"
             mensagem_erro.innerHTML = "(Mensagem de erro para todos os campos em branco)";
-            finalizarAguardar();
-            return false;
-        }
-        else {
-            setInterval(sumirMensagem, 5000)
+            return null;
         }
 
-        console.log("FORM LOGIN: ", emailVar);
-        console.log("FORM SENHA: ", senhaVar);
+        console.log("FORM LOGIN: ", email);
+        console.log("FORM SENHA: ", senha);
 
-        fetch("/usuarios/autenticar", {
+        fetch("/empresas/autenticar", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
             },
             body: JSON.stringify({
-                emailServer: emailVar,
-                senhaServer: senhaVar
+                emailServer: email,
+                senhaServer: senha
             })
         }).then(function (resposta) {
-            console.log("ESTOU NO THEN DO entrar()!")
-
+            
             if (resposta.ok) {
                 console.log(resposta);
 
                 resposta.json().then(json => {
-                    console.log(json);
+                    console.log("Log: Estou na tela de login na função entrar e a resposta está ok!");
                     console.log(JSON.stringify(json));
-                    sessionStorage.EMAIL_USUARIO = json.email;
-                    sessionStorage.NOME_USUARIO = json.nome;
-                    sessionStorage.ID_USUARIO = json.id;
-                    sessionStorage.AQUARIOS = JSON.stringify(json.aquarios)
+                    sessionStorage.ID_EMPRESA = json.id_empresa;
+                    sessionStorage.NOME_EMPRESA = json.nome_empresa;
 
                     setTimeout(function () {
-                        window.location = "./dashboard/cards.html";
-                    }, 1000); // apenas para exibir o loading
+                        window.location = "index.html";
+                    }, 1000);
 
                 });
 
             } else {
-
-                console.log("Houve um erro ao tentar realizar o login!");
-
+                console.log("Log Error: Estou na tela de login na função entrar e houve um erro ao tentar realizar o login!");
                 resposta.text().then(texto => {
                     console.error(texto);
-                    finalizarAguardar(texto);
                 });
             }
 
         }).catch(function (erro) {
+            console.log("Log Error: Estou na tela de login na função entrar e houve um erro ao tentar realizar o fetch!");
             console.log(erro);
         })
 
-        return false;
+        return null;
     }
 
-    function sumirMensagem() {
-        cardErro.style.display = "none"
-    }
 
 </script>

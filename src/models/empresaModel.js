@@ -1,27 +1,26 @@
-var database = require("../database/config");
+var database = require("../database/config")
 
-function buscarPorId(id) {
-  var instrucaoSql = `SELECT * FROM empresa WHERE id = '${id}'`;
-
-  return database.executar(instrucaoSql);
+function autenticar(email, senha) {
+    console.log("Log: Entrando no Model Empresa na função autenticar!")
+    
+    var instrucaoSql = `
+        SELECT id_empresa, nome FROM empresa WHERE email = '${email}' AND senha = '${senha}';
+    `;
+    console.log("Log: Executando a instrução SQL: \n" + instrucaoSql);
+    return database.executar(instrucaoSql);
 }
 
-function listar() {
-  var instrucaoSql = `SELECT id, razao_social, cnpj, codigo_ativacao FROM empresa`;
-
-  return database.executar(instrucaoSql);
+function cadastrar(cnpj, nome, tipo, email, senha) {
+    console.log("Log: Entrando no Model Empresa na função cadastrar!");
+  
+    var instrucaoSql = `
+        INSERT INTO empresa (cnpj, nome, tipo, email, senha) VALUES ('${cnpj}', '${nome}', '${tipo}', '${email}', '${senha}');
+    `;
+    console.log("Executando a instrução SQL: \n" + instrucaoSql);
+    return database.executar(instrucaoSql);
 }
 
-function buscarPorCnpj(cnpj) {
-  var instrucaoSql = `SELECT * FROM empresa WHERE cnpj = '${cnpj}'`;
-
-  return database.executar(instrucaoSql);
-}
-
-function cadastrar(razaoSocial, cnpj) {
-  var instrucaoSql = `INSERT INTO empresa (razao_social, cnpj) VALUES ('${razaoSocial}', '${cnpj}')`;
-
-  return database.executar(instrucaoSql);
-}
-
-module.exports = { buscarPorCnpj, buscarPorId, cadastrar, listar };
+module.exports = {
+    autenticar,
+    cadastrar
+};

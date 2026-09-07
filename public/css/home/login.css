@@ -148,3 +148,45 @@
     border: #ED145B 3px solid;
     padding: 12px;
 }
+
+@media only screen and (max-width: 768px) {
+    .secao-login {
+        flex-direction: column;
+    }
+
+    .login-esquerda, 
+    .login-direita {
+        padding: 50px 20px;
+        width: 100%;
+    }
+
+    .img-disco {
+        display: none;
+    }
+
+    .container-formulario {
+        width: 100%;
+        max-width: 420px;
+        margin-left: 0;
+        margin: 0 auto;
+        align-items: center;
+    }
+
+    .logo-login {
+        font-size: 80px;
+    }
+}
+
+@media only screen and (max-width: 600px) {
+    .logo-login {
+        font-size: 55px;
+    }
+
+    .titulo-login {
+        font-size: 32px;
+    }
+
+    .img-progress-bar {
+        width: 100%;
+    }
+}

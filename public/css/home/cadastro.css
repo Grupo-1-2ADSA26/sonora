@@ -160,3 +160,49 @@
     height: 50px;
     width: 50px;
 }
+
+@media only screen and (max-width: 768px) {
+    .secao-cadastro {
+        flex-direction: column-reverse;
+    }
+
+    .cadastro-esquerda, 
+    .cadastro-direita {
+        padding: 50px 20px;
+        width: 100%;
+    }
+
+    .img-disco-direita {
+        display: none;
+    }
+
+    .container-formulario {
+        width: 100%;
+        max-width: 420px;
+        margin-right: 0;
+        margin: 0 auto;
+        align-items: center;
+    }
+
+    .titulo-cadastro {
+        margin-top: 0;
+    }
+
+    .logo-cadastro {
+        font-size: 80px;
+    }
+}
+
+@media only screen and (max-width: 600px) {
+    .logo-cadastro {
+        font-size: 55px;
+    }
+
+    .titulo-cadastro {
+        font-size: 32px;
+    }
+    
+    .img-progress-bar {
+        width: 100%;
+    }
+}

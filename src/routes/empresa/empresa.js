@@ -1,7 +1,7 @@
 let express = require("express");
 let router = express.Router();
 
-let empresaController = require("../controllers/empresa/empresaController");
+let empresaController = require("../../controllers/empresa/empresaController");
 
 // Exemplo de rotas para o módulo Empresa
 router.post("/cadastrar-funcionario", function (req, res) {

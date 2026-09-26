@@ -3,28 +3,252 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Shows | Sonora</title>
+    <title>Shows e Eventos | Sonora</title>
     <script src="https://kit.fontawesome.com/d840916580.js" crossorigin="anonymous"></script>
 
-    <link rel="stylesheet" href="../css/index.css">
     <link rel="stylesheet" href="../css/menu.css">
-    
+    <link rel="stylesheet" href="../css/empresa/cadastroShow.css">
 </head>
 <body>
-    <div class="box-menu">
+
+    <aside class="box-menu">
         <p class="logo">sonora.</p>
         <ul class="lista">
             <li><a href="dashboard.html"><i class="fa-solid fa-house"></i>Início</a></li>
-            <li><a href="artista.html"><i class="fa-solid fa-magnifying-glass"></i>Artista</a></li>
+            <li><a href="artista.html"><i class="fa-solid fa-magnifying-glass"></i>Artistas</a></li>
             <li><a href="cadastroFuncionario.html"><i class="fa-solid fa-users"></i>Funcionários</a></li>
-            <li><a href="cadastroShow.html"><i class="fa-solid fa-music"></i>Shows</a></li>
+            <li class="ativo"><a href="cadastroShow.html"><i class="fa-solid fa-music"></i>Shows</a></li>
             <li><a href="notificacoes.html"><i class="fa-solid fa-bell"></i>Notificações</a></li>
             <li><a href="perfil.html"><i class="fa-solid fa-user"></i>Perfil</a></li>
         </ul>
         <div class="box-sair">
-            <a class="botao-sair" href="../index.html">Sair</a>
+            <a class="botao-sair" href="../index.html"><i class="fa-solid fa-right-from-bracket"></i> Sair</a>
+        </div>
+    </aside>
+
+    <main class="main-content">
+
+        <header class="page-header">
+            <div>
+                <h1>GERENCIAMENTO DE SHOWS E EVENTOS</h1>
+                <p>Cadastre atrações, altere informações e gerencie os eventos da sua empresa.</p>
+            </div>
+            <button class="btn-primary" id="btn-novo-show">
+                <i class="fa-solid fa-calendar-plus"></i> Cadastrar Show
+            </button>
+        </header>
+
+        <section class="section-panel">
+            <div class="section-title-bar">
+                <h3><i class="fa-solid fa-compact-disc"></i> Próximos Eventos Cadastrados</h3>
+                <span class="badge">3 Shows Agendados</span>
+            </div>
+
+            <div class="events-grid">
+
+                <div class="event-card">
+                    <div class="event-cover" style="background-image: url('https://images.unsplash.com/photo-1470225620780-dba8ba36b745?auto=format&fit=crop&w=600&q=80');">
+                        <span class="status-badge status-ok">Confirmado</span>
+                    </div>
+                    <div class="event-content">
+                        <h3>Sonora Summer Fest</h3>
+                        <p class="event-desc">Grande festival de verão com atrações principais de Pop e Funk.</p>
+                        
+                        <div class="event-details">
+                            <span><i class="fa-solid fa-calendar-day"></i> 15/10/2026</span>
+                            <span><i class="fa-solid fa-location-dot"></i> Arena Central</span>
+                        </div>
+
+                        <div class="event-actions">
+                            <button class="btn-icon edit"><i class="fa-solid fa-pen-to-square"></i> Editar</button>
+                            <button class="btn-icon delete"><i class="fa-solid fa-trash-can"></i> Excluir</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="event-card">
+                    <div class="event-cover" style="background-image: url('https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?auto=format&fit=crop&w=600&q=80');">
+                        <span class="status-badge status-pending">Em Planejamento</span>
+                    </div>
+                    <div class="event-content">
+                        <h3>Noite do Trap & Rap</h3>
+                        <p class="event-desc">Apresentação exclusiva para público jovem com artistas do momento.</p>
+                        
+                        <div class="event-details">
+                            <span><i class="fa-solid fa-calendar-day"></i> 28/10/2026</span>
+                            <span><i class="fa-solid fa-location-dot"></i> Club Sonora</span>
+                        </div>
+
+                        <div class="event-actions">
+                            <button class="btn-icon edit"><i class="fa-solid fa-pen-to-square"></i> Editar</button>
+                            <button class="btn-icon delete"><i class="fa-solid fa-trash-can"></i> Excluir</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="event-card">
+                    <div class="event-cover" style="background-image: url('https://images.unsplash.com/photo-1514525253161-7a46d19cd819?auto=format&fit=crop&w=600&q=80');">
+                        <span class="status-badge status-ok">Confirmado</span>
+                    </div>
+                    <div class="event-content">
+                        <h3>Sertanejo VIP Premium</h3>
+                        <p class="event-desc">Noite com os maiores nomes do sertanejo universitário.</p>
+                        
+                        <div class="event-details">
+                            <span><i class="fa-solid fa-calendar-day"></i> 12/11/2026</span>
+                            <span><i class="fa-solid fa-location-dot"></i> Espaço das Américas</span>
+                        </div>
+
+                        <div class="event-actions">
+                            <button class="btn-icon edit"><i class="fa-solid fa-pen-to-square"></i> Editar</button>
+                            <button class="btn-icon delete"><i class="fa-solid fa-trash-can"></i> Excluir</button>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+    </main>
+
+    <!-- MODAL DE FORMULÁRIO (CADASTRO / EDIÇÃO) -->
+    <div class="modal-overlay" id="modal-form">
+        <div class="modal-box">
+            <div class="modal-header">
+                <h3 id="modal-title"><i class="fa-solid fa-calendar-plus"></i> Cadastrar Show</h3>
+                <button class="btn-close">&times;</button>
+            </div>
+            <form id="form-event">
+                <div class="field-group">
+                    <label><i class="fa-solid fa-image"></i> Imagem de Capa</label>
+                    <div class="upload-preview" id="upload-preview">
+                        <i class="fa-solid fa-cloud-arrow-up"></i>
+                        <span>Clique para selecionar a imagem</span>
+                    </div>
+                    <input type="file" id="event-cover-input" accept="image/*" style="display: none;">
+                </div>
+
+                <div class="field-group">
+                    <label><i class="fa-solid fa-font"></i> Nome do Evento</label>
+                    <input type="text" id="event-name" placeholder="Ex: Festival de Verão" required>
+                </div>
+
+                <div class="field-group">
+                    <label><i class="fa-solid fa-calendar"></i> Data do Evento</label>
+                    <input type="date" id="event-date" required>
+                </div>
+
+                <div class="field-group">
+                    <label><i class="fa-solid fa-location-dot"></i> Local do Evento</label>
+                    <input type="text" id="event-location" placeholder="Ex: Arena Central" required>
+                </div>
+
+                <div class="field-group">
+                    <label><i class="fa-solid fa-align-left"></i> Descrição</label>
+                    <textarea id="event-desc" rows="2" placeholder="Breve descrição do evento..."></textarea>
+                </div>
+
+                <div class="modal-actions">
+                    <button type="submit" class="btn-primary">Salvar</button>
+                    <button type="button" class="btn-secondary btn-close">Cancelar</button>
+                </div>
+            </form>
         </div>
     </div>
-</body>
 
+    <!-- MODAL DE EXCLUSÃO -->
+    <div class="modal-overlay" id="modal-delete">
+        <div class="modal-box">
+            <div class="modal-header">
+                <h3 class="danger-text"><i class="fa-solid fa-triangle-exclamation"></i> Confirmar Exclusão</h3>
+                <button class="btn-close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p>Tem certeza que deseja excluir o evento <strong id="delete-name"></strong>?</p>
+                <small>Esta ação removerá o registro permanentemente.</small>
+            </div>
+            <div class="modal-actions">
+                <button type="button" class="btn-danger">Sim, Excluir</button>
+                <button type="button" class="btn-secondary btn-close">Cancelar</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const modalForm = document.getElementById('modal-form');
+        const modalDelete = document.getElementById('modal-delete');
+        const modalTitle = document.getElementById('modal-title');
+        const previewBox = document.getElementById('upload-preview');
+        const coverInput = document.getElementById('event-cover-input');
+
+        const toggleModal = (modal, show = true) => {
+            modal.classList.toggle('active', show);
+        };
+
+        // Novo Show
+        document.getElementById('btn-novo-show').addEventListener('click', () => {
+            document.getElementById('form-event').reset();
+            previewBox.style.backgroundImage = '';
+            previewBox.innerHTML = '<i class="fa-solid fa-cloud-arrow-up"></i><span>Clique para selecionar a imagem</span>';
+            modalTitle.innerHTML = '<i class="fa-solid fa-calendar-plus"></i> Cadastrar Show';
+            toggleModal(modalForm);
+        });
+
+        // Editar Show
+        document.querySelectorAll('.btn-icon.edit').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                const card = e.target.closest('.event-card');
+                document.getElementById('event-name').value = card.querySelector('h3').textContent;
+                document.getElementById('event-desc').value = card.querySelector('.event-desc').textContent;
+                document.getElementById('event-location').value = card.querySelectorAll('.event-details span')[1].textContent.trim();
+
+                const bgImage = card.querySelector('.event-cover').style.backgroundImage;
+                if (bgImage) {
+                    previewBox.style.backgroundImage = bgImage;
+                    previewBox.innerHTML = '';
+                }
+
+                modalTitle.innerHTML = '<i class="fa-solid fa-pen-to-square"></i> Editar Show';
+                toggleModal(modalForm);
+            });
+        });
+
+        // Deletar Show
+        document.querySelectorAll('.btn-icon.delete').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                const card = e.target.closest('.event-card');
+                document.getElementById('delete-name').textContent = card.querySelector('h3').textContent;
+                toggleModal(modalDelete);
+            });
+        });
+
+        // Fechar Modais
+        document.querySelectorAll('.btn-close').forEach(btn => {
+            btn.addEventListener('click', () => {
+                toggleModal(modalForm, false);
+                toggleModal(modalDelete, false);
+            });
+        });
+
+        window.addEventListener('click', (e) => {
+            if (e.target.classList.contains('modal-overlay')) {
+                toggleModal(e.target, false);
+            }
+        });
+
+        // Upload de Imagem Preview
+        previewBox.addEventListener('click', () => coverInput.click());
+        coverInput.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = (event) => {
+                    previewBox.style.backgroundImage = `url('${event.target.result}')`;
+                    previewBox.innerHTML = '';
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+    </script>
+</body>
 </html>

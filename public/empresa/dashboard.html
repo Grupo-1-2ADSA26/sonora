@@ -3,28 +3,199 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard | Sonora</title>
+    <title>Dashboard Empresa | Sonora</title>
     <script src="https://kit.fontawesome.com/d840916580.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-    <link rel="stylesheet" href="../css/index.css">
     <link rel="stylesheet" href="../css/menu.css">
-    
+    <link rel="stylesheet" href="../css/empresa/dashboard.css">
 </head>
 <body>
-    <div class="box-menu">
+
+    <aside class="box-menu">
         <p class="logo">sonora.</p>
         <ul class="lista">
-            <li><a href="dashboard.html"><i class="fa-solid fa-house"></i>Início</a></li>
-            <li><a href="artista.html"><i class="fa-solid fa-magnifying-glass"></i>Artista</a></li>
+            <li class="ativo"><a href="dashboard.html"><i class="fa-solid fa-house"></i>Início</a></li>
+            <li><a href="artista.html"><i class="fa-solid fa-magnifying-glass"></i>Artistas</a></li>
             <li><a href="cadastroFuncionario.html"><i class="fa-solid fa-users"></i>Funcionários</a></li>
             <li><a href="cadastroShow.html"><i class="fa-solid fa-music"></i>Shows</a></li>
             <li><a href="notificacoes.html"><i class="fa-solid fa-bell"></i>Notificações</a></li>
             <li><a href="perfil.html"><i class="fa-solid fa-user"></i>Perfil</a></li>
         </ul>
         <div class="box-sair">
-            <a class="botao-sair" href="../index.html">Sair</a>
+            <a class="botao-sair" href="../index.html"><i class="fa-solid fa-right-from-bracket"></i> Sair</a>
         </div>
-    </div>
-</body>
+    </aside>
 
+    <main class="main-content">
+        <header class="dashboard-header">
+            <div>
+                <h1>Visão Geral da Empresa</h1>
+                <p>Acompanhe tendências de artistas, gêneros em alta e recomendações para seus eventos.</p>
+            </div>
+            <div class="tag-estabelecimento">
+                <i class="fa-solid fa-building"></i> Casa de Shows / Festival
+            </div>
+        </header>
+
+        <div class="dashboard-grid">
+            <section class="section-panel">
+                <div class="grid-2col">
+                    <div class="card mini-card">
+                        <div class="card-header">
+                            <span class="badge">#1 em Alta</span>
+                            <i class="fa-solid fa-arrow-trend-up trend-icon"></i>
+                        </div>
+                        <div class="artist-info">
+                            <div class="avatar"><i class="fa-solid fa-microphone-lines"></i></div>
+                            <div>
+                                <h3>Anitta</h3>
+                                <p class="subtext">Pop / Funk</p>
+                            </div>
+                        </div>
+                        <div class="metrics">
+                            <div>
+                                <small>Streams (Total)</small>
+                                <strong>85.4M</strong>
+                            </div>
+                            <div>
+                                <small>Engajamento</small>
+                                <strong>94.2%</strong>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card mini-card">
+                        <div class="card-header">
+                            <span class="badge">#2 em Alta</span>
+                            <i class="fa-solid fa-arrow-trend-up trend-icon"></i>
+                        </div>
+                        <div class="artist-info">
+                            <div class="avatar"><i class="fa-solid fa-guitar"></i></div>
+                            <div>
+                                <h3>Veigh</h3>
+                                <p class="subtext">Trap / Rap</p>
+                            </div>
+                        </div>
+                        <div class="metrics">
+                            <div>
+                                <small>Streams (Total)</small>
+                                <strong>62.1M</strong>
+                            </div>
+                            <div>
+                                <small>Engajamento</small>
+                                <strong>88.7%</strong>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h3><i class="fa-solid fa-calendar-days"></i> Próximos Shows Cadastrados</h3>
+                        <a href="cadastroShow.html" class="btn-link">Gerenciar</a>
+                    </div>
+                    
+                    <table class="shows-table">
+                        <thead>
+                            <tr>
+                                <th>Evento</th>
+                                <th>Data</th>
+                                <th>Local</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>Sonora Summer Fest</strong></td>
+                                <td>15/10/2026</td>
+                                <td>Arena Central</td>
+                                <td><span class="status status-ok">Confirmado</span></td>
+                            </tr>
+                            <tr>
+                                <td><strong>Noite do Trap</strong></td>
+                                <td>28/10/2026</td>
+                                <td>Club Sonora</td>
+                                <td><span class="status status-pending">Em Planejamento</span></td>
+                            </tr>
+                            <tr>
+                                <td><strong>Sertanejo VIP</strong></td>
+                                <td>12/11/2026</td>
+                                <td>Espaço das Américas</td>
+                                <td><span class="status status-ok">Confirmado</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <section class="section-panel">
+                <div class="card">
+                    <div class="card-header">
+                        <h3><i class="fa-solid fa-chart-pie"></i> Gêneros Mais Ouvidos</h3>
+                        <small>Fonte: Spotify & YouTube</small>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="chartGeneros"></canvas>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h3><i class="fa-solid fa-wand-magic-sparkles"></i> Recomendados para Você</h3>
+                        <small>Baseado no seu perfil de empresa</small>
+                    </div>
+
+                    <div class="rec-list">
+                        <div class="rec-item">
+                            <div class="rec-info">
+                                <h4>Ludmilla</h4>
+                                <p>Gênero: Pagode / Pop • Compatibilidade: <strong>96%</strong></p>
+                            </div>
+                            <a href="artista.html" class="btn-icon"><i class="fa-solid fa-chevron-right"></i></a>
+                        </div>
+
+                        <div class="rec-item">
+                            <div class="rec-info">
+                                <h4>Matuê</h4>
+                                <p>Gênero: Trap • Compatibilidade: <strong>91%</strong></p>
+                            </div>
+                            <a href="artista.html" class="btn-icon"><i class="fa-solid fa-chevron-right"></i></a>
+                        </div>
+
+                        <div class="rec-item">
+                            <div class="rec-info">
+                                <h4>Jorge & Mateus</h4>
+                                <p>Gênero: Sertanejo • Compatibilidade: <strong>88%</strong></p>
+                            </div>
+                            <a href="artista.html" class="btn-icon"><i class="fa-solid fa-chevron-right"></i></a>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <script>
+        const ctx = document.getElementById('chartGeneros').getContext('2d');
+        new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: ['Sertanejo', 'Trap/Rap', 'Funk', 'Pop', 'Pagode'],
+                datasets: [{
+                    label: 'Volume de Streams (Em Milhões)',
+                    data: [120, 98, 85, 70, 54],
+                    backgroundColor: ['#333', '#555', '#777', '#999', '#bbb'],
+                    borderRadius: 8
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { display: false } },
+                scales: { y: { beginAtZero: true } }
+            }
+        });
+    </script>
+</body>
 </html>

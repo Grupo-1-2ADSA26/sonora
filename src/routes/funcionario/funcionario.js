@@ -1,7 +1,7 @@
 let express = require("express");
 let router = express.Router();
 
-let funcionarioController = require("../controllers/funcionario/funcionarioController");
+let funcionarioController = require("../../controllers/funcionario/funcionarioController");
 
 // Exemplo de rotas para o módulo Funcionário
 router.get("/aprovados", function (req, res) {

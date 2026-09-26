@@ -16,18 +16,12 @@ let HOST_APP = process.env.APP_HOST;
 let app = express();
 
 let indexRouter = require("./src/routes/index");
-let usuarioRouter = require("./src/routes/usuarios");
-let avisosRouter = require("./src/routes/avisos");
-let medidasRouter = require("./src/routes/medidas");
-let aquariosRouter = require("./src/routes/aquarios");
-let empresasRouter = require("./src/routes/empresas");
-
 
 // do nosso projeto
 // Importação dos ficheiros de rotas
-let empresaRouter = require("./src/routes/empresa");
-let funcionarioRouter = require("./src/routes/funcionario");
-let suporteRouter = require("./src/routes/suporte");
+let empresaRouter = require("./src/routes/empresa/empresa");
+let funcionarioRouter = require("./src/routes/funcionario/funcionario");
+let suporteRouter = require("./src/routes/suporte/suporte");
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
@@ -36,11 +30,6 @@ app.use(express.static(path.join(__dirname, "public")));
 app.use(cors());
 
 app.use("/", indexRouter);
-app.use("/usuarios", usuarioRouter);
-app.use("/avisos", avisosRouter);
-app.use("/medidas", medidasRouter);
-app.use("/aquarios", aquariosRouter);
-app.use("/empresas", empresasRouter);
 
 // do nosso projeto
 // Definição dos caminhos das rotas

@@ -1,7 +1,7 @@
 let express = require("express");
 let router = express.Router();
 
-let suporteController = require("../controllers/suporte/suporteController");
+let suporteController = require("../../controllers/suporte/suporteController");
 
 // Exemplo de rotas para o módulo Suporte
 router.post("/enviar-ticket", function (req, res) {

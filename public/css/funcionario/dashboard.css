@@ -1,0 +1,136 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: system-ui, -apple-system, sans-serif;
+}
+
+body {
+    background-color: #d8d8d8;
+    display: flex;
+    min-height: 100vh;
+}
+
+.main-content {
+    margin-left: 210px;
+    padding: 30px;
+    width: calc(100% - 210px);
+}
+
+.page-header {
+    margin-bottom: 25px;
+}
+
+.page-header h1 {
+    font-size: 24px;
+    color: #333;
+    font-weight: 800;
+}
+
+.page-header p {
+    margin-top: 5px;
+    color: #777;
+    font-size: 13px;
+}
+
+.summary {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 15px;
+    margin-bottom: 15px;
+}
+
+.summary-card {
+    background-color: #fff;
+    min-height: 115px;
+    padding: 20px;
+    border-radius: 18px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.summary-icon {
+    width: 52px;
+    height: 52px;
+    border-radius: 13px;
+    background-color: #f0f0f0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #333;
+    font-size: 18px;
+}
+
+.summary-card span {
+    display: block;
+    color: #888;
+    font-size: 11px;
+    margin-bottom: 4px;
+}
+
+.summary-card strong {
+    display: block;
+    color: #222;
+    font-size: 24px;
+}
+
+.summary-card small {
+    display: block;
+    color: #777;
+    font-size: 10px;
+    margin-top: 2px;
+}
+
+.dashboard-grid {
+    display: grid;
+    grid-template-columns: 1.3fr 1fr;
+    gap: 15px;
+}
+
+.dashboard-card {
+    background-color: #fff;
+    border-radius: 18px;
+    padding: 22px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.card-header {
+    margin-bottom: 15px;
+}
+
+.card-header h2 {
+    color: #333;
+    font-size: 13px;
+    font-weight: 800;
+}
+
+.card-header p {
+    color: #888;
+    font-size: 10px;
+    margin-top: 3px;
+}
+
+.chart-container {
+    height: 250px;
+    position: relative;
+}
+
+@media (max-width: 900px) {
+    .main-content {
+        margin-left: 0;
+        width: 100%;
+        padding: 20px;
+    }
+
+    .dashboard-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 600px) {
+    .summary {
+        grid-template-columns: 1fr;
+    }
+}

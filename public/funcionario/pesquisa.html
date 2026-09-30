@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Análise de Artista | Sonora</title>
+
+    <script src="https://kit.fontawesome.com/d840916580.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <link rel="stylesheet" href="../css/menu.css">
+    <link rel="stylesheet" href="../css/funcionario/pesquisa.css">
+</head>
+
+<body>
+
+    <aside class="box-menu">
+        <p class="logo">sonora.</p>
+        <ul class="lista">
+            <li><a href="dashboard.html"><i class="fa-solid fa-house"></i>Início</a></li>
+            <li><a href="pesquisa.html"><i class="fa-solid fa-magnifying-glass"></i>Artistas</a></li>
+            <li><a href="recomendacoes.html"><i class="fa-solid fa-music"></i>Recomendações</a></li>
+            <li><a href="aprovados.html"><i class="fa-solid fa-bell"></i>Aprovados</a></li>
+            <li class="ativo"><a href="perfil.html"><i class="fa-solid fa-user"></i>Perfil</a></li>
+        </ul>
+        <div class="box-sair">
+            <a class="botao-sair" href="../index.html"><i class="fa-solid fa-right-from-bracket"></i> Sair</a>
+        </div>
+    </aside>
+
+    <main class="main-content">
+
+        <header class="search-bar">
+            <div class="search-input">
+                <i class="fa-solid fa-magnifying-glass"></i>
+                <input type="text" placeholder="Buscar artista, gênero ou música..." value="Anitta">
+            </div>
+            <button class="btn-primary">Pesquisar</button>
+        </header>
+
+        <section class="card artist-header">
+            <div class="profile-header">
+                <div class="avatar-lg">
+                    <i class="fa-solid fa-microphone-lines"></i>
+                </div>
+                <div class="profile-meta">
+                    <h2>
+                        Anitta
+                        <i class="fa-solid fa-circle-check verified" title="Artista verificado">
+                        </i>
+                    </h2>
+                    <p class="genre-tag">
+                        Pop / Funk / Reggaeton
+                    </p>
+                    <small>
+                        Análise baseada nos dados disponíveis do Spotify e YouTube
+                    </small>
+                </div>
+            </div>
+        </section>
+
+
+        <section class="card">
+            <div class="card-header">
+                <div>
+                    <h3>
+                        <i class="fa-solid fa-chart-line"></i>
+                        Análise completa do artista
+                    </h3>
+                    <small>
+                        Principais indicadores de desempenho e características musicais
+                    </small>
+                </div>
+                <span class="data-badge">
+                    Dados consolidados
+                </span>
+            </div>
+
+            <div class="artist-analysis-grid">
+                <div class="analysis-card">
+                    <div class="analysis-icon">
+                        <i class="fa-solid fa-fire"></i>
+                    </div>
+                    <div>
+                        <small>Popularidade</small>
+                        <strong>92/100</strong>
+                        <span class="analysis-description">
+                            Alto alcance
+                        </span>
+                    </div>
+                </div>
+
+                <div class="analysis-card">
+                    <div class="analysis-icon">
+                        <i class="fa-solid fa-bolt"></i>
+                    </div>
+                    <div>
+                        <small>Energy</small>
+                        <strong>0.82</strong>
+                        <span class="analysis-description">
+                            Alta intensidade
+                        </span>
+                    </div>
+                </div>
+
+                <div class="analysis-card">
+                    <div class="analysis-icon">
+                        <i class="fa-solid fa-music"></i>
+                    </div>
+                    <div>
+                        <small>Danceability</small>
+                        <strong>0.88</strong>
+                        <span class="analysis-description">
+                            Muito dançante
+                        </span>
+                    </div>
+                </div>
+
+                <div class="analysis-card">
+                    <div class="analysis-icon">
+                        <i class="fa-solid fa-gauge-high"></i>
+                    </div>
+                    <div>
+                        <small>BPM médio</small>
+                        <strong>130</strong>
+                        <span class="analysis-description">
+                            Ritmo acelerado
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="analysis-content">
+                <div class="chart-area">
+                    <h4>
+                        Perfil musical
+                    </h4>
+                    <div class="chart-container">
+                        <canvas id="artistChart"></canvas>
+                    </div>
+                </div>
+
+                <div class="analysis-summary">
+                    <h4>
+                        <i class="fa-solid fa-magnifying-glass-chart"></i>
+                        Interpretação
+                    </h4>
+                    <p>
+                        O artista apresenta
+                        <strong>alta popularidade</strong>,
+                        combinada com elevados níveis de
+                        <strong>Energy</strong> e
+                        <strong>Danceability</strong>.
+                    </p>
+                    <div class="summary-item">
+                        <i class="fa-solid fa-bolt"></i>
+                        <div>
+                            <strong>Alta energia</strong>
+                            <span>
+                                Indica músicas com maior intensidade
+                                e potencial para ambientes movimentados.
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="summary-item">
+                        <i class="fa-solid fa-person-running"></i>
+                        <div>
+                            <strong>Alta Danceability</strong>
+                            <span>
+                                Indica forte característica rítmica
+                                e potencial para eventos com pista.
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="summary-item">
+                        <i class="fa-solid fa-gauge-high"></i>
+                        <div>
+                            <strong>130 BPM</strong>
+                            <span>
+                                Faixas com ritmo acelerado,
+                                compatíveis com apresentações
+                                mais dinâmicas.
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <div class="dashboard-grid">
+            <section class="section-panel">
+                <div class="card">
+                    <div class="card-header">
+                        <h3>
+                            <i class="fa-solid fa-compact-disc"></i>
+                            Faixas em destaque
+                        </h3>
+                        <small>
+                            Dados de reprodução
+                        </small>
+                    </div>
+
+                    <ul class="track-list">
+                        <li>
+                            <div class="track-info">
+                                <span class="rank">
+                                    1
+                                </span>
+                                <div>
+                                    <strong>
+                                        Envolver
+                                    </strong>
+                                    <small>
+                                        Versions of Me
+                                    </small>
+                                </div>
+                            </div>
+                            <span class="track-stats">
+                                45.2M streams
+                            </span>
+                        </li>
+
+                        <li>
+                            <div class="track-info">
+                                <span class="rank">
+                                    2
+                                </span>
+                                <div>
+                                    <strong>
+                                        Downtown
+                                    </strong>
+                                    <small>
+                                        Kisses
+                                    </small>
+                                </div>
+                            </div>
+                            <span class="track-stats">
+                                28.9M streams
+                            </span>
+                        </li>
+
+
+                        <li>
+                            <div class="track-info">
+                                <span class="rank">
+                                    3
+                                </span>
+                                <div>
+                                    <strong>
+                                        Joga Pra Lua
+                                    </strong>
+
+                                    <small>
+                                        Single
+                                    </small>
+                                </div>
+                            </div>
+                            <span class="track-stats">
+                                11.3M streams
+                            </span>
+                        </li>
+                    </ul>
+                </div>
+            </section>
+
+            <section class="section-panel">
+                <div class="card">
+                    <h3>
+                        <i class="fa-solid fa-calendar-check"></i>
+                        Perfil para eventos
+                    </h3>
+
+                    <p class="curation-text">
+                        Com base nos indicadores analisados,
+                        o perfil musical apresenta características
+                        adequadas para eventos de maior movimentação.
+                    </p>
+
+                    <div class="event-tags">
+                        <span>
+                            <i class="fa-solid fa-bolt"></i>
+                            Alta energia
+                        </span>
+                        <span>
+                            <i class="fa-solid fa-music"></i>
+                            Dançante
+                        </span>
+                        <span>
+                            <i class="fa-solid fa-users"></i>
+                            Grande público
+                        </span>
+                        <span>
+                            <i class="fa-solid fa-volume-high"></i>
+                            Ritmo intenso
+                        </span>
+                    </div>
+
+
+                    <div class="recommendation-box">
+                        <i class="fa-solid fa-lightbulb"></i>
+                        <div>
+                            <strong>
+                                Destaque da análise
+                            </strong>
+                            <p>
+                                Os indicadores de Energy,
+                                Danceability e Popularidade
+                                demonstram um perfil voltado
+                                para eventos de entretenimento
+                                com alto nível de interação
+                                do público.
+                            </p>
+                        </div>
+                    </div>
+
+
+                    <button class="btn-primary full-width">
+                        <i class="fa-solid fa-heart"></i>
+                        Adicionar aos favoritos
+                    </button>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <script>
+        const ctx = document
+            .getElementById('artistChart')
+            .getContext('2d');
+
+        new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: [
+                    'Popularidade',
+                    'Energy',
+                    'Danceability'
+                ],
+                datasets: [{
+                    label: 'Indicadores',
+                    data: [
+                        92,
+                        82,
+                        88
+                    ],
+                    borderWidth: 1
+                }]
+            },
+
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        max: 100
+                    }
+                },
+
+                plugins: {
+                    legend: {
+                        display: false
+                    }
+                }
+            }
+
+        });
+
+    </script>
+
+</body>
+</html>

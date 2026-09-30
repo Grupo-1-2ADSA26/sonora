@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Perfil Empresa | Sonora</title>
+    <script src="https://kit.fontawesome.com/d840916580.js" crossorigin="anonymous"></script>
+
+    <link rel="stylesheet" href="../css/menu.css">
+    <link rel="stylesheet" href="../css/funcionario/perfil.css">
+</head>
+
+<body>
+
+    <aside class="box-menu">
+        <p class="logo">sonora.</p>
+        <ul class="lista">
+            <li><a href="dashboard.html"><i class="fa-solid fa-house"></i>Início</a></li>
+            <li><a href="pesquisa.html"><i class="fa-solid fa-magnifying-glass"></i>Artistas</a></li>
+            <li><a href="recomendacoes.html"><i class="fa-solid fa-music"></i>Recomendações</a></li>
+            <li><a href="aprovados.html"><i class="fa-solid fa-bell"></i>Aprovados</a></li>
+            <li class="ativo"><a href="perfil.html"><i class="fa-solid fa-user"></i>Perfil</a></li>
+        </ul>
+        <div class="box-sair">
+            <a class="botao-sair" href="../index.html"><i class="fa-solid fa-right-from-bracket"></i> Sair</a>
+        </div>
+    </aside>
+
+    <main class="main-content">
+
+        <header class="page-header">
+            <h1>PERFIL DO FUNCIONÁRIO</h1>
+        </header>
+
+        <div class="profile-container">
+            <section class="profile-card">
+
+                <form class="profile-form">
+
+                    <div class="avatar-card">
+                        <div class="avatar-box">
+                            <i class="fa-solid fa-user"></i>
+                        </div>
+                        <label for="upload-logo" class="btn-change-photo">
+                            <i class="fa-solid fa-camera"></i> Alterar Logo
+                        </label>
+                        <input type="file" id="upload-logo" accept="image/*" style="display: none;">
+                    </div>
+
+                    <div class="field-group">
+                        <label><i class="fa-solid fa-address-card"></i> Nome: <input type="text" value="Paulo Henrique da Silva"></label>
+                    </div>
+
+                    <div class="field-group">
+                        <label><i class="fa-solid fa-lock"></i> Senha</label>
+                        <div class="password-box">
+                            <input type="password" id="input-senha" value="12345678" placeholder="Sua senha" required>
+                            <i class="fa-solid fa-eye" id="toggle-senha" title="Mostrar/Ocultar Senha"></i>
+                        </div>
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="submit" class="btn-primary">
+                            <i class="fa-solid fa-floppy-disk"></i> Salvar
+                        </button>
+                        <button type="button" class="btn-danger">
+                            <i class="fa-solid fa-trash-can"></i> Excluir
+                        </button>
+                    </div>
+
+                </form>
+
+            </section>
+        </div>
+
+    </main>
+
+    <script>
+        const inputSenha = document.getElementById('input-senha');
+        const toggleSenha = document.getElementById('toggle-senha');
+
+        toggleSenha.addEventListener('click', () => {
+            const isPassword = inputSenha.type === 'password';
+            inputSenha.type = isPassword ? 'text' : 'password';
+            toggleSenha.classList.toggle('fa-eye', !isPassword);
+            toggleSenha.classList.toggle('fa-eye-slash', isPassword);
+        });
+    </script>
+
+</body>
+
+</html>

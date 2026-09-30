@@ -1,0 +1,172 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: system-ui, -apple-system, sans-serif;
+}
+
+body {
+    background-color: #d8d8d8;
+    display: flex;
+    min-height: 100vh;
+}
+
+.main-content {
+    margin-left: 210px;
+    padding: 30px;
+    width: calc(100% - 210px);
+    display: flex;
+    flex-direction: column;
+}
+
+.page-header h1 {
+    font-size: 24px;
+    color: #333;
+    font-weight: 800;
+    margin-bottom: 20px;
+    text-transform: uppercase;
+}
+
+.profile-container {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+}
+
+.profile-card {
+    background-color: #e2e2e2;
+    padding: 30px;
+    border-radius: 28px;
+    width: 100%;
+    max-width: 650px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+}
+
+.profile-form {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.avatar-card {
+    background-color: #bebebe;
+    border-radius: 18px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+}
+
+.avatar-box {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background-color: #000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    font-size: 40px;
+}
+
+.btn-change-photo {
+    font-size: 12px;
+    font-weight: 600;
+    color: #222;
+    cursor: pointer;
+    background-color: rgba(255, 255, 255, 0.4);
+    padding: 6px 14px;
+    border-radius: 12px;
+    transition: background 0.2s;
+}
+
+.btn-change-photo:hover {
+    background-color: rgba(255, 255, 255, 0.7);
+}
+
+.field-group {
+    background-color: #bebebe;
+    border-radius: 18px;
+    padding: 14px 20px;
+    display: flex;
+    flex-direction: column;
+}
+
+.field-group label {
+    font-size: 13px;
+    font-weight: 700;
+    color: #222;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.field-group input,
+.field-group select {
+    background: transparent;
+    border: none;
+    outline: none;
+    font-size: 15px;
+    color: #111;
+    font-weight: 500;
+    width: 100%;
+}
+
+.password-box {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.password-box input {
+    flex: 1;
+}
+
+.password-box i {
+    cursor: pointer;
+    color: #333;
+    font-size: 16px;
+    padding: 4px;
+}
+
+.form-actions {
+    display: flex;
+    gap: 12px;
+    margin-top: 10px;
+}
+
+.btn-primary,
+.btn-danger {
+    border: none;
+    padding: 14px;
+    border-radius: 14px;
+    font-size: 14px;
+    font-weight: bold;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    transition: background 0.2s;
+}
+
+.btn-primary {
+    flex: 2;
+    background-color: #333;
+    color: #fff;
+}
+
+.btn-primary:hover {
+    background-color: #000;
+}
+
+.btn-danger {
+    flex: 1;
+    background-color: #d32f2f;
+    color: #fff;
+}
+
+.btn-danger:hover {
+    background-color: #9a0007;
+}

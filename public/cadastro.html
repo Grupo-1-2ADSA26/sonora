@@ -114,75 +114,173 @@
 
 <script>
 
-  function cadastrar() {
-    
-    //Recupere o valor da nova input pelo nome do id
-    // Agora vá para o método fetch logo abaixo
-    let cnpj = cnpj_input.value;
-    let nome = nome_empresa_input.value;
-    let tipo = tipo_empresa_input.value;
-    let email = email_input.value;
-    let senha = senha_input.value;
-    let confirmacaoSenha = confirmacao_senha_input.value;
+      
+function cadastrar() {
 
-    // Verificações
+        //Recupere o valor da nova input pelo nome do id
+        // Agora vá para o método fetch logo abaixo
+        let cnpj = cnpj_input.value;
+        let nome = nome_empresa_input.value;
+        let tipo = tipo_empresa_input.value;
+        let email = email_input.value;
+        let senha = senha_input.value;
+        let confirmacaoSenha = confirmacao_senha_input.value;
 
-    // campo em branco
-    if (
-      cnpj == "" ||
-      nome == "" ||
-      tipo == "" ||
-      email == "" ||
-      senha == "" ||
-      confirmacaoSenha == ""
-    ) {
-      cardErro.style.display = "block";
-      mensagem_erro.innerHTML =
-        "(Preencha todos os campos!)";
-      return null;
-    }
+        // Verificações
 
-    // campo senha e confirmação de senha
-    if (senha != confirmacaoSenha) {
-      cardErro.style.display = "block";
-      mensagem_erro.innerHTML =
-        "(As senhas não coincidem!)";
-      return null;
-    }
-
-    fetch("/empresas/cadastrar", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        cnpjServer: cnpj,
-        nomeServer: nome,
-        tipoServer: tipo,
-        emailServer: email,
-        senhaServer: senha
-      }),
-    })
-      .then(function (resposta) {
-        console.log("Log: Estou na tela de cadastro na função cadastrar, resposta: ", resposta);
-
-        if (resposta.ok) {
+        // campo em branco
+        /*
+        if (
+          cnpj == "" ||
+          nome == "" ||
+          tipo == "" ||
+          email == "" ||
+          senha == "" ||
+          confirmacaoSenha == ""
+        ) {
           cardErro.style.display = "block";
-
           mensagem_erro.innerHTML =
-            "Cadastro realizado com sucesso! Redirecionando para tela de Login...";
-
-          setTimeout(() => {
-            window.location = "login.html";
-          }, "2000");
-
-        } else {
-          throw "Houve um erro ao tentar realizar o cadastro!";
+            "(Preencha todos os campos!)";
+          return null;
         }
-      })
-      .catch(function (resposta) {
-        console.log(`Log Error: Estou na tela de cadastro na função cadastrar e houve um erro: ${resposta}`);
-      });
-  }
+    
+        // campo senha e confirmação de senha
+        if (senha != confirmacaoSenha) {
+          cardErro.style.display = "block";
+          mensagem_erro.innerHTML =
+            "(As senhas não coincidem!)";
+          return null;
+        } */
+
+        if (validar()) {
+            fetch("/empresas/cadastrar", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    cnpjServer: cnpj,
+                    nomeServer: nome,
+                    tipoServer: tipo,
+                    emailServer: email,
+                    senhaServer: senha
+                }),
+            })
+                .then(function (resposta) {
+                    console.log("Log: Estou na tela de cadastro na função cadastrar, resposta: ", resposta);
+
+                    if (resposta.ok) {
+                        cardErro.style.display = "block";
+
+                        mensagem_erro.innerHTML =
+                            "Cadastro realizado com sucesso! Redirecionando para tela de Login...";
+
+                        setTimeout(() => {
+                            window.location = "login.html";
+                        }, "2000");
+
+                    } else {
+                        throw "Houve um erro ao tentar realizar o cadastro!";
+                    }
+                })
+                .catch(function (resposta) {
+                    console.log(`Log Error: Estou na tela de cadastro na função cadastrar e houve um erro: ${resposta}`);
+                });
+        }
+
+
+    }
+
+    function validar() {
+
+        let cnpj = cnpj_input.value;
+        let nome = nome_empresa_input.value;
+        let tipo = tipo_empresa_input.value;
+        let email = email_input.value;
+        let senha = senha_input.value;
+        let confirmacaoSenha = confirmacao_senha_input.value;
+
+        /* for (let i = 0; i < senha.lenght; i++){
+             if (senha[i] != "*"){
+                 console.log("senha nao tem *")
+             }
+         }*/
+
+        if (senha.length < 8) {
+            cardErro.style.display = "block";
+            mensagem_erro.innerHTML = "(Senha menor que 8 caracteres)";
+            return false
+        } else if (senha.toUpperCase() == senha) {
+            cardErro.style.display = "block";
+            mensagem_erro.innerHTML = "(A senha precisa conter letras minusculas)";
+            return false
+        } else if (senha.toLowerCase() == senha) {
+            cardErro.style.display = "block";
+            mensagem_erro.innerHTML = "(A senha precisa conter letras maiusculas)";
+            return false
+        } else {
+            let caracteresEspeciais = [
+                "*", "!", "@", "#", "$", "%", "&",
+                "?", "_", "-", "+", "=", ".", ",",
+                ":", ";", "/", "\\"
+            ];
+
+            let temEspecial = false;
+
+            for (let i = 0; i < caracteresEspeciais.length; i++) {
+                if (senha.includes(caracteresEspeciais[i])) {
+                    temEspecial = true;
+                    break;
+                }
+            }
+
+            if (!temEspecial) {
+                cardErro.style.display = "block";
+                mensagem_erro.innerHTML = "(A senha precisa conter caracteres especiais)";
+                return false;
+            } else if (confirmacaoSenha != senha) {
+                cardErro.style.display = "block";
+                mensagem_erro.innerHTML = "(As senhas precisam ser iguais)";
+                return false
+            } 
+            
+            if (
+                cnpj == "" ||
+                nome == "" ||
+                tipo == "" ||
+                email == "" ||
+                senha == "" ||
+                confirmacaoSenha == ""
+            ) {
+                cardErro.style.display = "block";
+                mensagem_erro.innerHTML =
+                    "(Preencha todos os campos!)";
+                return null;
+            } else if (
+                !email.includes("@") &&
+                !email.includes(".")
+            ) {
+                cardErro.style.display = "block";
+                mensagem_erro.innerHTML = "(Digite um email valido)";
+                return false;
+
+            }
+
+
+            cardErro.style.display = "none";
+            return true;
+        }
+
+
+        console.log("------------------------")
+        console.log(cnpj)
+        console.log(nome)
+        console.log(tipo)
+        console.log(email)
+        console.log(senha)
+        console.log(confirmacaoSenha)
+        console.log("------------------------")
+    }
+
 
 </script>

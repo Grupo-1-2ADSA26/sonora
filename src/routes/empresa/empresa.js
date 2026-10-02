@@ -16,4 +16,8 @@ router.get("/dashboard/:idEmpresa", function (req, res) {
     empresaController.obterDadosDashboard(req, res);
 });
 
+router.put("/atualizar/:idEmpresa", function (req, res) {
+    empresaController.atualizar(req, res);
+});
+
 module.exports = router;

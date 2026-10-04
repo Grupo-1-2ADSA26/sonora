@@ -51,17 +51,17 @@
 
                     <div class="field-group">
                         <label for="nome-empresa"><i class="fa-solid fa-font"></i> Razão Social</label>
-                        <input type="text" id="nome-empresa" value="Sonora Eventos LTDA" placeholder="Nome da empresa" required>
+                        <input type="text" id="ipt_nome_empresa" value="Sonora Eventos LTDA" placeholder="Nome da empresa" required>
                     </div>
 
                     <div class="field-group">
                         <label><i class="fa-solid fa-id-card"></i> CNPJ</label>
-                        <input type="text" value="12.345.678/0001-90" placeholder="00.000.000/0000-00" required>
+                        <input type="text" id= "ipt_cnpj_empresa" value="12.345.678/0001-90" placeholder="00.000.000/0000-00" required>
                     </div>
 
                     <div class="field-group">
                         <label><i class="fa-solid fa-store"></i> Tipo de Estabelecimento</label>
-                        <select required>
+                        <select id="select_tipo_empresa" required>
                             <option value="Casa de Shows" selected>Casa de Shows</option>
                             <option value="Festival">Festival</option>
                             <option value="Produtora de Eventos">Produtora de Eventos</option>
@@ -73,14 +73,14 @@
                     <div class="field-group">
                         <label><i class="fa-solid fa-lock"></i> Senha</label>
                         <div class="password-box">
-                            <input type="password" id="input-senha" value="12345678" placeholder="Sua senha" required>
+                            <input type="password" id="ipt_senha_empresa" value="12345678" placeholder="Sua senha" required>
                             <i class="fa-solid fa-eye" id="toggle-senha" title="Mostrar/Ocultar Senha"></i>
                         </div>
                     </div>
 
                     <div class="form-actions">
-                        <button type="submit" class="btn-primary">
-                            <i class="fa-solid fa-floppy-disk"></i> Salvar
+                        <button type="submit" class="btn-primary" onclick="salvarEmpresa()">
+                            <i class="fa-solid fa-floppy-disk" onclick="salvarEmpresa"></i> Salvar 
                         </button>
                         <button type="button" class="btn-danger">
                             <i class="fa-solid fa-trash-can"></i> Excluir
@@ -104,6 +104,43 @@
             toggleSenha.classList.toggle('fa-eye', !isPassword);
             toggleSenha.classList.toggle('fa-eye-slash', isPassword);
         });
+
+        function salvarEmpresa() {
+            let razaoSocial = document.getElementById("ipt_nome_empresa").value
+            let CNPJ = document.getElementById("ipt_cnpj_empresa").value
+            let tipo= document.getElementById("select_tipo_empresa").value
+            let senha = document.getElementById("ipt_senha_empresa").value
+
+            if (razaoSocial == "" || cnpj == "" || tipo == "" || senha == "") {
+                alert('Preencha todos os campos!');
+                return;
+            }
+
+            fetch(`/empresas/atualizar/${idEmpresa}`, {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                razaoSocialServer: razaoSocial,
+                cnpjServer: CNPJ,
+                tipoServer: tipo,
+                senhaServer: senha
+            })
+            
+            
+            }
+            )
+
+            .then(function(resposta) {
+                if (resposta.ok) {
+                    alert('Dados atualizados com sucesso!');
+                } else {
+                    throw "Erro ao atualizar perfil da empresa";
+                }
+            })
+            .catch(function(erro) {
+                console.log("Erro: ", erro);
+            });
+        }
     </script>
 
 </body>

@@ -284,3 +284,44 @@ body {
 .modal-actions .btn-secondary { flex: 1; }
 
 .danger-text { color: #d32f2f; }
+
+.erro-campo {
+    display: block;
+    min-height: 1em;
+    margin-top: 4px;
+    font-size: 12px;
+    font-weight: 600;
+    color: #b71c1c;
+}
+
+.field-group:has(input.invalido) {
+    box-shadow: inset 0 0 0 2px #d32f2f;
+}
+
+input.invalido {
+    color: #b71c1c;
+}
+
+#regras-senha {
+    list-style: none;
+    margin-top: 8px;
+    font-size: 12px;
+}
+
+#regras-senha li {
+    color: #555;
+    margin-bottom: 2px;
+}
+
+#regras-senha li::before {
+    content: "✕ ";
+}
+
+#regras-senha li.ok {
+    color: #1b5e20;
+    font-weight: 600;
+}
+
+#regras-senha li.ok::before {
+    content: "✓ ";
+}

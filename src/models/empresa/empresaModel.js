@@ -16,6 +16,21 @@ function atualizar(idEmpresa, razaoSocial, cnpj, tipo, senha) {
 
 }
 
+function autenticar(email, senha) {
+    var instrucaoSql = `
+        SELECT 
+            id_usuario, 
+            nome, 
+            email, 
+            fk_empresa AS id_empresa, 
+            fk_cargo AS id_cargo 
+        FROM usuario 
+        WHERE email = '${email}' AND senha = '${senha}';
+    `;
+    return database.executar(instrucaoSql)
+}
+
 module.exports = {
-    atualizar
+    atualizar,
+    autenticar
 }

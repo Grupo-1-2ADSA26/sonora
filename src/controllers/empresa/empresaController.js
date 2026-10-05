@@ -29,7 +29,40 @@ function atualizar(req, res) {
                 }
             );
     }
-    module.exports = {
-        atualizar
+}
+
+function autenticar(req, res) {
+    var email = req.body.emailServer
+    var senha = req.body.senhaServer
+
+    if (email == undefined) {
+        res.status(400).send("Seu e-mail está undefined!")
+    } else if (senha == undefined) {
+        res.status(400).send("Sua senha está undefined!")
+    } else {
+        empresaModel.autenticar(email, senha)
+            .then(function (resultado) {
+                if (resultado.length == 1) {
+                    res.json({
+                        id_usuario: resultado[0].id_usuario,
+                        nome: resultado[0].nome,
+                        email: resultado[0].email,
+                        id_empresa: resultado[0].id_empresa,
+                        id_cargo: resultado[0].id_cargo
+                    });
+                } else if (resultado.length == 0) {
+                    res.status(403).send("E-mail e/ou senha inválidos")
+                } else {
+                    res.status(500).send("Mais de um usuário encontrado com essas credenciais!")
+                }
+            }).catch(function (erro) {
+                console.log(erro);
+                res.status(500).json(erro.sqlMessage);
+            })
     }
+}
+
+module.exports = {
+    atualizar,
+    autenticar
 }

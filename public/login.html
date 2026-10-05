@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>sonora. | LOGIN</title>
 
-    <script src="./js/sessao.js"></script>
+
 
     <link rel="stylesheet" href="./css/home/header-footer.css">
     <link rel="stylesheet" href="./css/home/login.css">
@@ -115,7 +115,7 @@
         console.log("FORM LOGIN: ", email);
         console.log("FORM SENHA: ", senha);
 
-        fetch("/empresas/autenticar", {
+        fetch("/empresa/autenticar", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
@@ -132,11 +132,24 @@
                 resposta.json().then(json => {
                     console.log("Log: Estou na tela de login na função entrar e a resposta está ok!");
                     console.log(JSON.stringify(json));
+                    sessionStorage.ID_USUARIO = json.id_usuario;
+                    sessionStorage.NOME_USUARIO = json.nome;
+                    sessionStorage.EMAIL_USUARIO = json.email;
                     sessionStorage.ID_EMPRESA = json.id_empresa;
-                    sessionStorage.NOME_EMPRESA = json.nome_empresa;
+                    sessionStorage.ID_CARGO = json.id_cargo;
+
+
 
                     setTimeout(function () {
-                        window.location = "index.html";
+                       if (json.id_cargo == 1) {
+                        window.location.href = "perfil.html" 
+                    } else if (json.id_cargo == 2) {
+                        window.location.href = "dashboard.html"
+                    } else if (json.id_cargo == 3) {
+                        window.location.href = "index.html"
+                    } else {
+                        window.location.href = "index.html"
+                    }
                     }, 1000);
 
                 });

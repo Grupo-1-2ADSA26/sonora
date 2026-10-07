@@ -37,7 +37,7 @@
         <div class="profile-container">
             <section class="profile-card">
 
-                <form class="profile-form">
+                <form class="profile-form" onsubmit="event.preventDefault(); salvarEmpresa();">
 
                     <div class="avatar-card">
                         <div class="avatar-box">
@@ -95,19 +95,54 @@
     </main>
 
     <script>
-        const inputSenha = document.getElementById('input-senha');
+        const inputSenha = document.getElementById('ipt_senha_empresa');
         const toggleSenha = document.getElementById('toggle-senha');
 
+
+    if (toggleSenha && inputSenha) {
         toggleSenha.addEventListener('click', () => {
             const isPassword = inputSenha.type === 'password';
             inputSenha.type = isPassword ? 'text' : 'password';
             toggleSenha.classList.toggle('fa-eye', !isPassword);
             toggleSenha.classList.toggle('fa-eye-slash', isPassword);
-        });
+        })
+    }
+
+
+    window.onload = function () {
+        carregarDadosEmpresa();
+    };
+
+
+    function carregarDadosEmpresa() {
+        
+        let idEmpresa = sessionStorage.ID_EMPRESA;
+
+        fetch(`/empresa/buscar/${idEmpresa}`)
+            .then(resposta => {
+                if (resposta.ok) {
+                    return resposta.json();
+                } else {
+                    console.error("Erro ao carregar dados da empresa");
+                }
+            })
+            .then(dadosEmpresa => {
+                if (dadosEmpresa) {
+                    // Preenche automaticamente os inputs com os dados da empresa
+                    document.getElementById("ipt_nome_empresa").value = dadosEmpresa.nome
+                    document.getElementById("ipt_cnpj_empresa").value = dadosEmpresa.cnpj
+                    document.getElementById("select_tipo_empresa").value = dadosEmpresa.tipo_estabelecimento
+                    document.getElementById("ipt_senha_empresa").value = dadosEmpresa.senha
+                }
+            })
+            .catch(erro => console.error("Erro na requisição: ", erro))
+    }
 
         function salvarEmpresa() {
+
+            let idEmpresa = sessionStorage.ID_EMPRESA
             let razaoSocial = document.getElementById("ipt_nome_empresa").value
-            let CNPJ = document.getElementById("ipt_cnpj_empresa").value
+            let cnpj = document.getElementById("ipt_cnpj_empresa").value
             let tipo= document.getElementById("select_tipo_empresa").value
             let senha = document.getElementById("ipt_senha_empresa").value
 
@@ -116,12 +151,12 @@
                 return;
             }
 
-            fetch(`/empresas/atualizar/${idEmpresa}`, {
+            fetch(`/empresa/atualizar/${idEmpresa}`, {
             method: "PUT",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
                 razaoSocialServer: razaoSocial,
-                cnpjServer: CNPJ,
+                cnpjServer: cnpj,
                 tipoServer: tipo,
                 senhaServer: senha
             })

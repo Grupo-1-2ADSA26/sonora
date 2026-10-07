@@ -1,4 +1,5 @@
 // ✅ Adicione mais um ../
+const bus = require("nodemon/lib/utils/bus");
 var database = require("../../database/config");
 
 
@@ -16,6 +17,20 @@ function atualizar(idEmpresa, razaoSocial, cnpj, tipo, senha) {
 
 }
 
+function autenticar(email, senha) {
+    var instrucaoSql = `
+       SELECT 
+            id_usuario, 
+            nome, 
+            email, 
+            id_empresa, 
+            id_cargo 
+        FROM usuario 
+        WHERE email = '${email}' AND senha = '${senha}';
+    `;
+    console.log("Executando a instrução SQL: \n" + instrucaoSql);
+    return database.executar(instrucaoSql)
+}
 
 function buscarPorId(id) {
   var instrucaoSql = `SELECT * FROM empresa WHERE id = '${id}'`;
@@ -48,4 +63,5 @@ module.exports = {
     buscarPorId, 
     cadastrar, 
     listar,
+    autenticar
 }

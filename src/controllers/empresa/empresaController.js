@@ -31,6 +31,27 @@ function atualizar(req, res) {
     }
 }
 
+function buscarPorId(req, res) {
+    var idEmpresa = req.params.idEmpresa
+
+    if (!idEmpresa) {
+        res.status(400).send("O ID da empresa está undefined!");
+    } else {
+        empresaModel.buscarPorId(idEmpresa)
+            .then(function (resultado) {
+                if (resultado.length > 0) {
+                    res.status(200).json(resultado[0])
+                } else {
+                    res.status(404).send("Nenhuma empresa encontrada com esse ID!")
+                }
+            })
+            .catch(function (erro) {
+                console.log(erro);
+                res.status(500).json(erro.sqlMessage)
+            })
+    }
+}
+
 function autenticar(req, res) {
     var email = req.body.emailServer
     var senha = req.body.senhaServer
@@ -64,5 +85,6 @@ function autenticar(req, res) {
 
 module.exports = {
     atualizar,
+    buscarPorId,
     autenticar
 }

@@ -138,3 +138,58 @@ CREATE TABLE log (
     data_hora DATETIME DEFAULT CURRENT_TIMESTAMP,
     status VARCHAR(30) NOT NULL
 );
+
+
+-- =============================================
+-- 1. CADASTRO DOS CARGOS (Personas)
+-- =============================================
+INSERT INTO cargo (nome) VALUES 
+('Gerente / ADM (Carla)'),      -- id_cargo = 1
+('Operacional (Lucas)'),         -- id_cargo = 2
+('Suporte do Sistema');          -- id_cargo = 3
+
+-- =============================================
+-- 2. CADASTRO DOS ACESSOS / TELAS DO SISTEMA
+-- =============================================
+INSERT INTO acesso (nome) VALUES 
+('Tela Empresa / Perfil'),        -- id_acesso = 1
+('Tela Operacional / Dashboard'), -- id_acesso = 2
+('Tela Suporte / Chamados');      -- id_acesso = 3
+
+-- =============================================
+-- 3. ASSOCIAÇÃO DE CARGOS E ACESSOS (cargo_acesso)
+-- =============================================
+INSERT INTO cargo_acesso (id_cargo, id_acesso) VALUES 
+(1, 1), -- ADM (Carla) -> Tela Empresa
+(2, 2), -- Operacional (Lucas) -> Tela Operacional
+(3, 3); -- Suporte -> Tela Suporte
+
+-- =============================================
+-- 4. CADASTRO DA EMPRESA
+-- =============================================
+INSERT INTO empresa (nome, cnpj, senha, tipo_estabelecimento) VALUES 
+('Sonora Eventos LTDA', '12.345.678/0001-90', 'senha123', 'Casa de Shows');
+
+-- =============================================
+-- 5. CADASTRO DOS USUÁRIOS DE TESTE
+-- =============================================
+INSERT INTO usuario (nome, email, senha, id_empresa, id_cargo) VALUES 
+('Carla ADM', 'carla@sonora.com', '123456', 1, 1),       -- Persona Carla (ADM)
+('Lucas Operacional', 'lucas@sonora.com', '123456', 1, 2),-- Persona Lucas (Operacional)
+('Suporte Técnico', 'suporte@sonora.com', '123456', 1, 3);-- Suporte
+
+
+SELECT 
+    u.id_usuario,
+    u.nome AS nome_usuario,
+    u.email,
+    u.id_empresa,
+    e.nome AS nome_empresa,
+    u.id_cargo,
+    c.nome AS nome_cargo
+FROM usuario u
+JOIN empresa e ON u.id_empresa = e.id_empresa
+JOIN cargo c ON u.id_cargo = c.id_cargo
+WHERE u.email = 'carla@sonora.com' AND u.senha = '123456';
+
+select * from empresa;

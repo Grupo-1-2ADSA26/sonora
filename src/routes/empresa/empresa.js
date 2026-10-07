@@ -20,6 +20,10 @@ router.put("/atualizar/:idEmpresa", function (req, res) {
     empresaController.atualizar(req, res);
 });
 
+router.get("/buscar/:idEmpresa", function (req, res) {
+    empresaController.buscarPorId(req, res);
+});
+
 router.post("/autenticar", function (req, res) {
     empresaController.autenticar(req, res);
 });

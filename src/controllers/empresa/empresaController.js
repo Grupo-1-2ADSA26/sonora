@@ -29,7 +29,6 @@ function atualizar(req, res) {
                 }
             );
     }
-}
 
 function buscarPorId(req, res) {
     var idEmpresa = req.params.idEmpresa
@@ -83,8 +82,44 @@ function autenticar(req, res) {
     }
 }
 
+ function buscarPorCnpj(req, res) {
+  var cnpj = req.query.cnpj;
+
+  empresaModel.buscarPorCnpj(cnpj).then((resultado) => {
+    res.status(200).json(resultado);npm 
+  });
+}
+
+function listar(req, res) {
+  empresaModel.listar().then((resultado) => {
+    res.status(200).json(resultado);
+  });
+}
+
+function cadastrar(req, res) {
+  var cnpj = req.body.cnpj;
+  var razaoSocial = req.body.razaoSocial;
+
+  empresaModel.buscarPorCnpj(cnpj).then((resultado) => {
+    if (resultado.length > 0) {
+      res
+        .status(401)
+        .json({ mensagem: `a empresa com o cnpj ${cnpj} já existe` });
+    } else {
+      empresaModel.cadastrar(razaoSocial, cnpj).then((resultado) => {
+        res.status(201).json(resultado);
+      });
+    }
+  });
+}
+
 module.exports = {
-    atualizar,
-    buscarPorId,
-    autenticar
+  buscarPorCnpj,
+  buscarPorId,
+  cadastrar,
+  listar,
+  atualizar,
+  buscarPorId,
+  autenticar
+};
 }

@@ -62,9 +62,4 @@ function deletar(req, res) {
         });
 }
 
-module.exports = {
-    listar,
-    cadastrar,
-    atualizar,
-    deletar
-};
+module.exports = { listar, cadastrar, editar, deletar }

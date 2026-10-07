@@ -17,23 +17,6 @@ function atualizar(idEmpresa, razaoSocial, cnpj, tipo, senha) {
 
 }
 
-function buscarPorId(idEmpresa) {
-    // Verifique se no seu banco as colunas se chamam:
-    // id_empresa (ou idEmpresa), nome (ou razao_social), cnpj, tipo (ou tipo_estabelecimento), senha
-    var instrucaoSql = `
-        SELECT 
-            id_empresa, 
-            nome, 
-            cnpj, 
-            tipo_estabelecimento, 
-            senha 
-        FROM empresa 
-        WHERE id_empresa = ${idEmpresa};
-    `;
-    console.log("Executando a instrução SQL: \n" + instrucaoSql);
-    return database.executar(instrucaoSql);
-}
-
 function autenticar(email, senha) {
     var instrucaoSql = `
        SELECT 
@@ -49,8 +32,36 @@ function autenticar(email, senha) {
     return database.executar(instrucaoSql)
 }
 
+function buscarPorId(id) {
+  var instrucaoSql = `SELECT * FROM empresa WHERE id = '${id}'`;
+
+  return database.executar(instrucaoSql);
+}
+
+function listar() {
+  var instrucaoSql = `SELECT id, razao_social, cnpj, codigo_ativacao FROM empresa`;
+
+  return database.executar(instrucaoSql);
+}
+
+function buscarPorCnpj(cnpj) {
+  var instrucaoSql = `SELECT * FROM empresa WHERE cnpj = '${cnpj}'`;
+
+  return database.executar(instrucaoSql);
+}
+
+function cadastrar(razaoSocial, cnpj) {
+  var instrucaoSql = `INSERT INTO empresa (razao_social, cnpj) VALUES ('${razaoSocial}', '${cnpj}')`;
+
+  return database.executar(instrucaoSql);
+}
+
+
 module.exports = {
     atualizar,
-    buscarPorId,
+    buscarPorCnpj, 
+    buscarPorId, 
+    cadastrar, 
+    listar,
     autenticar
 }

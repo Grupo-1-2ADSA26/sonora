@@ -46,9 +46,4 @@ function deletar(idUsuario, idEmpresa) {
     return database.executar(instrucaoSql);
 }
 
-module.exports = {
-    listar,
-    cadastrar,
-    atualizar,
-    deletar
-};
+module.exports = { listar, cadastrar, editar, deletar }

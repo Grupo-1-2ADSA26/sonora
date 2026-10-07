@@ -42,7 +42,7 @@
             <div class="card">
                 <div class="card-header">
                     <h3><i class="fa-solid fa-list-check"></i> Equipe Cadastrada</h3>
-                    <span class="badge">0 Funcionários Ativos</span>
+                    <span class="badge" id="badge-total">0 Funcionários Ativos</span>
                 </div>
 
                 <table class="data-table">
@@ -54,9 +54,7 @@
                             <th class="text-center">Ações</th>
                         </tr>
                     </thead>
-                    <tbody>
-                        <!-- Os dados serão carregados dinamicamente via JS -->
-                    </tbody>
+                    <tbody id="tabela-funcionarios"></tbody>
                 </table>
             </div>
         </section>
@@ -68,7 +66,7 @@
         <div class="modal-box">
             <div class="modal-header">
                 <h3 id="modal-title"><i class="fa-solid fa-user-plus"></i> Cadastrar Funcionário</h3>
-                <button class="btn-close">&times;</button>
+                <button type="button" class="btn-close">&times;</button>
             </div>
             <form id="form-employee">
                 <div class="field-group">
@@ -77,7 +75,8 @@
                 </div>
                 <div class="field-group">
                     <label><i class="fa-solid fa-envelope"></i> E-mail Corporativo</label>
-                    <input type="email" id="emp-email" placeholder="carlos@empresa.com" required>
+                    <input type="email" id="emp-email" placeholder="carlos@empresa.com" maxlength="100" required>
+                    <small class="erro-campo" id="erro-email"></small>
                 </div>
                 <div class="field-group">
                     <label><i class="fa-solid fa-briefcase"></i> Cargo</label>
@@ -92,9 +91,18 @@
                 <div class="field-group">
                     <label><i class="fa-solid fa-lock"></i> Senha</label>
                     <div class="password-wrapper">
-                        <input type="password" id="emp-pass" placeholder="Digite a senha">
+                        <input type="password" id="emp-pass" placeholder="Digite a senha" maxlength="50">
                         <i class="fa-solid fa-eye toggle-pass"></i>
                     </div>
+                    <small id="dica-senha" style="display:none;">Deixe em branco para manter a senha atual.</small>
+                    <ul id="regras-senha">
+                        <li data-regra="tamanho">Entre 8 e 50 caracteres</li>
+                        <li data-regra="maiuscula">Uma letra maiúscula</li>
+                        <li data-regra="minuscula">Uma letra minúscula</li>
+                        <li data-regra="numero">Um número</li>
+                        <li data-regra="especial">Um caractere especial (ex: @ # ! $ %)</li>
+                        <li data-regra="semEspaco">Sem espaços</li>
+                    </ul>
                 </div>
                 <div class="modal-actions">
                     <button type="submit" class="btn-primary">Confirmar</button>
@@ -109,14 +117,14 @@
         <div class="modal-box">
             <div class="modal-header">
                 <h3 class="danger-text"><i class="fa-solid fa-triangle-exclamation"></i> Confirmar Exclusão</h3>
-                <button class="btn-close">&times;</button>
+                <button type="button" class="btn-close">&times;</button>
             </div>
             <div class="modal-body">
                 <p>Tem certeza que deseja excluir <strong id="delete-name"></strong>?</p>
                 <small>Esta ação não poderá ser desfeita.</small>
             </div>
             <div class="modal-actions">
-                <button type="button" class="btn-danger">Sim, Excluir</button>
+                <button type="button" class="btn-danger" id="btn-confirmar-exclusao">Sim, Excluir</button>
                 <button type="button" class="btn-secondary btn-close">Cancelar</button>
             </div>
         </div>
@@ -273,30 +281,258 @@
             });
         });
 
-        // Fechar Modais
+    //Validações de email e senha  
+        const modalForm = document.getElementById('modal-form')
+        const modalDelete = document.getElementById('modal-delete')
+        const modalTitle = document.getElementById('modal-title')
+        const formularioFuncionario = document.getElementById('form-employee')
+        const tbody = document.getElementById('tabela-funcionarios')
+        const inputSenha = document.getElementById('emp-pass')
+        const dicaSenha = document.getElementById('dica-senha')
+        const inputEmail = document.getElementById('emp-email')
+        const erroEmail = document.getElementById('erro-email')
+        const regrasSenha = document.getElementById('regras-senha')
+
+        function ehEspaco(c) { return c.trim() === "" }
+        function ehNumero(c) { return c >= "0" && c <= "9" }
+        function ehMaiuscula(c) { return c === c.toUpperCase() && c !== c.toLowerCase() }
+        function ehMinuscula(c) { return c === c.toLowerCase() && c !== c.toUpperCase() }
+        function ehEspecial(c) { return !ehMaiuscula(c) && !ehMinuscula(c) && !ehNumero(c) && !ehEspaco(c) }
+
+        function validarEmail(email) {
+            const invalido = "Digite um e-mail válido, ex: nome@empresa.com."
+
+            if (!email) return "Informe o e-mail."
+            if (email.length > 100) return "O e-mail pode ter no máximo 100 caracteres."
+            if (Array.from(email).some(ehEspaco)) return invalido
+
+            const partes = email.split("@")
+            if (partes.length !== 2) return invalido
+            const usuario = partes[0]
+            const dominio = partes[1]
+            if (usuario === "" || dominio === "") return invalido
+
+            if (!dominio.includes(".")) return invalido
+            if (dominio.startsWith(".") || dominio.endsWith(".") || dominio.includes("..")) return invalido
+
+            const extensao = dominio.split(".").pop()
+            if (extensao.length < 2) return invalido
+
+            return ""
+        }
+
+        const REGRAS_SENHA = {
+            tamanho:   s => s.length >= 8 && s.length <= 50,
+            maiuscula: s => Array.from(s).some(ehMaiuscula),
+            minuscula: s => Array.from(s).some(ehMinuscula),
+            numero:    s => Array.from(s).some(ehNumero),
+            especial:  s => Array.from(s).some(ehEspecial),
+            semEspaco: s => !Array.from(s).some(ehEspaco)
+        }
+
+        function senhaValida(senha) {
+            return Object.values(REGRAS_SENHA).every(regra => regra(senha))
+        }
+
+        function atualizarChecklist() {
+            const senha = inputSenha.value
+            regrasSenha.querySelectorAll('li').forEach(li => {
+                const ok = senha.length > 0 && REGRAS_SENHA[li.dataset.regra](senha)
+                li.classList.toggle('ok', ok)
+            })
+        }
+
+        function mostrarErroEmail(mensagem) {
+            erroEmail.textContent = mensagem
+            inputEmail.classList.toggle('invalido', mensagem !== "")
+        }
+
+        inputSenha.addEventListener('input', atualizarChecklist)
+        inputEmail.addEventListener('blur', () => mostrarErroEmail(validarEmail(inputEmail.value.trim())))
+        inputEmail.addEventListener('input', () => { if (erroEmail.textContent) mostrarErroEmail(validarEmail(inputEmail.value.trim())) })
+
+        let idSelecionado = 0
+        const idEmpresaLogada = sessionStorage.getItem("ID_EMPRESA") || 1
+
+        const toggleModal = (modal, show = true) => modal.classList.toggle('active', show)
+
+        function escapar(texto) {
+            const div = document.createElement('div')
+            div.textContent = texto
+            return div.innerHTML
+        }
+
+        function carregarFuncionarios() {
+            fetch(`/funcionarios/listar/${idEmpresaLogada}`)
+                .then(resposta => {
+                    if (!resposta.ok) throw new Error("Erro ao listar: status " + resposta.status)
+                    return resposta.json()
+                })
+                .then(lista => {
+                    tbody.innerHTML = ''
+
+                    if (lista.length === 0) {
+                        tbody.innerHTML = '<tr><td colspan="4" class="text-center">Nenhum funcionário cadastrado.</td></tr>'
+                    }
+
+                    lista.forEach(f => {
+                        tbody.innerHTML += `
+                        <tr data-id="${f.id_usuario}" data-cargo="${f.id_cargo}">
+                            <td>
+                                <div class="user-cell">
+                                    <div class="avatar"><i class="fa-solid fa-user"></i></div>
+                                    <strong>${escapar(f.nome)}</strong>
+                                </div>
+                            </td>
+                            <td class="user-email">${escapar(f.email)}</td>
+                            <td><span class="role-tag">${escapar(f.cargo)}</span></td>
+                            <td class="actions-cell">
+                                <button type="button" class="btn-icon edit" title="Editar"><i class="fa-solid fa-pen-to-square"></i></button>
+                                <button type="button" class="btn-icon delete" title="Deletar"><i class="fa-solid fa-trash-can"></i></button>
+                            </td>
+                        </tr>`
+                    })
+
+                    document.getElementById('badge-total').textContent = `${lista.length} Funcionários Ativos`
+                })
+                .catch(erro => console.error(erro))
+        }
+
+        carregarFuncionarios()
+
+        document.getElementById('btn-novo-funcionario').addEventListener('click', () => {
+            idSelecionado = 0
+            formularioFuncionario.reset()
+            inputSenha.required = true
+            dicaSenha.style.display = 'none'
+            mostrarErroEmail("")
+            atualizarChecklist()
+            modalTitle.innerHTML = '<i class="fa-solid fa-user-plus"></i> Cadastrar Funcionário'
+            toggleModal(modalForm)
+        })
+
+         tbody.addEventListener('click', (e) => {
+            const row = e.target.closest('tr')
+            if (!row || !row.dataset.id) return
+
+            if (e.target.closest('.btn-icon.edit')) {
+                idSelecionado = row.dataset.id
+
+                document.getElementById('emp-name').value = row.querySelector('.user-cell strong').textContent
+                document.getElementById('emp-email').value = row.querySelector('.user-email').textContent
+                document.getElementById('emp-role').value = row.dataset.cargo
+                inputSenha.value = ''
+                inputSenha.required = false         
+                dicaSenha.style.display = 'block'
+                mostrarErroEmail("")
+                atualizarChecklist()
+
+                modalTitle.innerHTML = '<i class="fa-solid fa-pen-to-square"></i> Editar Funcionário'
+                toggleModal(modalForm)
+            }
+
+            if (e.target.closest('.btn-icon.delete')) {
+                idSelecionado = row.dataset.id
+                document.getElementById('delete-name').textContent = row.querySelector('.user-cell strong').textContent
+                toggleModal(modalDelete)
+            }
+        })
+
         document.querySelectorAll('.btn-close').forEach(btn => {
             btn.addEventListener('click', () => {
-                toggleModal(modalForm, false);
-                toggleModal(modalDelete, false);
-            });
-        });
+                toggleModal(modalForm, false)
+                toggleModal(modalDelete, false)
+            })
+        })
 
         window.addEventListener('click', (e) => {
             if (e.target.classList.contains('modal-overlay')) {
-                toggleModal(e.target, false);
+                toggleModal(e.target, false)
             }
-        });
-
-        // Alternar visualização da senha
+        })
+        
         document.querySelectorAll('.toggle-pass').forEach(icon => {
-            icon.addEventListener('click', function() {
-                const input = this.previousElementSibling;
-                const isPass = input.type === 'password';
-                input.type = isPass ? 'text' : 'password';
-                this.classList.toggle('fa-eye', !isPass);
-                this.classList.toggle('fa-eye-slash', isPass);
-            });
-        });
+            icon.addEventListener('click', function () {
+                const input = this.previousElementSibling
+                const isPass = input.type === 'password'
+                input.type = isPass ? 'text' : 'password'
+                this.classList.toggle('fa-eye', !isPass)
+                this.classList.toggle('fa-eye-slash', isPass)
+            })
+        })
+
+        formularioFuncionario.addEventListener('submit', (evento) => {
+            evento.preventDefault()
+
+            const email = inputEmail.value.trim().toLowerCase()
+            const senha = inputSenha.value
+            const editando = idSelecionado != 0
+
+            const erroDoEmail = validarEmail(email)
+            mostrarErroEmail(erroDoEmail)
+            if (erroDoEmail) {
+                inputEmail.focus()
+                return
+            }
+
+            if ((!editando || senha !== "") && !senhaValida(senha)) {
+                alert("A senha não atende a todas as regras. Confira a lista abaixo do campo.")
+                inputSenha.focus()
+                return
+            }
+
+            const dados = {
+                nomeServer: document.getElementById('emp-name').value.trim(),
+                emailServer: email,
+                cargoServer: document.getElementById('emp-role').value,   
+                senhaServer: inputSenha.value,
+                empresaServer: idEmpresaLogada
+            }
+
+            const url = editando ? `/funcionarios/editar/${idSelecionado}` : `/funcionarios/cadastrar`
+
+            fetch(url, {
+                method: editando ? "PUT" : "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(dados)
+            })
+            .then(resposta => {
+                if (resposta.ok) {
+                    toggleModal(modalForm, false)
+                    carregarFuncionarios()
+                } else {
+                    resposta.json()
+                        .then(erro => {
+                            console.error("Erro do servidor:", erro)
+                            alert(erro.mensagem || "Erro ao salvar o funcionário.")
+                        })
+                        .catch(() => alert("Erro ao salvar (status " + resposta.status + "). Veja o console (F12)."))
+                }
+            })
+            .catch(erro => {
+                console.error("Falha na requisição:", erro)
+                alert("Não foi possível conectar ao servidor.")
+            })
+        })
+
+        document.getElementById('btn-confirmar-exclusao').addEventListener('click', () => {
+            if (!idSelecionado) return
+
+            fetch(`/funcionarios/deletar/${idSelecionado}`, { method: "DELETE" })
+                .then(resposta => {
+                    if (resposta.ok) {
+                        toggleModal(modalDelete, false)
+                        idSelecionado = 0
+                        carregarFuncionarios()
+                    } else {
+                        alert("Erro ao excluir o funcionário.")
+                    }
+                })
+                .catch(erro => {
+                    console.error("Falha na requisição:", erro)
+                    alert("Não foi possível conectar ao servidor.")
+                })
+        })
     </script>
 </body>
 </html>

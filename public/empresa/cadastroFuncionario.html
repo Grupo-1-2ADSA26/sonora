@@ -82,10 +82,10 @@
                     <label><i class="fa-solid fa-briefcase"></i> Cargo</label>
                     <select id="emp-role" required>
                         <option value="" disabled selected>Selecione um cargo</option>
-                        <option value="1">Gerente de Eventos</option>
-                        <option value="2">Curador Musical</option>
-                        <option value="3">Analista de Marketing</option>
-                        <option value="4">Operador Técnico</option>
+                        <!-- Ajustado para os IDs correspondentes do banco 'cargo' -->
+                        <option value="1">Gerente / ADM</option>
+                        <option value="2">Operacional</option>
+                        <option value="3">Suporte do Sistema</option>
                     </select>
                 </div>
                 <div class="field-group">
@@ -131,6 +131,155 @@
     </div>
 
     <script>
+        
+        const idEmpresa = sessionStorage.ID_EMPRESA;
+        let idFuncionarioEditando = null;
+        let idFuncionarioExcluindo = null;
+
+        const modalForm = document.getElementById('modal-form');
+        const modalDelete = document.getElementById('modal-delete');
+        const modalTitle = document.getElementById('modal-title');
+
+        if (!idEmpresa) {
+            window.location.href = "../login.html";
+        }
+
+        const toggleModal = (modal, show = true) => {
+            modal.classList.toggle('active', show);
+        };
+
+        
+        function listarFuncionarios() {
+            fetch(`/funcionario/listar/${idEmpresa}`)
+                .then(res => res.json())
+                .then(funcionarios => {
+                    const tbody = document.querySelector('.data-table tbody');
+                    tbody.innerHTML = '';
+
+                    document.querySelector('.badge').textContent = `${funcionarios.length} Funcionários Ativos`;
+
+                    funcionarios.forEach(func => {
+                        tbody.innerHTML += `
+                            <tr>
+                                <td>
+                                    <div class="user-cell">
+                                        <div class="avatar"><i class="fa-solid fa-user"></i></div>
+                                        <strong>${func.nome}</strong>
+                                    </div>
+                                </td>
+                                <td class="user-email">${func.email}</td>
+                                <td><span class="role-tag">${func.cargo}</span></td>
+                                <td class="actions-cell">
+                                    <button class="btn-icon edit" onclick="abrirEdicao(${func.id}, '${func.nome}', '${func.email}', ${func.id_cargo})" title="Editar">
+                                        <i class="fa-solid fa-pen-to-square"></i>
+                                    </button>
+                                    <button class="btn-icon delete" onclick="abrirExclusao(${func.id}, '${func.nome}')" title="Deletar">
+                                        <i class="fa-solid fa-trash-can"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                        `;
+                    });
+                })
+                .catch(err => console.error("Erro ao listar funcionários:", err));
+        }
+
+        window.onload = listarFuncionarios;
+
+        // Modais e Ações
+        document.getElementById('btn-novo-funcionario').addEventListener('click', () => {
+            idFuncionarioEditando = null;
+            document.getElementById('form-employee').reset();
+            modalTitle.innerHTML = '<i class="fa-solid fa-user-plus"></i> Cadastrar Funcionário';
+            toggleModal(modalForm);
+        });
+
+        function abrirEdicao(id, nome, email, idCargo) {
+            idFuncionarioEditando = id;
+            document.getElementById('emp-name').value = nome;
+            document.getElementById('emp-email').value = email;
+            document.getElementById('emp-role').value = idCargo;
+            document.getElementById('emp-pass').value = ''; // Opcional ao editar
+
+            modalTitle.innerHTML = '<i class="fa-solid fa-pen-to-square"></i> Editar Funcionário';
+            toggleModal(modalForm);
+        }
+
+        function abrirExclusao(id, nome) {
+            idFuncionarioExcluindo = id;
+            document.getElementById('delete-name').textContent = nome;
+            toggleModal(modalDelete);
+        }
+
+        //  Cadastrar / Atualizar
+        document.getElementById('form-employee').addEventListener('submit', (e) => {
+            e.preventDefault();
+
+            const nome = document.getElementById('emp-name').value;
+            const email = document.getElementById('emp-email').value;
+            const idCargo = document.getElementById('emp-role').value;
+            const senha = document.getElementById('emp-pass').value;
+
+            if (idFuncionarioEditando) {
+                // Atualizar
+                fetch(`/funcionario/atualizar/${idFuncionarioEditando}`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ 
+                        nomeServer: nome, 
+                        emailServer: email, 
+                        idCargoServer: idCargo, 
+                        senhaServer: senha,
+                        fkEmpresaServer: idEmpresa 
+                    })
+                }).then(res => {
+                    if (res.ok) {
+                        toggleModal(modalForm, false);
+                        listarFuncionarios();
+                    } else {
+                        alert("Erro ao atualizar funcionário.");
+                    }
+                });
+            } else {
+                // Cadastrar
+                fetch(`/funcionario/cadastrar`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ 
+                        nomeServer: nome, 
+                        emailServer: email, 
+                        idCargoServer: idCargo, 
+                        senhaServer: senha, 
+                        fkEmpresaServer: idEmpresa 
+                    })
+                }).then(res => {
+                    if (res.ok) {
+                        toggleModal(modalForm, false);
+                        listarFuncionarios();
+                    } else {
+                        alert("Erro ao cadastrar funcionário.");
+                    }
+                });
+            }
+        });
+
+        //  Deletar
+        document.querySelector('.btn-danger').addEventListener('click', () => {
+            if (!idFuncionarioExcluindo) return;
+
+            fetch(`/funcionario/deletar/${idFuncionarioExcluindo}`, {
+                method: 'DELETE',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ fkEmpresaServer: idEmpresa })
+            }).then(res => {
+                if (res.ok) {
+                    toggleModal(modalDelete, false);
+                    listarFuncionarios();
+                } else {
+                    alert("Erro ao deletar funcionário.");
+                }
+            });
+        });
 
     //Validações de email e senha  
         const modalForm = document.getElementById('modal-form')
@@ -301,8 +450,6 @@
                 toggleModal(e.target, false)
             }
         })
-
-        // Alternar visualização da senha
         
         document.querySelectorAll('.toggle-pass').forEach(icon => {
             icon.addEventListener('click', function () {

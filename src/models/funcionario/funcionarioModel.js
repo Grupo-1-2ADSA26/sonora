@@ -1,42 +1,49 @@
-let database = require("../../database/config")
+const database = require("../../database/config");
 
 function listar(idEmpresa) {
-    let instrucaoSql = `
-        SELECT u.id_usuario, u.nome, u.email, u.id_cargo, c.nome AS cargo
+    const instrucaoSql = `
+        SELECT 
+            u.id_usuario AS id,
+            u.nome,
+            u.email,
+            c.nome AS cargo,
+            u.id_cargo
         FROM usuario u
-        JOIN cargo c ON c.id_cargo = u.id_cargo
-        WHERE u.id_empresa = ?
-        ORDER BY u.nome`
-    return database.executar(instrucaoSql, [idEmpresa])
+        JOIN cargo c ON u.id_cargo = c.id_cargo
+        WHERE u.id_empresa = ${idEmpresa};
+    `;
+    return database.executar(instrucaoSql);
 }
 
-function cadastrar(nome, email, senha, idCargo, idEmpresa) {
+function cadastrar(nome, email, senha, idEmpresa, idCargo) {
+    const instrucaoSql = `
+        INSERT INTO usuario (nome, email, senha, id_empresa, id_cargo) 
+        VALUES ('${nome}', '${email}', '${senha}', ${idEmpresa}, ${idCargo});
+    `;
+    return database.executar(instrucaoSql);
+}
+
+function atualizar(idUsuario, idEmpresa, nome, email, idCargo, senha) {
     let instrucaoSql = `
-        INSERT INTO usuario (nome, email, senha, id_cargo, id_empresa)
-        VALUES (?, ?, ?, ?, ?)`
-    return database.executar(instrucaoSql, [nome, email, senha, idCargo, idEmpresa])
-}
+        UPDATE usuario 
+        SET nome = '${nome}', email = '${email}', id_cargo = ${idCargo}
+    `;
 
-function editar(id, nome, email, idCargo, senha) {
-
-    if (senha) {
-        let instrucaoSql = `
-            UPDATE usuario
-            SET nome = ?, email = ?, id_cargo = ?, senha = ?
-            WHERE id_usuario = ?`
-        return database.executar(instrucaoSql, [nome, email, idCargo, senha, id])
+    if (senha && senha.trim() !== '') {
+        instrucaoSql += `, senha = '${senha}'`;
     }
 
-    let instrucaoSql = `
-        UPDATE usuario
-        SET nome = ?, email = ?, id_cargo = ?
-        WHERE id_usuario = ?`
-    return database.executar(instrucaoSql, [nome, email, idCargo, id])
+    instrucaoSql += ` WHERE id_usuario = ${idUsuario} AND id_empresa = ${idEmpresa};`;
+
+    return database.executar(instrucaoSql);
 }
 
-function deletar(id) {
-    let instrucaoSql = `DELETE FROM usuario WHERE id_usuario = ?`
-    return database.executar(instrucaoSql, [id])
+function deletar(idUsuario, idEmpresa) {
+    const instrucaoSql = `
+        DELETE FROM usuario 
+        WHERE id_usuario = ${idUsuario} AND id_empresa = ${idEmpresa};
+    `;
+    return database.executar(instrucaoSql);
 }
 
 module.exports = { listar, cadastrar, editar, deletar }

@@ -102,18 +102,16 @@
 <script>
 
     function entrar() {
-
         var email = email_input.value;
         var senha = senha_input.value;
 
         if (email == "" || senha == "") {
-            cardErro.style.display = "block"
-            mensagem_erro.innerHTML = "(Mensagem de erro para todos os campos em branco)";
-            return null;
+            cardErro.style.display = "block";
+            mensagem_erro.innerHTML = "Preencha todos os campos para prosseguir!";
+            return false;
         }
 
         console.log("FORM LOGIN: ", email);
-        console.log("FORM SENHA: ", senha);
 
         fetch("/empresa/autenticar", {
             method: "POST",
@@ -125,48 +123,51 @@
                 senhaServer: senha
             })
         }).then(function (resposta) {
-            
-            if (resposta.ok) {
-                console.log(resposta);
 
+            if (resposta.ok) {
                 resposta.json().then(json => {
-                    console.log("Log: Estou na tela de login na função entrar e a resposta está ok!");
-                    console.log(JSON.stringify(json));
+                    console.log("Login realizado com sucesso:", json);
+
+                    // Armazena as informações no sessionStorage
                     sessionStorage.ID_USUARIO = json.id_usuario;
-                    sessionStorage.NOME_USUARIO = json.nome;
+                    sessionStorage.NOME_USUARIO = json.nome_usuario; // Ajustado para coincidir com a query SQL
                     sessionStorage.EMAIL_USUARIO = json.email;
                     sessionStorage.ID_EMPRESA = json.id_empresa;
+                    sessionStorage.NOME_EMPRESA = json.nome_empresa;
                     sessionStorage.ID_CARGO = json.id_cargo;
+                    sessionStorage.NOME_CARGO = json.nome_cargo;
 
-
-                    
+                    // Redirecionamento baseado no perfil (cargo)
                     setTimeout(function () {
-                       if (json.id_cargo == 1) {
-                        window.location.href = "./empresa/perfil.html" 
-                    } else if (json.id_cargo == 2) {
-                        window.location.href = "./funcionario/dashboard.html"
-                    } else if (json.id_cargo == 3) {
-                        window.location.href = "index.html"
-                    } else {
-                        window.location.href = "index.html"
-                    }
+                        if (json.id_cargo == 1) {
+                            window.location.href = "./empresa/perfil.html";
+                        } else if (json.id_cargo == 2) {
+                            window.location.href = "./funcionario/dashboard.html";
+                        } else if (json.id_cargo == 3) {
+                            window.location.href = "./suporte/chamados.html";
+                        } else {
+                            window.location.href = "index.html";
+                        }
                     }, 1000);
-
                 });
 
             } else {
-                console.log("Log Error: Estou na tela de login na função entrar e houve um erro ao tentar realizar o login!");
+                console.log("Houve um erro ao tentar realizar o login!");
+                
                 resposta.text().then(texto => {
                     console.error(texto);
+                    cardErro.style.display = "block";
+                    mensagem_erro.innerHTML = texto || "E-mail ou senha inválidos!";
                 });
             }
 
         }).catch(function (erro) {
-            console.log("Log Error: Estou na tela de login na função entrar e houve um erro ao tentar realizar o fetch!");
-            console.log(erro);
-        })
+            console.error("Erro na requisição Fetch: ", erro);
+            cardErro.style.display = "block";
+            mensagem_erro.innerHTML = "Erro de conexão com o servidor!";
+        });
 
-        return null;
+        return false;
     }
 
 

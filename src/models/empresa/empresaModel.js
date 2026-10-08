@@ -1,67 +1,70 @@
-// ✅ Adicione mais um ../
-const bus = require("nodemon/lib/utils/bus");
 var database = require("../../database/config");
 
-
-function atualizar(idEmpresa, razaoSocial, cnpj, tipo, senha) {
+function cadastrar(nome, cnpj, senha, tipoEstabelecimento) {
     var instrucaoSql = `
-        UPDATE empresa 
-        SET nome = '${razaoSocial}', 
-            cnpj = '${cnpj}', 
-            tipo_estabelecimento = '${tipo}', 
-            senha = '${senha}'
+        INSERT INTO empresa (nome, cnpj, senha, tipo_estabelecimento) 
+        VALUES ('${nome}', '${cnpj}', '${senha}', '${tipoEstabelecimento}');
+    `;
+    return database.executar(instrucaoSql);
+}
+
+function listar() {
+    var instrucaoSql = `
+        SELECT id_empresa, nome, cnpj, tipo_estabelecimento 
+        FROM empresa;
+    `;
+    return database.executar(instrucaoSql);
+}
+
+function buscarPorId(idEmpresa) {
+    var instrucaoSql = `
+        SELECT id_empresa, nome, cnpj, tipo_estabelecimento 
+        FROM empresa 
         WHERE id_empresa = ${idEmpresa};
     `;
-    console.log("Executando a instrução SQL: \n" + instrucaoSql);
-    return database.executar(instrucaoSql)
+    return database.executar(instrucaoSql);
+}
 
+function atualizar(idEmpresa, nome, cnpj, senha, tipoEstabelecimento) {
+    var instrucaoSql = `
+        UPDATE empresa 
+        SET nome = '${nome}', cnpj = '${cnpj}', senha = '${senha}', tipo_estabelecimento = '${tipoEstabelecimento}' 
+        WHERE id_empresa = ${idEmpresa};
+    `;
+    return database.executar(instrucaoSql);
+}
+
+function deletar(idEmpresa) {
+    var instrucaoSql = `
+        DELETE FROM empresa 
+        WHERE id_empresa = ${idEmpresa};
+    `;
+    return database.executar(instrucaoSql);
 }
 
 function autenticar(email, senha) {
     var instrucaoSql = `
-       SELECT 
-            id_usuario, 
-            nome, 
-            email, 
-            id_empresa, 
-            id_cargo 
-        FROM usuario 
-        WHERE email = '${email}' AND senha = '${senha}';
+        SELECT 
+            u.id_usuario,
+            u.nome AS nome_usuario,
+            u.email,
+            u.id_empresa,
+            e.nome AS nome_empresa,
+            u.id_cargo,
+            c.nome AS nome_cargo
+        FROM usuario u
+        JOIN empresa e ON u.id_empresa = e.id_empresa
+        JOIN cargo c ON u.id_cargo = c.id_cargo
+        WHERE u.email = '${email}' AND u.senha = '${senha}';
     `;
-    console.log("Executando a instrução SQL: \n" + instrucaoSql);
-    return database.executar(instrucaoSql)
+    return database.executar(instrucaoSql);
 }
-
-function buscarPorId(id) {
-  var instrucaoSql = `SELECT * FROM empresa WHERE id = '${id}'`;
-
-  return database.executar(instrucaoSql);
-}
-
-function listar() {
-  var instrucaoSql = `SELECT id, razao_social, cnpj, codigo_ativacao FROM empresa`;
-
-  return database.executar(instrucaoSql);
-}
-
-function buscarPorCnpj(cnpj) {
-  var instrucaoSql = `SELECT * FROM empresa WHERE cnpj = '${cnpj}'`;
-
-  return database.executar(instrucaoSql);
-}
-
-function cadastrar(razaoSocial, cnpj) {
-  var instrucaoSql = `INSERT INTO empresa (razao_social, cnpj) VALUES ('${razaoSocial}', '${cnpj}')`;
-
-  return database.executar(instrucaoSql);
-}
-
 
 module.exports = {
-    atualizar,
-    buscarPorCnpj, 
-    buscarPorId, 
-    cadastrar, 
+    cadastrar,
     listar,
+    buscarPorId,
+    atualizar,
+    deletar,
     autenticar
-}
+};

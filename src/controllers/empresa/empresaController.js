@@ -1,125 +1,71 @@
 var empresaModel = require("../../models/empresa/empresaModel");
 
-function atualizar(req, res) {
-    var idEmpresa = req.params.idEmpresa
-    var razaoSocial = req.body.razaoSocialServer
-    var cnpj = req.body.cnpjServer
-    var tipo = req.body.tipoServer
-    var senha = req.body.senhaServer
+function cadastrar(req, res) {
+    var { nome, cnpj, senha, tipoEstabelecimento } = req.body;
 
-    if (razaoSocial == undefined) {
-        res.status(400).send("A razão social está undefined!");
-    } else if (cnpj == undefined) {
-        res.status(400).send("O CNPJ está undefined!");
-    } else if (tipo == undefined) {
-        res.status(400).send("O tipo de estabelecimento está undefined!");
-    } else if (senha == undefined) {
-        res.status(400).send("A senha está undefined!");
+    if (!nome || !cnpj || !senha || !tipoEstabelecimento) {
+        res.status(400).send("Todos os campos são obrigatórios!");
     } else {
-        empresaModel.atualizar(idEmpresa, razaoSocial, cnpj, tipo, senha)
-            .then(
-                function (resultado) {
-                    res.json(resultado);
-                }
-            ).catch(
-                function (erro) {
-                    console.log(erro);
-                    console.log("\nHouve um erro ao realizar a atualização! Erro: ", erro.sqlMessage);
-                    res.status(500).json(erro.sqlMessage);
-                }
-            );
+        empresaModel.cadastrar(nome, cnpj, senha, tipoEstabelecimento)
+            .then(resultado => res.status(201).json(resultado))
+            .catch(erro => res.status(500).json(erro.sqlMessage));
     }
-
-function buscarPorId(req, res) {
-    var idEmpresa = req.params.idEmpresa
-
-    if (!idEmpresa) {
-        res.status(400).send("O ID da empresa está undefined!");
-    } else {
-        empresaModel.buscarPorId(idEmpresa)
-            .then(function (resultado) {
-                if (resultado.length > 0) {
-                    res.status(200).json(resultado[0])
-                } else {
-                    res.status(404).send("Nenhuma empresa encontrada com esse ID!")
-                }
-            })
-            .catch(function (erro) {
-                console.log(erro);
-                res.status(500).json(erro.sqlMessage)
-            })
-    }
-}
-
-function autenticar(req, res) {
-    var email = req.body.emailServer
-    var senha = req.body.senhaServer
-
-    if (email == undefined) {
-        res.status(400).send("Seu e-mail está undefined!")
-    } else if (senha == undefined) {
-        res.status(400).send("Sua senha está undefined!")
-    } else {
-        empresaModel.autenticar(email, senha)
-            .then(function (resultado) {
-                if (resultado.length == 1) {
-                    res.json({
-                        id_usuario: resultado[0].id_usuario,
-                        nome: resultado[0].nome,
-                        email: resultado[0].email,
-                        id_empresa: resultado[0].id_empresa,
-                        id_cargo: resultado[0].id_cargo
-                    });
-                } else if (resultado.length == 0) {
-                    res.status(403).send("E-mail e/ou senha inválidos")
-                } else {
-                    res.status(500).send("Mais de um usuário encontrado com essas credenciais!")
-                }
-            }).catch(function (erro) {
-                console.log(erro);
-                res.status(500).json(erro.sqlMessage);
-            })
-    }
-}
-
- function buscarPorCnpj(req, res) {
-  var cnpj = req.query.cnpj;
-
-  empresaModel.buscarPorCnpj(cnpj).then((resultado) => {
-    res.status(200).json(resultado);npm 
-  });
 }
 
 function listar(req, res) {
-  empresaModel.listar().then((resultado) => {
-    res.status(200).json(resultado);
-  });
+    empresaModel.listar()
+        .then(resultado => res.status(200).json(resultado))
+        .catch(erro => res.status(500).json(erro.sqlMessage));
 }
 
-function cadastrar(req, res) {
-  var cnpj = req.body.cnpj;
-  var razaoSocial = req.body.razaoSocial;
+function buscarPorId(req, res) {
+    var idEmpresa = req.params.idEmpresa;
+    empresaModel.buscarPorId(idEmpresa)
+        .then(resultado => res.status(200).json(resultado[0] || {}))
+        .catch(erro => res.status(500).json(erro.sqlMessage));
+}
 
-  empresaModel.buscarPorCnpj(cnpj).then((resultado) => {
-    if (resultado.length > 0) {
-      res
-        .status(401)
-        .json({ mensagem: `a empresa com o cnpj ${cnpj} já existe` });
+function atualizar(req, res) {
+    var idEmpresa = req.params.idEmpresa;
+    var { nome, cnpj, senha, tipoEstabelecimento } = req.body;
+
+    empresaModel.atualizar(idEmpresa, nome, cnpj, senha, tipoEstabelecimento)
+        .then(resultado => res.status(200).json(resultado))
+        .catch(erro => res.status(500).json(erro.sqlMessage));
+}
+
+function deletar(req, res) {
+    var idEmpresa = req.params.idEmpresa;
+    empresaModel.deletar(idEmpresa)
+        .then(resultado => res.status(200).json(resultado))
+        .catch(erro => res.status(500).json(erro.sqlMessage));
+}
+
+function autenticar(req, res) {
+    var { emailServer, senhaServer } = req.body;
+
+    if (!emailServer || !senhaServer) {
+        res.status(400).send("E-mail e senha são obrigatórios!");
     } else {
-      empresaModel.cadastrar(razaoSocial, cnpj).then((resultado) => {
-        res.status(201).json(resultado);
-      });
+        empresaModel.autenticar(emailServer, senhaServer)
+            .then(resultado => {
+                if (resultado.length === 1) {
+                    res.json(resultado[0]);
+                } else if (resultado.length === 0) {
+                    res.status(403).send("E-mail e/ou senha inválidos");
+                } else {
+                    res.status(500).send("Mais de um usuário encontrado!");
+                }
+            })
+            .catch(erro => res.status(500).json(erro.sqlMessage));
     }
-  });
 }
 
 module.exports = {
-  buscarPorCnpj,
-  buscarPorId,
-  cadastrar,
-  listar,
-  atualizar,
-  buscarPorId,
-  autenticar
+    cadastrar,
+    listar,
+    buscarPorId,
+    atualizar,
+    deletar,
+    autenticar
 };
-}

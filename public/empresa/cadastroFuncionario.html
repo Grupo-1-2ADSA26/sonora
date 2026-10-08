@@ -131,35 +131,49 @@
     </div>
 
     <script>
-        
         const idEmpresa = sessionStorage.ID_EMPRESA;
-        let idFuncionarioEditando = null;
-        let idFuncionarioExcluindo = null;
 
-        const modalForm = document.getElementById('modal-form');
-        const modalDelete = document.getElementById('modal-delete');
-        const modalTitle = document.getElementById('modal-title');
-
+        // Se não estiver logado, volta para o login
         if (!idEmpresa) {
             window.location.href = "../login.html";
         }
 
-        const toggleModal = (modal, show = true) => {
-            modal.classList.toggle('active', show);
-        };
+        let idFuncionarioEditando = null;
+        let idFuncionarioExcluindo = null;
+        let listaFuncionarios = []; // guarda a lista para consultar ao editar
 
-        
+        const modalForm = document.getElementById('modal-form');
+        const modalDelete = document.getElementById('modal-delete');
+        const modalTitle = document.getElementById('modal-title');
+        const formulario = document.getElementById('form-employee');
+
+        // ---------- MODAIS ----------
+        function abrirModal(modal) {
+            modal.classList.add('active');
+        }
+
+        function fecharModais() {
+            modalForm.classList.remove('active');
+            modalDelete.classList.remove('active');
+        }
+
+        document.querySelectorAll('.btn-close').forEach(botao => {
+            botao.addEventListener('click', fecharModais);
+        });
+
         function listarFuncionarios() {
-            fetch(`/funcionario/listar/${idEmpresa}`)
+            fetch(`/funcionario/empresa/${idEmpresa}`)
                 .then(res => res.json())
                 .then(funcionarios => {
-                    const tbody = document.querySelector('.data-table tbody');
-                    tbody.innerHTML = '';
+                    listaFuncionarios = funcionarios;
 
-                    document.querySelector('.badge').textContent = `${funcionarios.length} Funcionários Ativos`;
+                    document.getElementById('badge-total').textContent =
+                        `${funcionarios.length} Funcionários Ativos`;
+
+                    let linhas = '';
 
                     funcionarios.forEach(func => {
-                        tbody.innerHTML += `
+                        linhas += `
                             <tr>
                                 <td>
                                     <div class="user-cell">
@@ -170,369 +184,114 @@
                                 <td class="user-email">${func.email}</td>
                                 <td><span class="role-tag">${func.cargo}</span></td>
                                 <td class="actions-cell">
-                                    <button class="btn-icon edit" onclick="abrirEdicao(${func.id}, '${func.nome}', '${func.email}', ${func.id_cargo})" title="Editar">
+                                    <button class="btn-icon edit" onclick="abrirEdicao(${func.id_usuario})" title="Editar">
                                         <i class="fa-solid fa-pen-to-square"></i>
                                     </button>
-                                    <button class="btn-icon delete" onclick="abrirExclusao(${func.id}, '${func.nome}')" title="Deletar">
+                                    <button class="btn-icon delete" onclick="abrirExclusao(${func.id_usuario})" title="Deletar">
                                         <i class="fa-solid fa-trash-can"></i>
                                     </button>
                                 </td>
                             </tr>
                         `;
                     });
+
+                    document.getElementById('tabela-funcionarios').innerHTML = linhas;
                 })
                 .catch(err => console.error("Erro ao listar funcionários:", err));
         }
 
-        window.onload = listarFuncionarios;
+        listarFuncionarios();
 
-        // Modais e Ações
+        // ---------- ABRIR CADASTRO ----------
         document.getElementById('btn-novo-funcionario').addEventListener('click', () => {
             idFuncionarioEditando = null;
-            document.getElementById('form-employee').reset();
+            formulario.reset();
+            document.getElementById('dica-senha').style.display = 'none';
             modalTitle.innerHTML = '<i class="fa-solid fa-user-plus"></i> Cadastrar Funcionário';
-            toggleModal(modalForm);
+            abrirModal(modalForm);
         });
 
-        function abrirEdicao(id, nome, email, idCargo) {
+        // ---------- ABRIR EDIÇÃO ----------
+        function abrirEdicao(id) {
+            // procura o funcionário na lista pelo id
+            const func = listaFuncionarios.find(f => f.id_usuario == id);
+
             idFuncionarioEditando = id;
-            document.getElementById('emp-name').value = nome;
-            document.getElementById('emp-email').value = email;
-            document.getElementById('emp-role').value = idCargo;
-            document.getElementById('emp-pass').value = ''; // Opcional ao editar
+            document.getElementById('emp-name').value = func.nome;
+            document.getElementById('emp-email').value = func.email;
+            document.getElementById('emp-role').value = func.id_cargo;
+            document.getElementById('emp-pass').value = '';
+            document.getElementById('dica-senha').style.display = 'block';
 
             modalTitle.innerHTML = '<i class="fa-solid fa-pen-to-square"></i> Editar Funcionário';
-            toggleModal(modalForm);
+            abrirModal(modalForm);
         }
 
-        function abrirExclusao(id, nome) {
+        // ---------- ABRIR EXCLUSÃO ----------
+        function abrirExclusao(id) {
+            const func = listaFuncionarios.find(f => f.id_usuario == id);
+
             idFuncionarioExcluindo = id;
-            document.getElementById('delete-name').textContent = nome;
-            toggleModal(modalDelete);
+            document.getElementById('delete-name').textContent = func.nome;
+            abrirModal(modalDelete);
         }
 
-        //  Cadastrar / Atualizar
-        document.getElementById('form-employee').addEventListener('submit', (e) => {
+        // ---------- CADASTRAR / ATUALIZAR ----------
+        formulario.addEventListener('submit', (e) => {
             e.preventDefault();
 
-            const nome = document.getElementById('emp-name').value;
-            const email = document.getElementById('emp-email').value;
-            const idCargo = document.getElementById('emp-role').value;
-            const senha = document.getElementById('emp-pass').value;
+            const dados = {
+                nome: document.getElementById('emp-name').value,
+                email: document.getElementById('emp-email').value,
+                idCargo: document.getElementById('emp-role').value,
+                senha: document.getElementById('emp-pass').value,
+                idEmpresa: idEmpresa
+            };
 
-            if (idFuncionarioEditando) {
-                // Atualizar
-                fetch(`/funcionario/atualizar/${idFuncionarioEditando}`, {
-                    method: 'PUT',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ 
-                        nomeServer: nome, 
-                        emailServer: email, 
-                        idCargoServer: idCargo, 
-                        senhaServer: senha,
-                        fkEmpresaServer: idEmpresa 
-                    })
-                }).then(res => {
+            // Se tem id, está editando; senão, está cadastrando
+            const editando = idFuncionarioEditando !== null;
+            const url = editando ? `/funcionario/atualizar/${idFuncionarioEditando}` : `/funcionario/cadastrar`;
+            const metodo = editando ? 'PUT' : 'POST';
+
+            fetch(url, {
+                method: metodo,
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(dados)
+            })
+                .then(res => {
                     if (res.ok) {
-                        toggleModal(modalForm, false);
+                        fecharModais();
                         listarFuncionarios();
                     } else {
-                        alert("Erro ao atualizar funcionário.");
+                        alert(editando ? "Erro ao atualizar funcionário." : "Erro ao cadastrar funcionário.");
                     }
-                });
-            } else {
-                // Cadastrar
-                fetch(`/funcionario/cadastrar`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ 
-                        nomeServer: nome, 
-                        emailServer: email, 
-                        idCargoServer: idCargo, 
-                        senhaServer: senha, 
-                        fkEmpresaServer: idEmpresa 
-                    })
-                }).then(res => {
-                    if (res.ok) {
-                        toggleModal(modalForm, false);
-                        listarFuncionarios();
-                    } else {
-                        alert("Erro ao cadastrar funcionário.");
-                    }
-                });
-            }
+                })
+                .catch(err => console.error("Erro ao salvar funcionário:", err));
         });
 
-        //  Deletar
-        document.querySelector('.btn-danger').addEventListener('click', () => {
-            if (!idFuncionarioExcluindo) return;
-
+        // ---------- EXCLUIR ----------
+        document.getElementById('btn-confirmar-exclusao').addEventListener('click', () => {
             fetch(`/funcionario/deletar/${idFuncionarioExcluindo}`, {
                 method: 'DELETE',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ fkEmpresaServer: idEmpresa })
-            }).then(res => {
-                if (res.ok) {
-                    toggleModal(modalDelete, false);
-                    listarFuncionarios();
-                } else {
-                    alert("Erro ao deletar funcionário.");
-                }
-            });
+                body: JSON.stringify({ idEmpresa: idEmpresa })
+            })
+                .then(res => {
+                    if (res.ok) {
+                        fecharModais();
+                        listarFuncionarios();
+                    } else {
+                        alert("Erro ao deletar funcionário.");
+                    }
+                })
+                .catch(err => console.error("Erro ao deletar funcionário:", err));
         });
 
-    //Validações de email e senha  
-        const modalForm = document.getElementById('modal-form')
-        const modalDelete = document.getElementById('modal-delete')
-        const modalTitle = document.getElementById('modal-title')
-        const formularioFuncionario = document.getElementById('form-employee')
-        const tbody = document.getElementById('tabela-funcionarios')
-        const inputSenha = document.getElementById('emp-pass')
-        const dicaSenha = document.getElementById('dica-senha')
-        const inputEmail = document.getElementById('emp-email')
-        const erroEmail = document.getElementById('erro-email')
-        const regrasSenha = document.getElementById('regras-senha')
-
-        function ehEspaco(c) { return c.trim() === "" }
-        function ehNumero(c) { return c >= "0" && c <= "9" }
-        function ehMaiuscula(c) { return c === c.toUpperCase() && c !== c.toLowerCase() }
-        function ehMinuscula(c) { return c === c.toLowerCase() && c !== c.toUpperCase() }
-        function ehEspecial(c) { return !ehMaiuscula(c) && !ehMinuscula(c) && !ehNumero(c) && !ehEspaco(c) }
-
-        function validarEmail(email) {
-            const invalido = "Digite um e-mail válido, ex: nome@empresa.com."
-
-            if (!email) return "Informe o e-mail."
-            if (email.length > 100) return "O e-mail pode ter no máximo 100 caracteres."
-            if (Array.from(email).some(ehEspaco)) return invalido
-
-            const partes = email.split("@")
-            if (partes.length !== 2) return invalido
-            const usuario = partes[0]
-            const dominio = partes[1]
-            if (usuario === "" || dominio === "") return invalido
-
-            if (!dominio.includes(".")) return invalido
-            if (dominio.startsWith(".") || dominio.endsWith(".") || dominio.includes("..")) return invalido
-
-            const extensao = dominio.split(".").pop()
-            if (extensao.length < 2) return invalido
-
-            return ""
-        }
-
-        const REGRAS_SENHA = {
-            tamanho:   s => s.length >= 8 && s.length <= 50,
-            maiuscula: s => Array.from(s).some(ehMaiuscula),
-            minuscula: s => Array.from(s).some(ehMinuscula),
-            numero:    s => Array.from(s).some(ehNumero),
-            especial:  s => Array.from(s).some(ehEspecial),
-            semEspaco: s => !Array.from(s).some(ehEspaco)
-        }
-
-        function senhaValida(senha) {
-            return Object.values(REGRAS_SENHA).every(regra => regra(senha))
-        }
-
-        function atualizarChecklist() {
-            const senha = inputSenha.value
-            regrasSenha.querySelectorAll('li').forEach(li => {
-                const ok = senha.length > 0 && REGRAS_SENHA[li.dataset.regra](senha)
-                li.classList.toggle('ok', ok)
-            })
-        }
-
-        function mostrarErroEmail(mensagem) {
-            erroEmail.textContent = mensagem
-            inputEmail.classList.toggle('invalido', mensagem !== "")
-        }
-
-        inputSenha.addEventListener('input', atualizarChecklist)
-        inputEmail.addEventListener('blur', () => mostrarErroEmail(validarEmail(inputEmail.value.trim())))
-        inputEmail.addEventListener('input', () => { if (erroEmail.textContent) mostrarErroEmail(validarEmail(inputEmail.value.trim())) })
-
-        let idSelecionado = 0
-        const idEmpresaLogada = sessionStorage.getItem("ID_EMPRESA") || 1
-
-        const toggleModal = (modal, show = true) => modal.classList.toggle('active', show)
-
-        function escapar(texto) {
-            const div = document.createElement('div')
-            div.textContent = texto
-            return div.innerHTML
-        }
-
-        function carregarFuncionarios() {
-            fetch(`/funcionarios/listar/${idEmpresaLogada}`)
-                .then(resposta => {
-                    if (!resposta.ok) throw new Error("Erro ao listar: status " + resposta.status)
-                    return resposta.json()
-                })
-                .then(lista => {
-                    tbody.innerHTML = ''
-
-                    if (lista.length === 0) {
-                        tbody.innerHTML = '<tr><td colspan="4" class="text-center">Nenhum funcionário cadastrado.</td></tr>'
-                    }
-
-                    lista.forEach(f => {
-                        tbody.innerHTML += `
-                        <tr data-id="${f.id_usuario}" data-cargo="${f.id_cargo}">
-                            <td>
-                                <div class="user-cell">
-                                    <div class="avatar"><i class="fa-solid fa-user"></i></div>
-                                    <strong>${escapar(f.nome)}</strong>
-                                </div>
-                            </td>
-                            <td class="user-email">${escapar(f.email)}</td>
-                            <td><span class="role-tag">${escapar(f.cargo)}</span></td>
-                            <td class="actions-cell">
-                                <button type="button" class="btn-icon edit" title="Editar"><i class="fa-solid fa-pen-to-square"></i></button>
-                                <button type="button" class="btn-icon delete" title="Deletar"><i class="fa-solid fa-trash-can"></i></button>
-                            </td>
-                        </tr>`
-                    })
-
-                    document.getElementById('badge-total').textContent = `${lista.length} Funcionários Ativos`
-                })
-                .catch(erro => console.error(erro))
-        }
-
-        carregarFuncionarios()
-
-        document.getElementById('btn-novo-funcionario').addEventListener('click', () => {
-            idSelecionado = 0
-            formularioFuncionario.reset()
-            inputSenha.required = true
-            dicaSenha.style.display = 'none'
-            mostrarErroEmail("")
-            atualizarChecklist()
-            modalTitle.innerHTML = '<i class="fa-solid fa-user-plus"></i> Cadastrar Funcionário'
-            toggleModal(modalForm)
-        })
-
-         tbody.addEventListener('click', (e) => {
-            const row = e.target.closest('tr')
-            if (!row || !row.dataset.id) return
-
-            if (e.target.closest('.btn-icon.edit')) {
-                idSelecionado = row.dataset.id
-
-                document.getElementById('emp-name').value = row.querySelector('.user-cell strong').textContent
-                document.getElementById('emp-email').value = row.querySelector('.user-email').textContent
-                document.getElementById('emp-role').value = row.dataset.cargo
-                inputSenha.value = ''
-                inputSenha.required = false         
-                dicaSenha.style.display = 'block'
-                mostrarErroEmail("")
-                atualizarChecklist()
-
-                modalTitle.innerHTML = '<i class="fa-solid fa-pen-to-square"></i> Editar Funcionário'
-                toggleModal(modalForm)
-            }
-
-            if (e.target.closest('.btn-icon.delete')) {
-                idSelecionado = row.dataset.id
-                document.getElementById('delete-name').textContent = row.querySelector('.user-cell strong').textContent
-                toggleModal(modalDelete)
-            }
-        })
-
-        document.querySelectorAll('.btn-close').forEach(btn => {
-            btn.addEventListener('click', () => {
-                toggleModal(modalForm, false)
-                toggleModal(modalDelete, false)
-            })
-        })
-
-        window.addEventListener('click', (e) => {
-            if (e.target.classList.contains('modal-overlay')) {
-                toggleModal(e.target, false)
-            }
-        })
-        
-        document.querySelectorAll('.toggle-pass').forEach(icon => {
-            icon.addEventListener('click', function () {
-                const input = this.previousElementSibling
-                const isPass = input.type === 'password'
-                input.type = isPass ? 'text' : 'password'
-                this.classList.toggle('fa-eye', !isPass)
-                this.classList.toggle('fa-eye-slash', isPass)
-            })
-        })
-
-        formularioFuncionario.addEventListener('submit', (evento) => {
-            evento.preventDefault()
-
-            const email = inputEmail.value.trim().toLowerCase()
-            const senha = inputSenha.value
-            const editando = idSelecionado != 0
-
-            const erroDoEmail = validarEmail(email)
-            mostrarErroEmail(erroDoEmail)
-            if (erroDoEmail) {
-                inputEmail.focus()
-                return
-            }
-
-            if ((!editando || senha !== "") && !senhaValida(senha)) {
-                alert("A senha não atende a todas as regras. Confira a lista abaixo do campo.")
-                inputSenha.focus()
-                return
-            }
-
-            const dados = {
-                nomeServer: document.getElementById('emp-name').value.trim(),
-                emailServer: email,
-                cargoServer: document.getElementById('emp-role').value,   
-                senhaServer: inputSenha.value,
-                empresaServer: idEmpresaLogada
-            }
-
-            const url = editando ? `/funcionarios/editar/${idSelecionado}` : `/funcionarios/cadastrar`
-
-            fetch(url, {
-                method: editando ? "PUT" : "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(dados)
-            })
-            .then(resposta => {
-                if (resposta.ok) {
-                    toggleModal(modalForm, false)
-                    carregarFuncionarios()
-                } else {
-                    resposta.json()
-                        .then(erro => {
-                            console.error("Erro do servidor:", erro)
-                            alert(erro.mensagem || "Erro ao salvar o funcionário.")
-                        })
-                        .catch(() => alert("Erro ao salvar (status " + resposta.status + "). Veja o console (F12)."))
-                }
-            })
-            .catch(erro => {
-                console.error("Falha na requisição:", erro)
-                alert("Não foi possível conectar ao servidor.")
-            })
-        })
-
-        document.getElementById('btn-confirmar-exclusao').addEventListener('click', () => {
-            if (!idSelecionado) return
-
-            fetch(`/funcionarios/deletar/${idSelecionado}`, { method: "DELETE" })
-                .then(resposta => {
-                    if (resposta.ok) {
-                        toggleModal(modalDelete, false)
-                        idSelecionado = 0
-                        carregarFuncionarios()
-                    } else {
-                        alert("Erro ao excluir o funcionário.")
-                    }
-                })
-                .catch(erro => {
-                    console.error("Falha na requisição:", erro)
-                    alert("Não foi possível conectar ao servidor.")
-                })
-        })
+        // ---------- MOSTRAR / OCULTAR SENHA ----------
+        document.querySelector('.toggle-pass').addEventListener('click', () => {
+            const campo = document.getElementById('emp-pass');
+            campo.type = campo.type === 'password' ? 'text' : 'password';
+        });
     </script>
 </body>
 </html>

@@ -34,7 +34,7 @@ app.use("/", indexRouter);
 // do nosso projeto
 // Definição dos caminhos das rotas
 app.use("/empresa", empresaRouter);
-app.use("/funcionarios", funcionarioRouter);
+app.use("/funcionario", funcionarioRouter);
 app.use("/suporte", suporteRouter);
 
 

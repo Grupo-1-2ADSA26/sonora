@@ -6,10 +6,12 @@ USE sonora;
 -- TABELA: EMPRESA
 CREATE TABLE empresa (
     id_empresa INT PRIMARY KEY AUTO_INCREMENT,
-    nome VARCHAR(100) NOT NULL,
-    cnpj VARCHAR(18) NOT NULL UNIQUE,
-    senha VARCHAR(255) NOT NULL,
-    tipo_estabelecimento VARCHAR(100) NOT NULL
+    razao_social VARCHAR(100) NOT NULL,
+    email_responsavel VARCHAR(150) NOT NULL,
+    cnpj VARCHAR(14) NOT NULL UNIQUE,
+    tipo_estabelecimento VARCHAR(150) NOT NULL,
+    codigo_ativacao VARCHAR(50) NOT NULL UNIQUE,
+    status_codigo ENUM('ATIVA', 'PENDENTE') NOT NULL DEFAULT 'PENDENTE'
 );
 
 -- TABELA: CARGO
@@ -91,6 +93,22 @@ CREATE TABLE musica (
         REFERENCES artista(id_artista)
 );
 
+-- TABELA: GÊNERO
+CREATE TABLE genero (
+    id_genero INT PRIMARY KEY AUTO_INCREMENT,
+    nome VARCHAR(100) NOT NULL UNIQUE
+);
+
+-- TABELA: GÊNERO - EMPRESA
+CREATE TABLE empresa_genero (
+    id_empresa INT NOT NULL,
+    id_genero INT NOT NULL,
+
+    PRIMARY KEY (id_empresa, id_genero),
+
+    FOREIGN KEY (id_empresa) REFERENCES empresa(id_empresa),
+    FOREIGN KEY (id_genero) REFERENCES genero(id_genero)
+);
 
 -- TABELA: PLATAFORMA
 CREATE TABLE plataforma (
@@ -163,33 +181,3 @@ INSERT INTO cargo_acesso (id_cargo, id_acesso) VALUES
 (1, 1), -- ADM (Carla) -> Tela Empresa
 (2, 2), -- Operacional (Lucas) -> Tela Operacional
 (3, 3); -- Suporte -> Tela Suporte
-
--- =============================================
--- 4. CADASTRO DA EMPRESA
--- =============================================
-INSERT INTO empresa (nome, cnpj, senha, tipo_estabelecimento) VALUES 
-('Sonora Eventos LTDA', '12.345.678/0001-90', 'senha123', 'Casa de Shows');
-
--- =============================================
--- 5. CADASTRO DOS USUÁRIOS DE TESTE
--- =============================================
-INSERT INTO usuario (nome, email, senha, id_empresa, id_cargo) VALUES 
-('Carla ADM', 'carla@sonora.com', '123456', 1, 1),       -- Persona Carla (ADM)
-('Lucas Operacional', 'lucas@sonora.com', '123456', 1, 2),-- Persona Lucas (Operacional)
-('Suporte Técnico', 'suporte@sonora.com', '123456', 1, 3);-- Suporte
-
-
-SELECT 
-    u.id_usuario,
-    u.nome AS nome_usuario,
-    u.email,
-    u.id_empresa,
-    e.nome AS nome_empresa,
-    u.id_cargo,
-    c.nome AS nome_cargo
-FROM usuario u
-JOIN empresa e ON u.id_empresa = e.id_empresa
-JOIN cargo c ON u.id_cargo = c.id_cargo
-WHERE u.email = 'carla@sonora.com' AND u.senha = '123456';
-
-select * from empresa;

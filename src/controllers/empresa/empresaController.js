@@ -1,15 +1,20 @@
 var empresaModel = require("../../models/empresa/empresaModel");
 
 function cadastrar(req, res) {
-    var { nome, cnpj, senha, tipoEstabelecimento } = req.body;
+    var { razaoSocialServer, cnpjServer, tipoServer, emailResponsavelServer } = req.body;
 
-    if (!nome || !cnpj || !senha || !tipoEstabelecimento) {
-        res.status(400).send("Todos os campos são obrigatórios!");
-    } else {
-        empresaModel.cadastrar(nome, cnpj, senha, tipoEstabelecimento)
-            .then(resultado => res.status(201).json(resultado))
-            .catch(erro => res.status(500).json(erro.sqlMessage));
+    if (!razaoSocialServer || !cnpjServer || !tipoServer || !emailResponsavelServer ) {
+        return res.status(400).send("Todos os campos são obrigatórios!");
     }
+
+    empresaModel.cadastrar( razaoSocialServer, cnpjServer, tipoServer, emailResponsavelServer)
+        .then(resultado => res.status(201).json(resultado))
+        .catch(erro => {
+            console.error("Erro ao cadastrar empresa:", erro);
+            return res.status(500).json({
+                mensagem: "Erro ao cadastrar empresa."
+            });
+        });
 }
 
 function listar(req, res) {

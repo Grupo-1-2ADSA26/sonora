@@ -1,10 +1,18 @@
 var database = require("../../database/config");
+var gerarCodigoAtivacao = require("../../utils/gerarCodigoAtivacao");
 
-function cadastrar(nome, cnpj, senha, tipoEstabelecimento) {
-    var instrucaoSql = `
-        INSERT INTO empresa (nome, cnpj, senha, tipo_estabelecimento) 
-        VALUES ('${nome}', '${cnpj}', '${senha}', '${tipoEstabelecimento}');
-    `;
+
+function cadastrar(razaoSocial, cnpj, tipoEstabelecimento, email) {
+    const codigo = gerarCodigoAtivacao.gerarCodigoAtivacao();
+    const instrucaoSql = `
+        INSERT INTO empresa (
+            razao_social,
+            email_responsavel,
+            cnpj,
+            tipo_estabelecimento,
+            codigo_ativacao
+        )
+        VALUES ('${razaoSocial}', '${email}', '${cnpj}', '${tipoEstabelecimento}', '${codigo}');`;
     return database.executar(instrucaoSql);
 }
 

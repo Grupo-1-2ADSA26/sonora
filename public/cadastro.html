@@ -44,33 +44,22 @@
                     </div>
                 </div>
 
-                <input id="cnpj_input" type="text" placeholder="CNPJ" class="input-escuro" />
-                <input id="nome_empresa_input" type="text" placeholder="nome da empresa" class="input-escuro" />
-                <select id="tipo_empresa_input" class="input-escuro">
+                <input id="razao_social_input" type="text" placeholder="Razão Social" maxlength="100" required class="input-escuro" />
+                <input id="email_responsavel_input" type="email" placeholder="E-mail do responsável" maxlength="150" required class="input-escuro"/>
+                <input id="cnpj_input" type="text" placeholder="00.000.000/0000-00" inputmode="numeric" maxlength="18" required class="input-escuro" oninput="mascaraCnpj(this)" />
+                <select id="tipo_empresa_input" required class="input-escuro">
                     <option value="" selected disabled>Selecione o tipo de estabelecimento</option>
-                    <option value="restaurante">Restaurante</option>
-                    <option value="casa_show">Casa de Show</option>
-                    <option value="balada">Balada</option>
-                    <option value="bar">Bar</option>
-                </select>
-                <input id="email_input" type="email" placeholder="e-mail" class="input-escuro" />
-                
-                <div class="wrapper-senha">
-                    <input id="senha_input" type="password" placeholder="senha" class="input-escuro" />
-                </div>
-
-                <div class="wrapper-senha">
-                    <input id="confirmacao_senha_input" type="password" placeholder="confirmação da senha" class="input-escuro" />
-                </div>
-                
-                <button onclick="cadastrar()" class="btn-cadastrar">CADASTRAR</button>
-
+                    <option value="Casa de Shows">Casa de Shows</option>
+                    <option value="Festival">Festival</option>
+                    <option value="Teatro">Teatro</option>
+                    <option value="Balada / Casa Noturna">Balada / Casa Noturna</option>
+                    <option value="Bar com Música ao Vivo">Bar com Música ao Vivo</option>
+                </select> 
+                <button id="btn_cadastrar" onclick="cadastrar()" class="btn-cadastrar">CADASTRAR</button>
                 <div id="div_aguardar" class="loading-div">
                     <img src="./assets/circle-loading.gif" id="loading-gif" />
                 </div>
-        
                 <div id="div_erros_login"></div>
-
                 <span class="texto-login">Já tem conta? <a href="login.html">CLIQUE AQUI</a></span>
             </div>
         </div>
@@ -98,7 +87,7 @@
             <div class="footer-logo">
                 <h2>sonora.</h2>
                 <div class="player-widget-sm">
-                    <img src="assets\logos-sonora\barra-preta.png" alt="Barra de Progresso Pequena" class="img-progress-bar-sm">
+                    <img src="assets/logos-sonora/barra-preta.png" alt="Barra de Progresso Pequena" class="img-progress-bar-sm">
                 </div>
             </div>
 
@@ -108,179 +97,113 @@
 
         </div>
     </footer>
-</body>
 
-</html>
+    <script>
+        const TIPOS_ESTABELECIMENTO = [
+            "Casa de Shows",
+            "Festival",
+            "Teatro",
+            "Balada / Casa Noturna",
+            "Bar com Música ao Vivo"
+        ];
 
-<script>
+        function mascaraCnpj(input) {
+            let v = input.value.replace(/\D/g, '').slice(0, 14);
 
-      
-function cadastrar() {
+            v = v.replace(/^(\d{2})(\d)/, '$1.$2');
+            v = v.replace(/^(\d{2})\.(\d{3})(\d)/, '$1.$2.$3');
+            v = v.replace(/\.(\d{3})(\d)/, '.$1/$2');
+            v = v.replace(/(\d{4})(\d)/, '$1-$2');
 
-        //Recupere o valor da nova input pelo nome do id
-        // Agora vá para o método fetch logo abaixo
-        let cnpj = cnpj_input.value;
-        let nome = nome_empresa_input.value;
-        let tipo = tipo_empresa_input.value;
-        let email = email_input.value;
-        let senha = senha_input.value;
-        let confirmacaoSenha = confirmacao_senha_input.value;
-
-        // Verificações
-
-        // campo em branco
-        /*
-        if (
-          cnpj == "" ||
-          nome == "" ||
-          tipo == "" ||
-          email == "" ||
-          senha == "" ||
-          confirmacaoSenha == ""
-        ) {
-          cardErro.style.display = "block";
-          mensagem_erro.innerHTML =
-            "(Preencha todos os campos!)";
-          return null;
+            input.value = v;
         }
-    
-        // campo senha e confirmação de senha
-        if (senha != confirmacaoSenha) {
-          cardErro.style.display = "block";
-          mensagem_erro.innerHTML =
-            "(As senhas não coincidem!)";
-          return null;
-        } */
 
-        if (validar()) {
-            fetch("/empresas/cadastrar", {
+        function mostrarMensagem(texto) {
+            document.getElementById("cardErro").style.display = "block";
+            document.getElementById("mensagem_erro").textContent = texto;
+        }
+
+        function esconderMensagem() {
+            document.getElementById("cardErro").style.display = "none";
+            document.getElementById("mensagem_erro").textContent = "";
+        }
+
+        function carregando(ativo) {
+            document.getElementById("div_aguardar").style.display =
+                ativo ? "block" : "none";
+
+            document.getElementById("btn_cadastrar").disabled = ativo;
+        }
+
+        function validar(razaoSocial, cnpj, tipo, email) {
+            if (razaoSocial === "" || cnpj === "" || tipo === "" || email === "") {
+                return "Preencha todos os campos!";
+            }
+            if (razaoSocial.length < 3) {
+                return "A razão social precisa ter pelo menos 3 caracteres.";
+            }
+            if (razaoSocial.length > 100) {
+                return "A razão social pode ter no máximo 100 caracteres.";
+            }
+            if (cnpj.length !== 14) {
+                return "O CNPJ deve ter 14 dígitos.";
+            }
+            if (!email.includes("@") || email.indexOf("@") !== email.lastIndexOf("@") || !email.split("@")[1].includes(".")) {
+                return "Digite um e-mail válido.";
+            }
+            if (!TIPOS_ESTABELECIMENTO.includes(tipo)) {
+                return "Selecione um tipo de estabelecimento válido.";
+            }
+            return null;
+        }
+
+        
+        function cadastrar() {
+            const razaoSocial = razao_social_input.value.trim();
+            const cnpj = cnpj_input.value.replace(/\D/g, ''); // sem máscara
+            const tipo = tipo_empresa_input.value;
+            const email = email_responsavel_input.value;
+
+            const erro = validar(razaoSocial, cnpj, tipo, email);
+
+            if (erro) {
+                mostrarMensagem(erro);
+                return;
+            }
+
+            esconderMensagem();
+            carregando(true);
+
+            fetch("/empresa/cadastrar", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
                 },
                 body: JSON.stringify({
+                    razaoSocialServer: razaoSocial,
                     cnpjServer: cnpj,
-                    nomeServer: nome,
                     tipoServer: tipo,
-                    emailServer: email,
-                    senhaServer: senha
+                    emailResponsavelServer: email
                 }),
-            })
-                .then(function (resposta) {
-                    console.log("Log: Estou na tela de cadastro na função cadastrar, resposta: ", resposta);
-
+            }).then(function (resposta) {
+                    console.log("Log: tela de cadastro, resposta: ", resposta);
                     if (resposta.ok) {
-                        cardErro.style.display = "block";
-
-                        mensagem_erro.innerHTML =
-                            "Cadastro realizado com sucesso! Redirecionando para tela de Login...";
-
-                        setTimeout(() => {
-                            window.location = "login.html";
-                        }, "2000");
-
+                        mostrarMensagem("Cadastro realizado com sucesso! Verifique seu email para realizar o cadastro de seu primeiro administrador");
+                        return;
                     } else {
-                        throw "Houve um erro ao tentar realizar o cadastro!";
+                        throw new Error("Houve um erro ao tentar realizar o cadastro. Tente novamente.");
                     }
                 })
-                .catch(function (resposta) {
-                    console.log(`Log Error: Estou na tela de cadastro na função cadastrar e houve um erro: ${resposta}`);
+                .catch(function (e) {
+                    console.log("Log Error: tela de cadastro, erro: ", e);
+                    mostrarMensagem("Não foi possível conectar ao servidor.");
+                    carregando(false);
+                })
+                .finally(function () {
+                    carregando(false);
                 });
         }
+    </script>
+</body>
 
-
-    }
-
-    function validar() {
-
-        let cnpj = cnpj_input.value;
-        let nome = nome_empresa_input.value;
-        let tipo = tipo_empresa_input.value;
-        let email = email_input.value;
-        let senha = senha_input.value;
-        let confirmacaoSenha = confirmacao_senha_input.value;
-
-        /* for (let i = 0; i < senha.lenght; i++){
-             if (senha[i] != "*"){
-                 console.log("senha nao tem *")
-             }
-         }*/
-
-        if (senha.length < 8) {
-            cardErro.style.display = "block";
-            mensagem_erro.innerHTML = "(Senha menor que 8 caracteres)";
-            return false
-        } else if (senha.toUpperCase() == senha) {
-            cardErro.style.display = "block";
-            mensagem_erro.innerHTML = "(A senha precisa conter letras minusculas)";
-            return false
-        } else if (senha.toLowerCase() == senha) {
-            cardErro.style.display = "block";
-            mensagem_erro.innerHTML = "(A senha precisa conter letras maiusculas)";
-            return false
-        } else {
-            let caracteresEspeciais = [
-                "*", "!", "@", "#", "$", "%", "&",
-                "?", "_", "-", "+", "=", ".", ",",
-                ":", ";", "/", "\\"
-            ];
-
-            let temEspecial = false;
-
-            for (let i = 0; i < caracteresEspeciais.length; i++) {
-                if (senha.includes(caracteresEspeciais[i])) {
-                    temEspecial = true;
-                    break;
-                }
-            }
-
-            if (!temEspecial) {
-                cardErro.style.display = "block";
-                mensagem_erro.innerHTML = "(A senha precisa conter caracteres especiais)";
-                return false;
-            } else if (confirmacaoSenha != senha) {
-                cardErro.style.display = "block";
-                mensagem_erro.innerHTML = "(As senhas precisam ser iguais)";
-                return false
-            } 
-            
-            if (
-                cnpj == "" ||
-                nome == "" ||
-                tipo == "" ||
-                email == "" ||
-                senha == "" ||
-                confirmacaoSenha == ""
-            ) {
-                cardErro.style.display = "block";
-                mensagem_erro.innerHTML =
-                    "(Preencha todos os campos!)";
-                return null;
-            } else if (
-                !email.includes("@") &&
-                !email.includes(".")
-            ) {
-                cardErro.style.display = "block";
-                mensagem_erro.innerHTML = "(Digite um email valido)";
-                return false;
-
-            }
-
-
-            cardErro.style.display = "none";
-            return true;
-        }
-
-
-        console.log("------------------------")
-        console.log(cnpj)
-        console.log(nome)
-        console.log(tipo)
-        console.log(email)
-        console.log(senha)
-        console.log(confirmacaoSenha)
-        console.log("------------------------")
-    }
-
-
-</script>
+</html>

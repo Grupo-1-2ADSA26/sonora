@@ -198,6 +198,7 @@
                     })
                     .then(function (dados) {
                         const idEmpresa = dados.idEmpresa;
+
                         return fetch("/funcionario/cadastrar", {
                             method: "POST",
                             headers: {
@@ -210,18 +211,41 @@
                                 idEmpresa: idEmpresa,
                                 idCargo: 1
                             })
+                        })
+                        .then(resposta => {
+                            if (!resposta.ok) {
+                                throw new Error("Erro ao cadastrar usuário");
+                            }
+
+                            return idEmpresa;
                         });
                     })
+                    .then(function (idEmpresa) {
+
+                        return fetch(`/empresa/ativar-codigo/${idEmpresa}`, {
+                            method: "PUT"
+                        });
+
+                    })
                     .then(function (resposta) {
-                        if (resposta.ok) {
-                            exibirMensagem("Usuário administrador criado com sucesso!", "sucesso");
-                            formAtivacao.reset();
-                        } else {
-                            throw new Error("Erro ao cadastrar usuário");
+
+                        if (!resposta.ok) {
+                            throw new Error("Erro ao ativar empresa");
                         }
+
+                        exibirMensagem(
+                            "Usuário administrador criado com sucesso!",
+                            "sucesso"
+                        );
+
+                        formAtivacao.reset();
                     })
                     .catch(function (erro) {
-                        exibirMensagem(erro.message, "erro");
+                        exibirMensagem(
+                            erro.message,
+                            "erro"
+                        );
+
                         console.error(erro);
                     });
             }

@@ -71,6 +71,18 @@ function validar_codigo(req, res) {
         });
 }
 
+function ativar_codigo(req, res) {
+    const idEmpresa = req.params.idEmpresa;
+
+    empresaModel.ativar_codigo(idEmpresa)
+        .then(resultado => {
+            res.status(200).json(resultado);
+        })
+        .catch(erro => {
+            res.status(500).json(erro.sqlMessage);
+        });
+}
+
 function listar(req, res) {
     empresaModel.listar()
         .then(resultado => res.status(200).json(resultado))
@@ -123,6 +135,7 @@ function autenticar(req, res) {
 module.exports = {
     cadastrar,
     validar_codigo,
+    ativar_codigo,
     listar,
     buscarPorId,
     atualizar,

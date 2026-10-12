@@ -29,6 +29,16 @@ function validar_codigo(codigo) {
     return database.executar(instrucaoSql);
 }
 
+function ativar_codigo(idEmpresa) {
+    const instrucaoSql = `
+        UPDATE empresa
+        SET status_codigo = 'ATIVA'
+        WHERE id_empresa = ${idEmpresa};
+    `;
+
+    return database.executar(instrucaoSql);
+}
+
 function listar() {
     var instrucaoSql = `
         SELECT id_empresa, nome, cnpj, tipo_estabelecimento 
@@ -84,6 +94,7 @@ function autenticar(email, senha) {
 module.exports = {
     cadastrar,
     validar_codigo,
+    ativar_codigo,
     listar,
     buscarPorId,
     atualizar,

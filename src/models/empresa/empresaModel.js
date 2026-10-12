@@ -13,6 +13,19 @@ function cadastrar(razaoSocial, cnpj, tipoEstabelecimento, email) {
             codigo_ativacao
         )
         VALUES ('${razaoSocial}', '${email}', '${cnpj}', '${tipoEstabelecimento}', '${codigo}');`;
+    return database.executar(instrucaoSql).then(resultado => { 
+        return {
+            resultado: resultado,
+            codigoAtivacao: codigo
+        };
+    });
+}
+
+function validar_codigo(codigo) {
+    const instrucaoSql = `
+        SELECT id_empresa FROM empresa
+        WHERE codigo_ativacao = '${codigo}' AND status_codigo = 'PENDENTE';
+    `
     return database.executar(instrucaoSql);
 }
 
@@ -70,9 +83,10 @@ function autenticar(email, senha) {
 
 module.exports = {
     cadastrar,
+    validar_codigo,
     listar,
     buscarPorId,
     atualizar,
     deletar,
-    autenticar
+    autenticar,
 };

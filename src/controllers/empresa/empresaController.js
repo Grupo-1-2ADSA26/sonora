@@ -112,26 +112,6 @@ function deletar(req, res) {
         .catch(erro => res.status(500).json(erro.sqlMessage));
 }
 
-function autenticar(req, res) {
-    var { emailServer, senhaServer } = req.body;
-
-    if (!emailServer || !senhaServer) {
-        res.status(400).send("E-mail e senha são obrigatórios!");
-    } else {
-        empresaModel.autenticar(emailServer, senhaServer)
-            .then(resultado => {
-                if (resultado.length === 1) {
-                    res.json(resultado[0]);
-                } else if (resultado.length === 0) {
-                    res.status(403).send("E-mail e/ou senha inválidos");
-                } else {
-                    res.status(500).send("Mais de um usuário encontrado!");
-                }
-            })
-            .catch(erro => res.status(500).json(erro.sqlMessage));
-    }
-}
-
 module.exports = {
     cadastrar,
     validar_codigo,
@@ -139,6 +119,5 @@ module.exports = {
     listar,
     buscarPorId,
     atualizar,
-    deletar,
-    autenticar
+    deletar
 };

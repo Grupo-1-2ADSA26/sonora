@@ -73,24 +73,6 @@ function deletar(idEmpresa) {
     return database.executar(instrucaoSql);
 }
 
-function autenticar(email, senha) {
-    var instrucaoSql = `
-        SELECT 
-            u.id_usuario,
-            u.nome AS nome_usuario,
-            u.email,
-            u.id_empresa,
-            e.nome AS nome_empresa,
-            u.id_cargo,
-            c.nome AS nome_cargo
-        FROM usuario u
-        JOIN empresa e ON u.id_empresa = e.id_empresa
-        JOIN cargo c ON u.id_cargo = c.id_cargo
-        WHERE u.email = '${email}' AND u.senha = '${senha}';
-    `;
-    return database.executar(instrucaoSql);
-}
-
 module.exports = {
     cadastrar,
     validar_codigo,
@@ -98,6 +80,5 @@ module.exports = {
     listar,
     buscarPorId,
     atualizar,
-    deletar,
-    autenticar,
+    deletar
 };

@@ -48,10 +48,33 @@ function deletar(idUsuario) {
     return database.executar(instrucaoSql);
 }
 
+function autenticar(email, senha) {
+    console.log("ACESSEI O FUNCIONARIO MODEL \n \n function autenticar(): ", email, senha);
+    
+    var instrucaoSql = `
+        SELECT 
+            u.id_usuario,
+            u.nome AS nome_usuario,
+            u.email,
+            u.id_empresa,
+            e.razao_social,
+            u.id_cargo,
+            c.nome AS nome_cargo
+        FROM usuario u
+        INNER JOIN empresa e ON u.id_empresa = e.id_empresa
+        INNER JOIN cargo c ON u.id_cargo = c.id_cargo
+        WHERE u.email = '${email}' AND u.senha = '${senha}';
+    `;
+    
+    console.log("Executando a instrução SQL: \n" + instrucaoSql);
+    return database.executar(instrucaoSql);
+}
+
 module.exports = {
     cadastrar,
     listarPorEmpresa,
     buscarPorId,
     atualizar,
-    deletar
+    deletar,
+    autenticar
 };

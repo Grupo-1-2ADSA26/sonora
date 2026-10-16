@@ -157,6 +157,16 @@ CREATE TABLE log (
     status VARCHAR(30) NOT NULL
 );
 
+CREATE TABLE empresa_artista (
+    id_empresa INT NOT NULL,
+    id_artista INT NOT NULL,
+    status_aprovacao VARCHAR(30) NOT NULL DEFAULT 'PENDENTE',
+    data_atualizacao DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    PRIMARY KEY (id_empresa, id_artista),
+    FOREIGN KEY (id_empresa) REFERENCES empresa(id_empresa),
+    FOREIGN KEY (id_artista) REFERENCES artista(id_artista)
+);
+
 
 -- =============================================
 -- 1. CADASTRO DOS CARGOS (Personas)

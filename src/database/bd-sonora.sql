@@ -64,11 +64,16 @@ CREATE TABLE usuario (
 CREATE TABLE evento (
     id_evento INT PRIMARY KEY AUTO_INCREMENT,
     nome VARCHAR(100) NOT NULL,
-    data_evento DATE,
-    local_evento VARCHAR(150),
-
+    descricao TEXT,
+    data_evento DATE NOT NULL,
+    local_evento VARCHAR(150) NOT NULL,
+    status_evento ENUM(
+        'Planejado',
+        'Confirmado',
+        'Cancelado',
+        'Finalizado'
+    ) DEFAULT 'Planejado',
     id_empresa INT NOT NULL,
-
     FOREIGN KEY (id_empresa)
         REFERENCES empresa(id_empresa)
 );

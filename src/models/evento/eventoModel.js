@@ -28,7 +28,7 @@ function listarPorEmpresa(id_empresa) {
             id_evento,
             nome,
             descricao,
-            data_evento,
+            DATE_FORMAT(data_evento, '%d/%m/%Y') AS data_evento,
             local_evento,
             status_evento
         FROM evento

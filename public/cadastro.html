@@ -195,6 +195,7 @@
                     }
                 })
                 .catch(function (e) {
+                    
                     console.log("Log Error: tela de cadastro, erro: ", e);
                     mostrarMensagem("Não foi possível conectar ao servidor.");
                     carregando(false);
@@ -202,6 +203,7 @@
                 .finally(function () {
                     carregando(false);
                 });
+
         }
     </script>
 </body>

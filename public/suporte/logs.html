@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Empresa | Sonora</title>
+    <script src="https://kit.fontawesome.com/d840916580.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <link rel="stylesheet" href="../css/menu.css">
+    <link rel="stylesheet" href="../css/suporte/dashboard.css">
+</head>
+
+<body>
+
+    <aside class="box-menu">
+        <p class="logo">sonora.</p>
+        <ul class="lista">
+            <li><a href="cadastroFuncionario.html"><i class="fa-solid fa-users"></i>Funcionários</a></li>
+            <li><a href="perfil.html"><i class="fa-solid fa-user"></i>Perfil</a></li>
+        </ul>
+        <div class="box-sair">
+            <a class="botao-sair" href="../index.html"><i class="fa-solid fa-right-from-bracket"></i> Sair</a>
+        </div>
+    </aside>
+
+    <main class="main-content">
+        <header class="dashboard-header">
+            <div>
+                <h1>Suporte</h1>
+                <p>Monitore falhas, atrasos e ocorrências do sistema</p>
+            </div>
+        </header>
+
+        <div class="dashboard-grid">
+
+            <!-- KPIs -->
+            <section class="secao-kpis">
+
+                <div class="card-kpi">
+
+                    <div class="caixa" style="background-color: #ed7878; ">
+                        <span class="fa fa-exclamation-triangle" style="
+                            color: #ab0808; 
+                            font-size: 50px;"></span>
+
+                    </div>
+                    <div class="caixa">
+                        <h2>5</h2>
+                        <p>falhas críticas</p>
+                    </div>
+                    <div class="caixa">
+                        icosn
+                    </div>
+                </div>
+
+
+                <div class="card-kpi">
+
+                    <div class="caixa" style="background-color: #f4ce90; ">
+                        <span class='fa fa-clock-o' style="
+                            color: #eaa111; 
+                            font-size: 50px;"></span>
+
+                    </div>
+                    <div class="caixa">
+                        <h2>8</h2>
+                        <p>ATRASOS DETECTADOS</p>
+                    </div>
+                    <div class="caixa">
+                        icosn
+                    </div>
+                </div>
+
+
+                <div class="card-kpi">
+
+                    <div class="caixa" style="background-color: #8eb9ff; ">
+                        <span class='fa fa-list' style="
+                            color: #0c39ce; 
+                            font-size: 50px;"></span>
+
+                    </div>
+                    <div class="caixa">
+                        <h2>39</h2>
+                        <p>OCORRENCIAS HOJE</p>
+                    </div>
+                    <div class="caixa">
+                        icosn
+                    </div>
+                </div>
+
+                <div class="card-kpi">
+
+                    <div class="caixa" style="background-color: #5beea0; ">
+                        <span class='fa fa-building' style="
+                            color: #04a451; 
+                            font-size: 50px;"></span>
+
+                    </div>
+                    <div class="caixa">
+                        <h2>5</h2>
+                        <p>EMPRESAS MONITORADAS</p>
+                    </div>
+                    <div class="caixa">
+                        icosn
+                    </div>
+                </div>
+            </section>
+
+            <!-- Gráficos -->
+            <section class="secao-graficos">
+                <div class="card grafico-menor">
+                    <div class="card-header">
+                        <h3>Ocorrencias do mes de <B>OUTUBRO</B></h3>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="chartOcorrenciasTempo"></canvas>
+                    </div>
+                </div>
+                <div class="card grafico-maior">
+                    <div class="card-header">
+                        <h3>Tipo de ocorrências</h3>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="chartOcorrenciasTipo"></canvas>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Shows -->
+            <section class="secao-shows">
+                <div class="card">
+                    <div class="card-header">
+                        <h3>
+                            <i class='fa fa-list'></i>
+                            Ocorrencias
+                        </h3>
+                        <a href="cadastroShow.html" class="btn-link">
+                            Gerenciar
+                        </a>
+                    </div>
+
+                    <table class="shows-table">
+                        <thead>
+                            <tr>
+                                <th>Data/Hora</th>
+                                <th>Cliente</th>
+                                <th>Tipo</th>
+                                <th>Mensagem</th>
+                                <th>Status</th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>17/10/2026 09:14</td>
+                                <td><strong>Nova Som Ltda</strong></td>
+                                <td><i class="fa fa-exclamation-triangle" style="color:#e42121"></i> Falha</td>
+                                <td>Erro ao buscar métricas do Spotify</td>
+                                <td><span class="status status-error">Crítico</span></td>
+                                <td><button class="btn-icon"><i class="fa fa-cogs"></i></button></td>
+                            </tr>
+                            <tr>
+                                <td>17/10/2026 08:55</td>
+                                <td><strong>Beat Produções</strong></td>
+                                <td><i class="fa fa-clock-o" style="color:#f59e0b"></i> Atraso</td>
+                                <td>Processamento de dados acima do tempo esperado</td>
+                                <td><span class="status status-pending">Atenção</span></td>
+                                <td><button class="btn-icon"><i class="fa fa-cogs"></i></button></td>
+                            </tr>
+                            <tr>
+                                <td>17/10/2026 08:30</td>
+                                <td><strong>Som Livre Eventos</strong></td>
+                                <td><i class="fa fa-exclamation-triangle" style="color:#e42121"></i> Falha</td>
+                                <td>Falha na integração com o YouTube</td>
+                                <td><span class="status status-error">Crítico</span></td>
+                                <td><button class="btn-icon"><i class="fa fa-cogs"></i></button></td>
+                            </tr>
+                            <tr>
+                                <td>17/10/2026 07:12</td>
+                                <td><strong>Alpha Music</strong></td>
+                                <td><i class="fa fa-info-circle" style="color:#2563eb"></i> Sistema</td>
+                                <td>Rotina de importação finalizada com sucesso</td>
+                                <td><span class="status status-ok">Informação</span></td>
+                                <td><button class="btn-icon"><i class="fa fa-cogs"></i></button></td>
+                            </tr>
+                            <tr>
+                                <td>17/10/2026 06:48</td>
+                                <td><strong>Vibe Records</strong></td>
+                                <td><i class="fa fa-clock-o" style="color:#f59e0b"></i> Atraso</td>
+                                <td>Atualização de métricas atrasada</td>
+                                <td><span class="status status-pending">Atenção</span></td>
+                                <td><button class="btn-icon"><i class="fa fa-cogs"></i></button></td>
+                            </tr>
+                            <tr>
+                                <td>16/10/2026 23:22</td>
+                                <td><strong>Nova Som Ltda</strong></td>
+                                <td><i class="fa fa-cogs" style="color:#64748b"></i> Integração</td>
+                                <td>Tempo limite excedido na API do Spotify</td>
+                                <td><span class="status status-ok">Resolvido</span></td>
+                                <td><button class="btn-icon"><i class="fa fa-cogs"></i></button></td>
+                            </tr>
+                            <tr>
+                                <td>16/10/2026 21:40</td>
+                                <td><strong>Beat Produções</strong></td>
+                                <td><i class="fa fa-exclamation-triangle" style="color:#e42121"></i> Falha</td>
+                                <td>Erro ao processar dados de streams</td>
+                                <td><span class="status status-error">Crítico</span></td>
+                                <td><button class="btn-icon"><i class="fa fa-cogs"></i></button></td>
+                            </tr>
+                            <tr>
+                                <td>16/10/2026 20:15</td>
+                                <td><strong>Som Livre Eventos</strong></td>
+                                <td><i class="fa fa-cogs" style="color:#64748b"></i> Integração</td>
+                                <td>Falha na sincronização de artistas</td>
+                                <td><span class="status status-pending">Em análise</span></td>
+                                <td><button class="btn-icon"><i class="fa fa-cogs"></i></button></td>
+                            </tr>
+                            <tr>
+                                <td>16/10/2026 18:05</td>
+                                <td><strong>Alpha Music</strong></td>
+                                <td><i class="fa fa-info-circle" style="color:#2563eb"></i> Sistema</td>
+                                <td>Backup dos dados concluído</td>
+                                <td><span class="status status-ok">Resolvido</span></td>
+                                <td><button class="btn-icon"><i class="fa fa-cogs"></i></button></td>
+                            </tr>
+                            <tr>
+                                <td>16/10/2026 16:32</td>
+                                <td><strong>Vibe Records</strong></td>
+                                <td><i class="fa fa-exclamation-triangle" style="color:#e42121"></i> Falha</td>
+                                <td>Erro ao importar catálogo musical</td>
+                                <td><span class="status status-error">Crítico</span></td>
+                                <td><button class="btn-icon"><i class="fa fa-cogs"></i></button></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+        </div>
+
+    </main>
+
+    <script>
+
+        const cores = {
+            falha: '#f04450',
+            atraso: '#f8bd43',
+            sistema: '#6489e8',
+            integracao: '#a5afc2'
+        };
+
+        const ctxTempo = document
+            .getElementById('chartOcorrenciasTempo')
+            .getContext('2d');
+
+        new Chart(ctxTempo, {
+            type: 'line',
+
+            data: {
+                labels: [
+                    '10/10', '11/10', '12/10', '13/10',
+                    '14/10', '15/10', '16/10'
+                ],
+
+                datasets: [
+                    {
+                        label: 'Falha',
+                        data: [10, 15, 14, 20, 18, 23, 35],
+                        borderColor: cores.falha,
+                        backgroundColor: 'rgba(240, 68, 80, 0.16)',
+                        fill: true,
+                        tension: 0.4,
+                        pointRadius: 0,
+                        borderWidth: 2
+                    },
+                    {
+                        label: 'Atraso',
+                        data: [7, 8, 6, 13, 7, 10, 15],
+                        borderColor: cores.atraso,
+                        backgroundColor: 'rgba(248, 189, 67, 0.18)',
+                        fill: true,
+                        tension: 0.4,
+                        pointRadius: 0,
+                        borderWidth: 2
+                    },
+                    {
+                        label: 'Outros',
+                        data: [5, 10, 5, 7, 4, 9, 20],
+                        borderColor: cores.sistema,
+                        backgroundColor: 'rgba(100, 137, 232, 0.18)',
+                        fill: true,
+                        tension: 0.4,
+                        pointRadius: 0,
+                        borderWidth: 2
+                    }
+                ]
+            },
+
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+
+                interaction: {
+                    intersect: false,
+                    mode: 'index'
+                },
+
+                plugins: {
+                    legend: {
+                        display: true,
+                        position: 'top',
+                        align: 'end',
+                        labels: {
+                            usePointStyle: true,
+                            pointStyle: 'circle',
+                            boxWidth: 6,
+                            padding: 12,
+                            font: {
+                                size: 10
+                            }
+                        }
+                    }
+                },
+
+                scales: {
+                    x: {
+                        grid: {
+                            color: '#edf0f5'
+                        },
+                        border: {
+                            display: false
+                        },
+                        ticks: {
+                            color: '#647084',
+                            font: {
+                                size: 10
+                            }
+                        }
+                    },
+
+                    y: {
+                        beginAtZero: true,
+                        max: 40,
+                        ticks: {
+                            stepSize: 10,
+                            color: '#647084',
+                            font: {
+                                size: 10
+                            }
+                        },
+                        grid: {
+                            color: '#edf0f5'
+                        },
+                        border: {
+                            display: false
+                        }
+                    }
+                }
+            }
+        });
+
+
+        // GRÁFICO 2 — Ocorrências por tipo
+        const ctxTipo = document
+            .getElementById('chartOcorrenciasTipo')
+            .getContext('2d');
+
+        new Chart(ctxTipo, {
+            type: 'doughnut',
+
+            data: {
+                labels: [
+                    'Falha',
+                    'Atraso',
+                    'Sistema',
+                    'Integração'
+                ],
+
+                datasets: [{
+                    data: [10, 8, 4, 2],
+
+                    backgroundColor: [
+                        cores.falha,
+                        cores.atraso,
+                        cores.sistema,
+                        cores.integracao
+                    ],
+
+                    borderColor: '#ffffff',
+                    borderWidth: 2,
+                    hoverOffset: 5
+                }]
+            },
+
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                cutout: '65%',
+
+                plugins: {
+                    legend: {
+                        display: true,
+                        position: 'right',
+
+                        labels: {
+                            usePointStyle: true,
+                            pointStyle: 'circle',
+                            boxWidth: 7,
+                            padding: 12,
+                            color: '#374151',
+                            font: {
+                                size: 11
+                            }
+                        }
+                    },
+
+                    tooltip: {
+                        callbacks: {
+                            label: function (context) {
+                                const total = context.dataset.data
+                                    .reduce((soma, valor) => soma + valor, 0);
+
+                                const quantidade = context.raw;
+                                const percentual = ((quantidade / total) * 100)
+                                    .toFixed(1);
+
+                                return ` ${context.label}: ${quantidade} (${percentual}%)`;
+                            }
+                        }
+                    }
+                }
+            },
+
+            plugins: [{
+                id: 'textoCentro',
+
+                afterDraw(chart) {
+                    const { ctx, chartArea } = chart;
+
+                    if (!chartArea) return;
+
+                    const x = (chartArea.left + chartArea.right) / 2;
+                    const y = (chartArea.top + chartArea.bottom) / 2;
+
+                    ctx.save();
+                    ctx.textAlign = 'center';
+                    ctx.textBaseline = 'middle';
+
+                    ctx.fillStyle = '#20283a';
+                    ctx.font = 'bold 22px Arial';
+                    ctx.fillText('24', x, y - 8);
+
+                    ctx.fillStyle = '#647084';
+                    ctx.font = '11px Arial';
+                    ctx.fillText('Total', x, y + 12);
+
+                    ctx.restore();
+                }
+            }]
+        });
+    </script>
+</body>
+
+</html>

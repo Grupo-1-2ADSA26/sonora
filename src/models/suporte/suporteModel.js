@@ -3,9 +3,11 @@ var database = require("../../database/config");
 function registrarLog(tipo, mensagem, status) {
     var instrucaoSql = `
         INSERT INTO log (tipo, mensagem, status) 
-        VALUES ('${tipo}', '${mensagem}', '${status}');
+        VALUES ('${tipo}', '${mensagem}', '${status}'); 
     `;
-    return database.executar(instrucaoSql);
+
+    console.log("Executando a instrução SQL: \n" + instrucaoSql);
+    return database.executar(instrucaoSql)
 }
 
 function listarLogs() {

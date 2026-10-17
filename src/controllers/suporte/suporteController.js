@@ -51,4 +51,4 @@ module.exports = {
     buscarPorId,
     atualizarStatus,
     deletar
-};
+}; 

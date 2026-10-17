@@ -151,7 +151,7 @@ body{
     position:relative;
 }
 
-/* SHOWS */
+/* logs */
 
 .secao-shows{
     width:100%;
@@ -169,6 +169,13 @@ body{
 
 .btn-link:hover{
     text-decoration:underline;
+}
+
+.btn-icon {
+    padding: 5px;
+    border-radius: 5px;
+    border-style: solid;
+    border-color: #555 ;
 }
 
 .shows-table{
@@ -222,6 +229,17 @@ body{
 .status-pending{
     background:#fff3e0;
     color:#ef6c00;
+}
+
+
+.status-error {
+    display: inline-block;
+    background-color: #fee2e2;
+    color: #dc2626;
+    padding: 6px 12px;
+    font-size: 11px;
+    border-radius: 20px;
+    font-weight: 600;
 }
 
 /* RESPONSIVO */

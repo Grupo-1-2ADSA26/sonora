@@ -83,12 +83,6 @@ function ativar_codigo(req, res) {
         });
 }
 
-function listar(req, res) {
-    empresaModel.listar()
-        .then(resultado => res.status(200).json(resultado))
-        .catch(erro => res.status(500).json(erro.sqlMessage));
-}
-
 function buscarPorId(req, res) {
     var idEmpresa = req.params.idEmpresa;
     empresaModel.buscarPorId(idEmpresa)
@@ -98,9 +92,9 @@ function buscarPorId(req, res) {
 
 function atualizar(req, res) {
     var idEmpresa = req.params.idEmpresa;
-    var { nome, cnpj, senha, tipoEstabelecimento } = req.body;
+    var { razaoSocial, cnpj, tipoEstabelecimento } = req.body;
 
-    empresaModel.atualizar(idEmpresa, nome, cnpj, senha, tipoEstabelecimento)
+    empresaModel.atualizar(idEmpresa, razaoSocial, cnpj, tipoEstabelecimento)
         .then(resultado => res.status(200).json(resultado))
         .catch(erro => res.status(500).json(erro.sqlMessage));
 }
@@ -116,7 +110,6 @@ module.exports = {
     cadastrar,
     validar_codigo,
     ativar_codigo,
-    listar,
     buscarPorId,
     atualizar,
     deletar

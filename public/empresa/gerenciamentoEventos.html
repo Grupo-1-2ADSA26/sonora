@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shows e Eventos | Sonora</title>
+    <script src="https://kit.fontawesome.com/d840916580.js" crossorigin="anonymous"></script>
+
+    <link rel="stylesheet" href="../css/menu.css">
+    <link rel="stylesheet" href="../css/empresa/gerenciamentoEventos.css">
+</head>
+<body>
+
+    <aside class="box-menu">
+        <p class="logo">sonora.</p>
+        <ul class="lista">
+            <li><a href="dashboard.html"><i class="fa-solid fa-house"></i>Início</a></li>
+            <li><a href="artista.html"><i class="fa-solid fa-magnifying-glass"></i>Artistas</a></li>
+            <li><a href="cadastroFuncionario.html"><i class="fa-solid fa-users"></i>Funcionários</a></li>
+            <li class="ativo"><a href="gerenciamentoEventos.html"><i class="fa-solid fa-music"></i>Eventos</a></li>
+            <li><a href="notificacoes.html"><i class="fa-solid fa-bell"></i>Notificações</a></li>
+            <li><a href="perfil.html"><i class="fa-solid fa-user"></i>Perfil</a></li>
+        </ul>
+        <div class="box-sair">
+            <a class="botao-sair" href="../index.html"><i class="fa-solid fa-right-from-bracket"></i> Sair</a>
+        </div>
+    </aside>
+
+    <main class="conteudo-principal">
+
+        <header class="cabecalho-pagina">
+            <div>
+                <h1>GERENCIAMENTO DE SHOWS E EVENTOS</h1>
+                <p>Cadastre, edite e gerencie os eventos da sua empresa.</p>
+            </div>
+
+            <button id="btn-cadastrar-evento" class="btn-primary">
+                <i class="fa-solid fa-calendar-plus"></i>
+                Cadastrar Evento
+            </button>
+        </header>
+
+        <section class="section-panel">
+            <div class="barra-titulo">
+                <h3>
+                    <i class="fa-solid fa-calendar-days"></i>
+                    Eventos Cadastrados
+                </h3>
+
+                <span class="badge" id="quantidade-eventos">
+                    0 Eventos
+                </span>
+            </div>
+
+            <div id="lista-eventos" class="events-grid">
+                <!-- Eventos gerados dinamicamente -->
+            </div>
+        </section>
+    </main>
+
+    <!-- MODAL DE CADASTRO / EDIÇÃO -->
+    <div id="modal-evento" class="modal-overlay">
+        <div class="modal-box">
+            <div class="modal-header">
+                <h3 id="titulo-modal">
+                    <i class="fa-solid fa-calendar-plus"></i>
+                    Cadastrar Evento
+                </h3>
+                <button type="button" class="btn-close">
+                    &times;
+                </button>
+            </div>
+
+            <form id="formulario-evento">
+                <input type="hidden" id="id-evento">
+                
+                <div class="field-group">
+                    <label>
+                        <i class="fa-solid fa-font"></i>
+                        Nome do Evento
+                    </label>
+                    <input type="text" id="nome-evento" maxlength="100" placeholder="Ex: Festival Sonora">
+                    <small id="erro-nome"></small>
+                </div>
+
+                <div class="field-group">
+                    <label>
+                        <i class="fa-solid fa-align-left"></i>
+                        Descrição
+                    </label>
+                    <textarea id="descricao-evento" rows="3" maxlength="500" placeholder="Descreva o evento"></textarea>
+                    <small id="erro-descricao"></small>
+                </div>
+
+                <div class="field-group">
+                    <label>
+                        <i class="fa-solid fa-calendar"></i>
+                        Data do Evento
+                    </label>
+                    <input type="date" id="data-evento">
+                    <small id="erro-data"></small>
+                </div>
+
+                <div class="field-group">
+                    <label>
+                        <i class="fa-solid fa-location-dot"></i>
+                        Local do Evento
+                    </label>
+                    <input type="text" id="local-evento" maxlength="150" placeholder="Ex: Arena Central">
+                    <small id="erro-local"></small>
+                </div>
+
+                <div class="field-group">
+                    <label>
+                        <i class="fa-solid fa-flag"></i>
+                        Status do Evento
+                    </label>
+                    <select id="status-evento">
+                        <option value="">Selecione</option>
+                        <option value="Planejado">Planejado</option>
+                        <option value="Confirmado">Confirmado</option>
+                        <option value="Cancelado">Cancelado</option>
+                        <option value="Finalizado">Finalizado</option>
+                    </select>
+                    <small id="erro-status"></small>
+                </div>
+
+                <div class="modal-actions">
+                    <button type="submit" class="btn-primary">
+                        Salvar
+                    </button>
+                    <button type="button" class="btn-secondary fechar-modal">
+                        Cancelar
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL DE EXCLUSÃO -->
+    <div id="modal-exclusao" class="modal-overlay">
+        <div class="modal-box">
+            <div class="modal-header">
+                <h3 class="danger-text">
+                    <i class="fa-solid fa-triangle-exclamation"></i>
+                    Confirmar Exclusão
+                </h3>
+                <button type="button" class="btn-close">
+                    &times;
+                </button>
+            </div>
+
+            <div class="modal-body">
+                <p>
+                    Tem certeza que deseja excluir o evento
+                    <strong id="nome-evento-exclusao"></strong>?
+                </p>
+                <small>Esta ação não poderá ser desfeita.</small>
+            </div>
+
+            <div class="modal-actions">
+                <button type="button" class="btn-danger" id="btn-confirmar-exclusao">
+                    Excluir
+                </button>
+                <button type="button" class="btn-secondary fechar-modal">
+                    Cancelar
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- TOAST -->
+    <div id="toast"></div>
+
+    <script>
+        let eventos = [];
+        let idEventoExcluir = null;
+
+        // Pega o ID da empresa do sessionStorage de forma segura
+        const idEmpresa = sessionStorage.ID_EMPRESA || sessionStorage.id_empresa;
+
+        document.addEventListener("DOMContentLoaded", () => {
+            if (!idEmpresa) {
+                mostrarToast("Sessão expirada. Faça login novamente.", true);
+                setTimeout(() => {
+                    window.location.href = "../index.html";
+                }, 2000);
+                return;
+            }
+
+            listarEventos();
+
+            // Botão de abrir modal de cadastro
+            document.getElementById("btn-cadastrar-evento").addEventListener("click", abrirModalCadastro);
+
+            // Submissão do formulário (Cadastro ou Atualização)
+            document.getElementById("formulario-evento").addEventListener("submit", salvarEvento);
+
+            // Botões para fechar modais (.fechar-modal e .btn-close)
+            document.querySelectorAll(".fechar-modal, .btn-close").forEach(botao => {
+                botao.addEventListener("click", fecharModais);
+            });
+
+            // Botão de confirmação de exclusão
+            document.getElementById("btn-confirmar-exclusao").addEventListener("click", excluirEvento);
+        });
+
+        function listarEventos() {
+            fetch(`/evento/listar/${idEmpresa}`)
+            .then(resposta => {
+                if (!resposta.ok) {
+                    throw new Error("Erro ao buscar eventos");
+                }
+                return resposta.json();
+            })
+            .then(dados => {
+                eventos = dados;
+                renderizarEventos();
+            })
+            .catch(erro => {
+                console.error(erro);
+                mostrarToast("Erro ao carregar eventos", true);
+            });
+        }
+
+        function renderizarEventos() {
+            const lista = document.getElementById("lista-eventos");
+            lista.innerHTML = "";
+
+            document.getElementById("quantidade-eventos").innerText = `${eventos.length} ${eventos.length === 1 ? 'Evento' : 'Eventos'}`;
+
+            if (eventos.length === 0) {
+                lista.innerHTML = `
+                    <div style="grid-column: 1 / -1; text-align: center; padding: 30px; color: #666;">
+                        Nenhum evento cadastrado.
+                    </div>
+                `;
+                return;
+            }
+
+            eventos.forEach(evento => {
+                let classeStatus = "status-planejado";
+                if (evento.status_evento === "Confirmado") classeStatus = "status-confirmado";
+                else if (evento.status_evento === "Cancelado") classeStatus = "status-cancelado";
+                else if (evento.status_evento === "Finalizado") classeStatus = "status-finalizado";
+
+                lista.innerHTML += `
+                    <div class="card-evento">
+                        <div class="conteudo-evento">
+                            <span class="status-evento ${classeStatus}">${evento.status_evento}</span>
+                            <h3>${evento.nome}</h3>
+                            <p class="descricao-evento">${evento.descricao}</p>
+                            
+                            <div class="detalhes-evento">
+                                <span>
+                                    <i class="fa-solid fa-calendar"></i>
+                                    ${evento.data_evento}
+                                </span>
+                                <span>
+                                    <i class="fa-solid fa-location-dot"></i>
+                                    ${evento.local_evento}
+                                </span>
+                            </div>
+
+                            <div class="acoes-evento">
+                                <button onclick="editarEvento(${evento.id_evento})" class="btn-card btn-editar">
+                                    <i class="fa-solid fa-pen"></i> Editar
+                                </button>
+                                <button onclick="abrirModalExcluir(${evento.id_evento})" class="btn-card btn-excluir">
+                                    <i class="fa-solid fa-trash"></i> Excluir
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        function abrirModalCadastro() {
+            document.getElementById("titulo-modal").innerHTML = `
+                <i class="fa-solid fa-calendar-plus"></i>
+                Cadastrar Evento
+            `;
+            document.getElementById("formulario-evento").reset();
+            document.getElementById("id-evento").value = "";
+            document.getElementById("modal-evento").classList.add("ativo");
+        }
+
+        function editarEvento(idEvento) {
+            const evento = eventos.find(e => e.id_evento == idEvento);
+            if (!evento) return;
+
+            document.getElementById("id-evento").value = evento.id_evento;
+            document.getElementById("nome-evento").value = evento.nome;
+            document.getElementById("descricao-evento").value = evento.descricao;
+            document.getElementById("local-evento").value = evento.local_evento;
+            document.getElementById("status-evento").value = evento.status_evento;
+
+            // Converte data de DD/MM/YYYY para YYYY-MM-DD para exibir corretamente no input type="date"
+            const partes = evento.data_evento.split("/");
+            if (partes.length === 3) {
+                document.getElementById("data-evento").value = `${partes[2]}-${partes[1]}-${partes[0]}`;
+            } else {
+                document.getElementById("data-evento").value = evento.data_evento;
+            }
+
+            document.getElementById("titulo-modal").innerHTML = `
+                <i class="fa-solid fa-pen"></i>
+                Editar Evento
+            `;
+            document.getElementById("modal-evento").classList.add("ativo");
+        }
+
+        function salvarEvento(event) {
+            event.preventDefault();
+
+            const idEvento = document.getElementById("id-evento").value;
+
+            const dados = {
+                nome: document.getElementById("nome-evento").value.trim(),
+                descricao: document.getElementById("descricao-evento").value.trim(),
+                data_evento: document.getElementById("data-evento").value,
+                local_evento: document.getElementById("local-evento").value.trim(),
+                status_evento: document.getElementById("status-evento").value,
+                id_empresa: idEmpresa
+            };
+
+            if (
+                !dados.nome ||
+                !dados.descricao ||
+                !dados.data_evento ||
+                !dados.local_evento ||
+                !dados.status_evento
+            ) {
+                mostrarToast("Preencha todos os campos", true);
+                return;
+            }
+
+            let url = "/evento/cadastrar";
+            let metodo = "POST";
+
+            if (idEvento) {
+                url = `/evento/atualizar/${idEvento}`;
+                metodo = "PUT";
+            }
+
+            fetch(url, {
+                method: metodo,
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(dados)
+            })
+            .then(resposta => {
+                if (!resposta.ok) {
+                    throw new Error("Erro ao salvar");
+                }
+                return resposta.json();
+            })
+            .then(() => {
+                fecharModais();
+                listarEventos();
+                mostrarToast(
+                    idEvento
+                        ? "Evento atualizado com sucesso!"
+                        : "Evento cadastrado com sucesso!"
+                );
+            })
+            .catch(erro => {
+                console.error(erro);
+                mostrarToast("Erro ao salvar evento", true);
+            });
+        }
+
+        function abrirModalExcluir(idEvento) {
+            idEventoExcluir = idEvento;
+            const evento = eventos.find(e => e.id_evento == idEvento);
+            if (evento) {
+                document.getElementById("nome-evento-exclusao").innerText = evento.nome;
+            }
+            document.getElementById("modal-exclusao").classList.add("ativo");
+        }
+
+        function excluirEvento() {
+            if (!idEventoExcluir) return;
+
+            fetch(`/evento/excluir/${idEventoExcluir}`, {
+                method: "DELETE"
+            })
+            .then(resposta => {
+                if (!resposta.ok) {
+                    throw new Error("Erro ao excluir");
+                }
+                return resposta.json();
+            })
+            .then(() => {
+                fecharModais();
+                listarEventos();
+                mostrarToast("Evento excluído com sucesso!");
+            })
+            .catch(erro => {
+                console.error(erro);
+                mostrarToast("Erro ao excluir evento", true);
+            });
+        }
+
+        function fecharModais() {
+            // Remove corretamente a classe 'ativo' que exibe o modal no CSS
+            document.querySelectorAll(".modal-overlay").forEach(modal => {
+                modal.classList.remove("ativo");
+            });
+        }
+
+        function mostrarToast(mensagem, erro = false) {
+            const toast = document.getElementById("toast");
+            toast.innerText = mensagem;
+            toast.className = erro ? "erro" : "sucesso";
+            setTimeout(() => {
+                toast.className = "";
+            }, 3000);
+        }
+    </script>
+
+</body>
+</html>

@@ -39,27 +39,19 @@ function ativar_codigo(idEmpresa) {
     return database.executar(instrucaoSql);
 }
 
-function listar() {
-    var instrucaoSql = `
-        SELECT id_empresa, nome, cnpj, tipo_estabelecimento 
-        FROM empresa;
-    `;
-    return database.executar(instrucaoSql);
-}
-
 function buscarPorId(idEmpresa) {
     var instrucaoSql = `
-        SELECT id_empresa, nome, cnpj, tipo_estabelecimento 
+        SELECT id_empresa, razao_social, email_responsavel, cnpj, tipo_estabelecimento 
         FROM empresa 
         WHERE id_empresa = ${idEmpresa};
     `;
     return database.executar(instrucaoSql);
 }
 
-function atualizar(idEmpresa, nome, cnpj, senha, tipoEstabelecimento) {
+function atualizar(idEmpresa, razaoSocial, cnpj, tipoEstabelecimento) {
     var instrucaoSql = `
         UPDATE empresa 
-        SET nome = '${nome}', cnpj = '${cnpj}', senha = '${senha}', tipo_estabelecimento = '${tipoEstabelecimento}' 
+        SET razao_social = '${razaoSocial}', cnpj = '${cnpj}', tipo_estabelecimento = '${tipoEstabelecimento}' 
         WHERE id_empresa = ${idEmpresa};
     `;
     return database.executar(instrucaoSql);
@@ -77,7 +69,6 @@ module.exports = {
     cadastrar,
     validar_codigo,
     ativar_codigo,
-    listar,
     buscarPorId,
     atualizar,
     deletar

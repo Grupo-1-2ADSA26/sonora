@@ -23,6 +23,7 @@
     let funcionarioRouter = require("./src/routes/funcionario/funcionario");
     let suporteRouter = require("./src/routes/suporte/suporte");
     let eventoRouter = require("./src/routes/evento/evento");
+    let aprovadosRouter = require("./src/routes/aprovados/aprovados");
 
     app.use(express.json());
     app.use(express.urlencoded({ extended: false }));
@@ -38,6 +39,7 @@
     app.use("/funcionario", funcionarioRouter);
     app.use("/suporte", suporteRouter);
     app.use("/evento", eventoRouter);
+    app.use("/aprovados", aprovadosRouter);
 
 
     app.listen(PORTA_APP, function () {

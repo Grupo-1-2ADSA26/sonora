@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ativação | Sonora</title>
+    <link rel="stylesheet" href="./css/ativacao.css">
+</head>
+
+<body>
+    <main class="container">
+
+        <header class="logo">
+            <img src="./assets/logos-sonora/logo-preta.png" alt="Logo Sonora">
+        </header>
+
+        <section class="card">
+            <h2>Ative sua empresa e crie seu primeiro usuário administrador!</h2>
+            <p class="descricao">
+                Para continuar, informe o código de ativação
+                enviado para o e-mail da sua empresa.
+            </p>
+
+            <form id="formAtivacao">
+
+                <div class="grupo">
+                    <h3>Código de ativação</h3>
+                    <div class="campo">
+                        <label for="input_codigoAtivacao">Código</label>
+                        <input type="text" id="input_codigoAtivacao" name="codigoAtivacao"
+                            placeholder="Ex.: SON-AB12-CD34" maxlength="50" required="">
+                    </div>
+                </div>
+
+                <div class="grupo">
+                    <h3>Dados do administrador: </h3>
+                    <div class="campo">
+                        <label for="input_nomeUsuario">Nome</label>
+                        <input type="text" id="input_nomeUsuario" placeholder="Seu nome" required="">
+                    </div>
+                    <div class="campo">
+                        <label for="input_emailUsuario">E-mail</label>
+                        <input type="email" id="input_emailUsuario" placeholder="voce@empresa.com" required="">
+                    </div>
+                    <div class="campo">
+                        <label for="input_senhaUsuario">Senha</label>
+                        <input type="password" id="input_senhaUsuario" placeholder="Digite sua senha" required="">
+                    </div>
+                    <div class="campo">
+                        <label for="input_confirmarSenhaUsuario">Confirme sua senha</label>
+                        <input type="password" id="input_confirmarSenhaUsuario" placeholder="Repita a senha"
+                            required="">
+                    </div>
+                </div>
+
+                <button type="submit" id="botaoAtivar">
+                    Verificar código → Criar Usuário
+                </button>
+
+                <div id="mensagem" class="mensagem"></div>
+            </form>
+
+            <aside class="ajuda">
+                <span>ⓘ</span>
+                <div>
+                    <strong>Não recebeu o e-mail?</strong>
+                    Verifique sua caixa de entrada, spam ou lixo
+                    eletrônico. Se ainda não encontrar, entre em
+                    contato com o suporte.
+                </div>
+            </aside>
+        </section>
+
+        <footer class="rodape">
+            <p>Precisa de ajuda?</p>
+            <p>
+                <a href="mailto:support.sonora@gmail.com">
+                    ✉ support.sonora@gmail.com
+                </a>
+            </p>
+            <p style="margin-top: 18px;">
+                © 2026 Sonora. Todos os direitos reservados.
+            </p>
+        </footer>
+    </main>
+
+    <script>
+
+        function exibirMensagem(texto, tipo) {
+            mensagem.innerHTML = texto;
+            mensagem.className = `mensagem ${tipo}`;
+        }
+
+        function validar() {
+            const codigoAtivacao = input_codigoAtivacao.value.trim();
+            const nomeUsuario = input_nomeUsuario.value.trim();
+            const emailUsuario = input_emailUsuario.value.trim();
+            const senhaUsuario = input_senhaUsuario.value;
+            const confirmarSenhaUsuario = input_confirmarSenhaUsuario.value;
+
+            mensagem.innerHTML = "";
+            mensagem.className = "mensagem";
+
+            if (
+                codigoAtivacao === "" ||
+                nomeUsuario === "" ||
+                emailUsuario === "" ||
+                senhaUsuario === "" ||
+                confirmarSenhaUsuario === ""
+            ) {
+                exibirMensagem("Preencha todos os campos!", "erro");
+                return false;
+            }
+
+            if (!emailUsuario.includes("@") || !emailUsuario.includes(".")) {
+                exibirMensagem("E-mail inválido!", "erro");
+                return false;
+            }
+
+            if (senhaUsuario.length < 8) {
+                exibirMensagem(
+                    "A senha deve ter no mínimo 8 caracteres!",
+                    "erro"
+                );
+                return false;
+            }
+
+            const especiais = "!@#$%^&*()_+[]{}|;:,.<>?";
+            let temEspecial = false;
+
+            for (let i = 0; i < senhaUsuario.length; i++) {
+                if (especiais.includes(senhaUsuario[i])) {
+                    temEspecial = true;
+                    break;
+                }
+            }
+
+            if (!temEspecial) {
+                exibirMensagem(
+                    "A senha deve conter pelo menos um caractere especial!",
+                    "erro"
+                );
+                return false;
+            }
+
+            if (!/[A-Z]/.test(senhaUsuario)) {
+                exibirMensagem(
+                    "A senha deve conter pelo menos uma letra maiúscula!",
+                    "erro"
+                );
+                return false;
+            }
+
+            if (!/[a-z]/.test(senhaUsuario)) {
+                exibirMensagem(
+                    "A senha deve conter pelo menos uma letra minúscula!",
+                    "erro"
+                );
+                return false;
+            }
+            if (!/[0-9]/.test(senhaUsuario)) {
+                exibirMensagem(
+                    "A senha deve conter pelo menos um número!",
+                    "erro"
+                );
+                return false;
+            }
+
+            if (senhaUsuario !== confirmarSenhaUsuario) {
+                exibirMensagem("As senhas não coincidem!", "erro");
+                return false;
+            }
+
+            return true
+        }
+
+        formAtivacao.addEventListener("submit", function (event) {
+            event.preventDefault();
+
+            if (validar()) {
+                exibirMensagem("Validando código...", "sucesso");
+
+                fetch("/empresa/validar-codigo", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        codigo: input_codigoAtivacao.value
+                    })
+                })
+                    .then(function (resposta) {
+                        if (!resposta.ok) {
+                            throw new Error("Código inválido");
+                        }
+                        return resposta.json();
+                    })
+                    .then(function (dados) {
+                        const idEmpresa = dados.idEmpresa;
+
+                        return fetch("/funcionario/cadastrar", {
+                            method: "POST",
+                            headers: {
+                                "Content-Type": "application/json"
+                            },
+                            body: JSON.stringify({
+                                nome: input_nomeUsuario.value,
+                                email: input_emailUsuario.value,
+                                senha: input_senhaUsuario.value,
+                                idEmpresa: idEmpresa,
+                                idCargo: 1
+                            })
+                        })
+                        .then(resposta => {
+                            if (!resposta.ok) {
+                                throw new Error("Erro ao cadastrar usuário");
+                            }
+
+                            return idEmpresa;
+                        });
+                    })
+                    .then(function (idEmpresa) {
+
+                        return fetch(`/empresa/ativar-codigo/${idEmpresa}`, {
+                            method: "PUT"
+                        });
+
+                    })
+                    .then(function (resposta) {
+
+                        if (!resposta.ok) {
+                            throw new Error("Erro ao ativar empresa");
+                        }
+
+                        exibirMensagem(
+                            "Usuário administrador criado com sucesso!",
+                            "sucesso"
+                        );
+
+                        formAtivacao.reset();
+                    })
+                    .catch(function (erro) {
+                        exibirMensagem(
+                            erro.message,
+                            "erro"
+                        );
+
+                        console.error(erro);
+                    });
+            }
+
+        })
+
+    </script>
+</body>
+
+</html>

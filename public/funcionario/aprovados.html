@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Perfil Empresa | Sonora</title>
+    <script src="https://kit.fontawesome.com/d840916580.js" crossorigin="anonymous"></script>
+
+    <link rel="stylesheet" href="../css/menu.css">
+    <link rel="stylesheet" href="../css/funcionario/aprovados.css">
+</head>
+
+<body>
+
+    <aside class="box-menu">
+        <p class="logo">sonora.</p>
+        <ul class="lista">
+            <li><a href="dashboard.html"><i class="fa-solid fa-house"></i>Início</a></li>
+            <li><a href="pesquisa.html"><i class="fa-solid fa-magnifying-glass"></i>Artistas</a></li>
+            <li><a href="recomendacoes.html"><i class="fa-solid fa-music"></i>Recomendações</a></li>
+            <li class="ativo"><a href="aprovados.html"><i class="fa-solid fa-bell"></i>Aprovados</a></li>
+            <li><a href="perfil.html"><i class="fa-solid fa-user"></i>Perfil</a></li>
+        </ul>
+        <div class="box-sair">
+            <a class="botao-sair" href="../index.html"><i class="fa-solid fa-right-from-bracket"></i> Sair</a>
+        </div>
+    </aside>
+
+    <main class="main-content">
+
+        <header class="page-header">
+            <h1>ARTISTAS APROVADOS</h1>
+        </header>
+
+        
+        <section class="approved-list" id="feed-aprovados">
+         
+        </section>
+
+    </main>
+
+    
+    <script>
+       
+        window.onload = function () {
+            carregarArtistasAprovados();
+        };
+
+        function carregarArtistasAprovados() {
+            
+            var idEmpresa = sessionStorage.ID_EMPRESA || 1; 
+
+            
+            fetch(`/aprovados/aprovados/${idEmpresa}`)
+                .then(function (resposta) {
+                    if (resposta.ok) {
+                        if (resposta.status == 204) {
+                            document.getElementById("feed-aprovados").innerHTML = "<p>Nenhum artista aprovado no momento.</p>";
+                            return;
+                        }
+
+                        resposta.json().then(function (artistas) {
+                            var feed = document.getElementById("feed-aprovados");
+                            feed.innerHTML = ""; 
+                            
+                            artistas.forEach(function (item) {
+                                feed.innerHTML += `
+                                    <article class="approved-card">
+                                        <div class="approved-avatar">
+                                            <i class="fa-solid fa-microphone"></i>
+                                        </div>
+
+                                        <div class="approved-info">
+                                            <h2>${item.nome_artista} <i class="fa-solid fa-circle-check"></i></h2>
+                                            <span>${item.genero || 'Gênero não informado'}</span>
+                                        </div>
+
+                                        <div class="approved-metrics">
+                                            <div class="approved-metric">
+                                                <small>Popularidade</small>
+                                                <strong>${item.popularidade || 0}</strong>
+                                            </div>
+
+                                            <div class="approved-metric">
+                                                <small>Energy</small>
+                                                <strong>${item.energy || '0.00'}</strong>
+                                            </div>
+
+                                            <div class="approved-metric">
+                                                <small>Danceability</small>
+                                                <strong>${item.danceability || '0.00'}</strong>
+                                            </div>
+
+                                            <div class="approved-metric">
+                                                <small>BPM</small>
+                                                <strong>${item.bpm || 0}</strong>
+                                            </div>
+                                        </div>
+
+                                        <div class="approved-status">
+                                            <i class="fa-solid fa-check"></i>
+                                            Aprovado
+                                        </div>
+
+                                        <button class="approved-button" onclick="verAnalise(${item.id_artista})">
+                                            Ver análise
+                                            <i class="fa-solid fa-arrow-right"></i>
+                                        </button>
+                                    </article>
+                                `;
+                            });
+                        });
+                    } else {
+                        console.error("Erro ao carregar os dados dos artistas aprovados.");
+                    }
+                })
+                .catch(function (erro) {
+                    console.error("Erro de conexão com o servidor: ", erro);
+                });
+        }
+
+        function verAnalise(idArtista) {
+            window.location.href = `analise.html?id=${idArtista}`;
+        }
+    </script>
+</body>
+
+</html>

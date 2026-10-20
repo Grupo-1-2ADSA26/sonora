@@ -17,9 +17,9 @@
             <li><a href="dashboard.html"><i class="fa-solid fa-house"></i>Início</a></li>
             <li><a href="artista.html"><i class="fa-solid fa-magnifying-glass"></i>Artistas</a></li>
             <li class="ativo"><a href="cadastroFuncionario.html"><i class="fa-solid fa-users"></i>Funcionários</a></li>
-            <li><a href="cadastroShow.html"><i class="fa-solid fa-music"></i>Shows</a></li>
+            <li><a href="gerenciamentoEventos.html"><i class="fa-solid fa-music"></i>Eventos</a></li>
             <li><a href="notificacoes.html"><i class="fa-solid fa-bell"></i>Notificações</a></li>
-            <li><a href="perfil.html"><i class="fa-solid fa-user"></i>Perfil</a></li>
+            <li><a href="perfil.html"><i class="fa-solid fa-user"></i>Perfil Empresa</a></li>
         </ul>
         <div class="box-sair">
             <a class="botao-sair" href="../index.html"><i class="fa-solid fa-right-from-bracket"></i> Sair</a>
@@ -42,7 +42,7 @@
             <div class="card">
                 <div class="card-header">
                     <h3><i class="fa-solid fa-list-check"></i> Equipe Cadastrada</h3>
-                    <span class="badge">3 Funcionários Ativos</span>
+                    <span class="badge" id="badge-total">0 Funcionários Ativos</span>
                 </div>
 
                 <table class="data-table">
@@ -54,50 +54,7 @@
                             <th class="text-center">Ações</th>
                         </tr>
                     </thead>
-                    <tbody>
-                        <tr>
-                            <td>
-                                <div class="user-cell">
-                                    <div class="avatar"><i class="fa-solid fa-user"></i></div>
-                                    <strong>Carlos Vinicius</strong>
-                                </div>
-                            </td>
-                            <td class="user-email">carlos@sonora.com</td>
-                            <td><span class="role-tag">Gerente de Eventos</span></td>
-                            <td class="actions-cell">
-                                <button class="btn-icon edit" title="Editar"><i class="fa-solid fa-pen-to-square"></i></button>
-                                <button class="btn-icon delete" title="Deletar"><i class="fa-solid fa-trash-can"></i></button>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <div class="user-cell">
-                                    <div class="avatar"><i class="fa-solid fa-user"></i></div>
-                                    <strong>Sara Catarina</strong>
-                                </div>
-                            </td>
-                            <td class="user-email">sara@sonora.com</td>
-                            <td><span class="role-tag">Curadora Musical</span></td>
-                            <td class="actions-cell">
-                                <button class="btn-icon edit" title="Editar"><i class="fa-solid fa-pen-to-square"></i></button>
-                                <button class="btn-icon delete" title="Deletar"><i class="fa-solid fa-trash-can"></i></button>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <div class="user-cell">
-                                    <div class="avatar"><i class="fa-solid fa-user"></i></div>
-                                    <strong>Mauro Campos</strong>
-                                </div>
-                            </td>
-                            <td class="user-email">mauro@sonora.com</td>
-                            <td><span class="role-tag">Operador Técnico</span></td>
-                            <td class="actions-cell">
-                                <button class="btn-icon edit" title="Editar"><i class="fa-solid fa-pen-to-square"></i></button>
-                                <button class="btn-icon delete" title="Deletar"><i class="fa-solid fa-trash-can"></i></button>
-                            </td>
-                        </tr>
-                    </tbody>
+                    <tbody id="tabela-funcionarios"></tbody>
                 </table>
             </div>
         </section>
@@ -109,7 +66,7 @@
         <div class="modal-box">
             <div class="modal-header">
                 <h3 id="modal-title"><i class="fa-solid fa-user-plus"></i> Cadastrar Funcionário</h3>
-                <button class="btn-close">&times;</button>
+                <button type="button" class="btn-close">&times;</button>
             </div>
             <form id="form-employee">
                 <div class="field-group">
@@ -118,24 +75,34 @@
                 </div>
                 <div class="field-group">
                     <label><i class="fa-solid fa-envelope"></i> E-mail Corporativo</label>
-                    <input type="email" id="emp-email" placeholder="carlos@empresa.com" required>
+                    <input type="email" id="emp-email" placeholder="carlos@empresa.com" maxlength="100" required>
+                    <small class="erro-campo" id="erro-email"></small>
                 </div>
                 <div class="field-group">
                     <label><i class="fa-solid fa-briefcase"></i> Cargo</label>
                     <select id="emp-role" required>
                         <option value="" disabled selected>Selecione um cargo</option>
-                        <option value="Gerente de Eventos">Gerente de Eventos</option>
-                        <option value="Curadora Musical">Curador Musical</option>
-                        <option value="Analista de Marketing">Analista de Marketing</option>
-                        <option value="Operador Técnico">Operador Técnico</option>
+                        <!-- Ajustado para os IDs correspondentes do banco 'cargo' -->
+                        <option value="1">Gerente / ADM</option>
+                        <option value="2">Operacional</option>
+                        <option value="3">Suporte do Sistema</option>
                     </select>
                 </div>
                 <div class="field-group">
                     <label><i class="fa-solid fa-lock"></i> Senha</label>
                     <div class="password-wrapper">
-                        <input type="password" id="emp-pass" placeholder="Digite a senha">
+                        <input type="password" id="emp-pass" placeholder="Digite a senha" maxlength="50">
                         <i class="fa-solid fa-eye toggle-pass"></i>
                     </div>
+                    <small id="dica-senha" style="display:none;">Deixe em branco para manter a senha atual.</small>
+                    <ul id="regras-senha">
+                        <li data-regra="tamanho">Entre 8 e 50 caracteres</li>
+                        <li data-regra="maiuscula">Uma letra maiúscula</li>
+                        <li data-regra="minuscula">Uma letra minúscula</li>
+                        <li data-regra="numero">Um número</li>
+                        <li data-regra="especial">Um caractere especial (ex: @ # ! $ %)</li>
+                        <li data-regra="semEspaco">Sem espaços</li>
+                    </ul>
                 </div>
                 <div class="modal-actions">
                     <button type="submit" class="btn-primary">Confirmar</button>
@@ -150,80 +117,180 @@
         <div class="modal-box">
             <div class="modal-header">
                 <h3 class="danger-text"><i class="fa-solid fa-triangle-exclamation"></i> Confirmar Exclusão</h3>
-                <button class="btn-close">&times;</button>
+                <button type="button" class="btn-close">&times;</button>
             </div>
             <div class="modal-body">
                 <p>Tem certeza que deseja excluir <strong id="delete-name"></strong>?</p>
                 <small>Esta ação não poderá ser desfeita.</small>
             </div>
             <div class="modal-actions">
-                <button type="button" class="btn-danger">Sim, Excluir</button>
+                <button type="button" class="btn-danger" id="btn-confirmar-exclusao">Sim, Excluir</button>
                 <button type="button" class="btn-secondary btn-close">Cancelar</button>
             </div>
         </div>
     </div>
 
     <script>
+        const idEmpresa = sessionStorage.ID_EMPRESA;
+
+        // Se não estiver logado, volta para o login
+        if (!idEmpresa) {
+            window.location.href = "../login.html";
+        }
+
+        let idFuncionarioEditando = null;
+        let idFuncionarioExcluindo = null;
+        let listaFuncionarios = []; // guarda a lista para consultar ao editar
+
         const modalForm = document.getElementById('modal-form');
         const modalDelete = document.getElementById('modal-delete');
         const modalTitle = document.getElementById('modal-title');
+        const formulario = document.getElementById('form-employee');
 
-        const toggleModal = (modal, show = true) => {
-            modal.classList.toggle('active', show);
-        };
+        // ---------- MODAIS ----------
+        function abrirModal(modal) {
+            modal.classList.add('active');
+        }
 
-        // Novo funcionário
+        function fecharModais() {
+            modalForm.classList.remove('active');
+            modalDelete.classList.remove('active');
+        }
+
+        document.querySelectorAll('.btn-close').forEach(botao => {
+            botao.addEventListener('click', fecharModais);
+        });
+
+        function listarFuncionarios() {
+            fetch(`/funcionario/empresa/${idEmpresa}`)
+                .then(res => res.json())
+                .then(funcionarios => {
+                    listaFuncionarios = funcionarios;
+
+                    document.getElementById('badge-total').textContent =
+                        `${funcionarios.length} Funcionários Ativos`;
+
+                    let linhas = '';
+
+                    funcionarios.forEach(func => {
+                        linhas += `
+                            <tr>
+                                <td>
+                                    <div class="user-cell">
+                                        <div class="avatar"><i class="fa-solid fa-user"></i></div>
+                                        <strong>${func.nome}</strong>
+                                    </div>
+                                </td>
+                                <td class="user-email">${func.email}</td>
+                                <td><span class="role-tag">${func.cargo}</span></td>
+                                <td class="actions-cell">
+                                    <button class="btn-icon edit" onclick="abrirEdicao(${func.id_usuario})" title="Editar">
+                                        <i class="fa-solid fa-pen-to-square"></i>
+                                    </button>
+                                    <button class="btn-icon delete" onclick="abrirExclusao(${func.id_usuario})" title="Deletar">
+                                        <i class="fa-solid fa-trash-can"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                        `;
+                    });
+
+                    document.getElementById('tabela-funcionarios').innerHTML = linhas;
+                })
+                .catch(err => console.error("Erro ao listar funcionários:", err));
+        }
+
+        listarFuncionarios();
+
+        // ---------- ABRIR CADASTRO ----------
         document.getElementById('btn-novo-funcionario').addEventListener('click', () => {
-            document.getElementById('form-employee').reset();
+            idFuncionarioEditando = null;
+            formulario.reset();
+            document.getElementById('dica-senha').style.display = 'none';
             modalTitle.innerHTML = '<i class="fa-solid fa-user-plus"></i> Cadastrar Funcionário';
-            toggleModal(modalForm);
+            abrirModal(modalForm);
         });
 
-        // Editar
-        document.querySelectorAll('.btn-icon.edit').forEach(btn => {
-            btn.addEventListener('click', (e) => {
-                const row = e.target.closest('tr');
-                document.getElementById('emp-name').value = row.querySelector('.user-cell strong').textContent;
-                document.getElementById('emp-email').value = row.querySelector('.user-email').textContent;
-                document.getElementById('emp-role').value = row.querySelector('.role-tag').textContent;
-                
-                modalTitle.innerHTML = '<i class="fa-solid fa-pen-to-square"></i> Editar Funcionário';
-                toggleModal(modalForm);
-            });
+        // ---------- ABRIR EDIÇÃO ----------
+        function abrirEdicao(id) {
+            // procura o funcionário na lista pelo id
+            const func = listaFuncionarios.find(f => f.id_usuario == id);
+
+            idFuncionarioEditando = id;
+            document.getElementById('emp-name').value = func.nome;
+            document.getElementById('emp-email').value = func.email;
+            document.getElementById('emp-role').value = func.id_cargo;
+            document.getElementById('emp-pass').value = '';
+            document.getElementById('dica-senha').style.display = 'block';
+
+            modalTitle.innerHTML = '<i class="fa-solid fa-pen-to-square"></i> Editar Funcionário';
+            abrirModal(modalForm);
+        }
+
+        // ---------- ABRIR EXCLUSÃO ----------
+        function abrirExclusao(id) {
+            const func = listaFuncionarios.find(f => f.id_usuario == id);
+
+            idFuncionarioExcluindo = id;
+            document.getElementById('delete-name').textContent = func.nome;
+            abrirModal(modalDelete);
+        }
+
+        // ---------- CADASTRAR / ATUALIZAR ----------
+        formulario.addEventListener('submit', (e) => {
+            e.preventDefault();
+
+            const dados = {
+                nome: document.getElementById('emp-name').value,
+                email: document.getElementById('emp-email').value,
+                idCargo: document.getElementById('emp-role').value,
+                senha: document.getElementById('emp-pass').value,
+                idEmpresa: idEmpresa
+            };
+
+            // Se tem id, está editando; senão, está cadastrando
+            const editando = idFuncionarioEditando !== null;
+            const url = editando ? `/funcionario/atualizar/${idFuncionarioEditando}` : `/funcionario/cadastrar`;
+            const metodo = editando ? 'PUT' : 'POST';
+
+            fetch(url, {
+                method: metodo,
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(dados)
+            })
+                .then(res => {
+                    if (res.ok) {
+                        fecharModais();
+                        listarFuncionarios();
+                    } else {
+                        alert(editando ? "Erro ao atualizar funcionário." : "Erro ao cadastrar funcionário.");
+                    }
+                })
+                .catch(err => console.error("Erro ao salvar funcionário:", err));
         });
 
-        // Deletar
-        document.querySelectorAll('.btn-icon.delete').forEach(btn => {
-            btn.addEventListener('click', (e) => {
-                const row = e.target.closest('tr');
-                document.getElementById('delete-name').textContent = row.querySelector('.user-cell strong').textContent;
-                toggleModal(modalDelete);
-            });
+        // ---------- EXCLUIR ----------
+        document.getElementById('btn-confirmar-exclusao').addEventListener('click', () => {
+            fetch(`/funcionario/deletar/${idFuncionarioExcluindo}`, {
+                method: 'DELETE',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ idEmpresa: idEmpresa })
+            })
+                .then(res => {
+                    if (res.ok) {
+                        fecharModais();
+                        listarFuncionarios();
+                    } else {
+                        alert("Erro ao deletar funcionário.");
+                    }
+                })
+                .catch(err => console.error("Erro ao deletar funcionário:", err));
         });
 
-        // Fechar modais
-        document.querySelectorAll('.btn-close').forEach(btn => {
-            btn.addEventListener('click', () => {
-                toggleModal(modalForm, false);
-                toggleModal(modalDelete, false);
-            });
-        });
-
-        window.addEventListener('click', (e) => {
-            if (e.target.classList.contains('modal-overlay')) {
-                toggleModal(e.target, false);
-            }
-        });
-
-        // Alternar visualização da senha
-        document.querySelectorAll('.toggle-pass').forEach(icon => {
-            icon.addEventListener('click', function() {
-                const input = this.previousElementSibling;
-                const isPass = input.type === 'password';
-                input.type = isPass ? 'text' : 'password';
-                this.classList.toggle('fa-eye', !isPass);
-                this.classList.toggle('fa-eye-slash', isPass);
-            });
+        // ---------- MOSTRAR / OCULTAR SENHA ----------
+        document.querySelector('.toggle-pass').addEventListener('click', () => {
+            const campo = document.getElementById('emp-pass');
+            campo.type = campo.type === 'password' ? 'text' : 'password';
         });
     </script>
 </body>

@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard | Sonora</title>
+    <script src="https://kit.fontawesome.com/d840916580.js" crossorigin="anonymous"></script>
+
+    <link rel="stylesheet" href="../css/menu.css">
+    <link rel="stylesheet" href="../css/funcionario/dashboard.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+
+<body>
+
+    <aside class="box-menu">
+        <p class="logo">sonora.</p>
+
+        <ul class="lista">
+            <li class="ativo"><a href="dashboard.html"><i class="fa-solid fa-house"></i>Início</a></li>
+            <li><a href="pesquisa.html"><i class="fa-solid fa-magnifying-glass"></i>Artistas</a></li>
+            <li><a href="recomendacoes.html"><i class="fa-solid fa-music"></i>Recomendações</a></li>
+            <li><a href="aprovados.html"><i class="fa-solid fa-bell"></i>Aprovados</a></li>
+            <li><a href="perfil.html"><i class="fa-solid fa-user"></i>Perfil</a></li>
+        </ul>
+
+        <div class="box-sair">
+            <a class="botao-sair" href="../index.html">
+                <i class="fa-solid fa-right-from-bracket"></i> Sair
+            </a>
+        </div>
+    </aside>
+
+    <main class="main-content">
+
+        <header class="page-header">
+            <h1>DASHBOARD</h1>
+            <p>Visão geral dos shows realizados pela empresa.</p>
+        </header>
+
+        <section class="summary">
+
+            <div class="summary-card">
+                <div class="summary-icon">
+                    <i class="fa-solid fa-calendar-check"></i>
+                </div>
+
+                <div>
+                    <span>Shows realizados</span>
+                    <strong>24</strong>
+                </div>
+            </div>
+
+            <div class="summary-card">
+                <div class="summary-icon">
+                    <i class="fa-solid fa-star"></i>
+                </div>
+
+                <div>
+                    <span>Ambiente preferido</span>
+                    <strong>Palco</strong>
+                    <small>87% de efetividade</small>
+                </div>
+            </div>
+
+        </section>
+
+        <section class="dashboard-grid">
+
+            <div class="dashboard-card effectiveness">
+                <div class="card-header">
+                    <div>
+                        <h2>EFETIVIDADE POR AMBIENTE</h2>
+                        <p>Desempenho dos usuários em cada ambiente.</p>
+                    </div>
+                </div>
+
+                <div class="chart-container">
+                    <canvas id="environmentChart"></canvas>
+                </div>
+            </div>
+
+            <div class="dashboard-card shows">
+                <div class="card-header">
+                    <div>
+                        <h2>SHOWS REALIZADOS</h2>
+                        <p>Quantidade de shows por período.</p>
+                    </div>
+                </div>
+
+                <div class="chart-container">
+                    <canvas id="showsChart"></canvas>
+                </div>
+            </div>
+
+        </section>
+
+    </main>
+
+    <script>
+        new Chart(document.getElementById('environmentChart'), {
+            type: 'bar',
+            data: {
+                labels: ['Palco', 'Ar Livre', 'Bar', 'Balada'],
+                datasets: [{
+                    data: [87, 78, 71, 63],
+                    borderRadius: 6,
+                    barThickness: 28
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: false
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        max: 100,
+                        ticks: {
+                            callback: value => value + '%'
+                        }
+                    }
+                }
+            }
+        });
+
+        new Chart(document.getElementById('showsChart'), {
+            type: 'line',
+            data: {
+                labels: ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun'],
+                datasets: [{
+                    data: [2, 4, 3, 5, 4, 6],
+                    tension: 0.4,
+                    borderWidth: 2,
+                    pointRadius: 4
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: false
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            stepSize: 1
+                        }
+                    }
+                }
+            }
+        });
+    </script>
+
+</body>
+</html>

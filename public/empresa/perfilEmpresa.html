@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Perfil Empresa | Sonora</title>
+    <script src="https://kit.fontawesome.com/d840916580.js" crossorigin="anonymous"></script>
+
+    <link rel="stylesheet" href="../css/menu.css">
+    <link rel="stylesheet" href="../css/empresa/perfil.css">
+</head>
+
+<body>
+
+    <aside class="box-menu">
+        <p class="logo">sonora.</p>
+        <ul class="lista">
+            <li><a href="dashboard.html"><i class="fa-solid fa-house"></i>Início</a></li>
+            <li><a href="artista.html"><i class="fa-solid fa-magnifying-glass"></i>Artistas</a></li>
+            <li><a href="cadastroFuncionario.html"><i class="fa-solid fa-users"></i>Funcionários</a></li>
+            <li><a href="gerenciamentoEventos.html"><i class="fa-solid fa-music"></i>Eventos</a></li>
+            <li><a href="notificacoes.html"><i class="fa-solid fa-bell"></i>Notificações</a></li>
+            <li class="ativo"><a href="perfil.html"><i class="fa-solid fa-user"></i>Perfil Empresa</a></li>
+        </ul>
+        <div class="box-sair">
+            <a class="botao-sair" href="../index.html"><i class="fa-solid fa-right-from-bracket"></i> Sair</a>
+        </div>
+    </aside>
+
+    <main class="main-content">
+
+        <header class="page-header">
+            <h1>PERFIL DA EMPRESA</h1>
+        </header>
+
+        <div class="profile-container">
+            <section class="profile-card">
+
+                <form class="profile-form" id="formulario-perfil">
+
+                    <div class="field-group">
+                        <label for="ipt_nome_empresa"><i class="fa-solid fa-font"></i> Razão Social</label>
+                        <input type="text" id="ipt_nome_empresa" placeholder="Nome da empresa" required>
+                    </div>
+
+                    <div class="field-group">
+                        <label for="ipt_cnpj_empresa"><i class="fa-solid fa-id-card"></i> CNPJ</label>
+                        <input type="text" id="ipt_cnpj_empresa" placeholder="00.000.000/0000-00" required>
+                    </div>
+
+                    <div class="field-group">
+                        <label for="select_tipo_empresa"><i class="fa-solid fa-store"></i> Tipo de Estabelecimento</label>
+                        <select id="select_tipo_empresa" required>
+                            <option value="">Selecione</option>
+                            <option value="Casa de Shows">Casa de Shows</option>
+                            <option value="Festival">Festival</option>
+                            <option value="Produtora de Eventos">Produtora de Eventos</option>
+                            <option value="Bar / Pub">Bar / Pub</option>
+                            <option value="Outro">Outro</option>
+                        </select>
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="submit" class="btn-primary">
+                            <i class="fa-solid fa-floppy-disk"></i> Salvar
+                        </button>
+                        <button type="button" class="btn-danger" id="btn-excluir-conta">
+                            <i class="fa-solid fa-trash-can"></i> Excluir
+                        </button>
+                    </div>
+
+                </form>
+
+            </section>
+        </div>
+
+    </main>
+
+    <script>
+        const idEmpresa = sessionStorage.ID_EMPRESA || sessionStorage.id_empresa;
+
+        document.addEventListener("DOMContentLoaded", () => {
+            if (!idEmpresa) {
+                alert("Sessão expirada. Faça login novamente.");
+                window.location.href = "../index.html";
+                return;
+            }
+
+            carregarDadosEmpresa();
+
+            // Evento de submit do formulário de atualização
+            document.getElementById("formulario-perfil").addEventListener("submit", salvarEmpresa);
+
+            // Evento para excluir a conta da empresa
+            document.getElementById("btn-excluir-conta").addEventListener("click", excluirEmpresa);
+        });
+
+        function carregarDadosEmpresa() {
+            fetch(`/empresa/buscar/${idEmpresa}`)
+                .then(resposta => {
+                    if (resposta.ok) {
+                        return resposta.json();
+                    }
+                    throw new Error("Erro ao carregar dados da empresa");
+                })
+                .then(dadosEmpresa => {
+                    if (dadosEmpresa) {
+                        document.getElementById("ipt_nome_empresa").value = dadosEmpresa.razao_social || "";
+                        document.getElementById("ipt_cnpj_empresa").value = dadosEmpresa.cnpj || "";
+                        document.getElementById("select_tipo_empresa").value = dadosEmpresa.tipo_estabelecimento || "";
+                    }
+                })
+                .catch(erro => console.error("Erro na requisição: ", erro));
+        }
+
+        function salvarEmpresa(event) {
+            event.preventDefault();
+
+            const razaoSocial = document.getElementById("ipt_nome_empresa").value.trim();
+            const cnpj = document.getElementById("ipt_cnpj_empresa").value.trim();
+            const tipoEstabelecimento = document.getElementById("select_tipo_empresa").value;
+
+            if (!razaoSocial || !cnpj || !tipoEstabelecimento) {
+                alert('Preencha todos os campos!');
+                return;
+            }
+
+            fetch(`/empresa/atualizar/${idEmpresa}`, {
+                method: "PUT",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    razaoSocial: razaoSocial,
+                    cnpj: cnpj,
+                    tipoEstabelecimento: tipoEstabelecimento
+                })
+            })
+            .then(resposta => {
+                if (resposta.ok) {
+                    alert('Dados atualizados com sucesso!');
+                } else {
+                    throw new Error("Erro ao atualizar perfil da empresa");
+                }
+            })
+            .catch(erro => {
+                console.error("Erro: ", erro);
+                alert("Erro ao atualizar dados.");
+            });
+        }
+
+        function excluirEmpresa() {
+            if (confirm("Tem certeza que deseja excluir sua empresa? Esta ação não poderá ser desfeita.")) {
+                fetch(`/empresa/deletar/${idEmpresa}`, {
+                    method: "DELETE"
+                })
+                .then(resposta => {
+                    if (resposta.ok) {
+                        alert("Conta excluída com sucesso.");
+                        sessionStorage.clear();
+                        window.location.href = "../index.html";
+                    } else {
+                        throw new Error("Erro ao excluir conta");
+                    }
+                })
+                .catch(erro => {
+                    console.error("Erro: ", erro);
+                    alert("Não foi possível excluir a conta.");
+                });
+            }
+        }
+    </script>
+
+</body>
+
+</html>

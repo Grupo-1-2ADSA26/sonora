@@ -6,10 +6,12 @@ USE sonora;
 -- TABELA: EMPRESA
 CREATE TABLE empresa (
     id_empresa INT PRIMARY KEY AUTO_INCREMENT,
-    nome VARCHAR(100) NOT NULL,
-    cnpj VARCHAR(18) NOT NULL UNIQUE,
-    senha VARCHAR(255) NOT NULL,
-    tipo_estabelecimento VARCHAR(100) NOT NULL
+    razao_social VARCHAR(100) NOT NULL,
+    email_responsavel VARCHAR(150) NOT NULL,
+    cnpj VARCHAR(14) NOT NULL UNIQUE,
+    tipo_estabelecimento VARCHAR(150) NOT NULL,
+    codigo_ativacao VARCHAR(50) NOT NULL UNIQUE,
+    status_codigo ENUM('ATIVA', 'PENDENTE') NOT NULL DEFAULT 'PENDENTE'
 );
 
 -- TABELA: CARGO
@@ -62,11 +64,16 @@ CREATE TABLE usuario (
 CREATE TABLE evento (
     id_evento INT PRIMARY KEY AUTO_INCREMENT,
     nome VARCHAR(100) NOT NULL,
-    data_evento DATE,
-    local_evento VARCHAR(150),
-
+    descricao TEXT,
+    data_evento DATE NOT NULL,
+    local_evento VARCHAR(150) NOT NULL,
+    status_evento ENUM(
+        'Planejado',
+        'Confirmado',
+        'Cancelado',
+        'Finalizado'
+    ) DEFAULT 'Planejado',
     id_empresa INT NOT NULL,
-
     FOREIGN KEY (id_empresa)
         REFERENCES empresa(id_empresa)
 );
@@ -91,6 +98,22 @@ CREATE TABLE musica (
         REFERENCES artista(id_artista)
 );
 
+-- TABELA: GÊNERO
+CREATE TABLE genero (
+    id_genero INT PRIMARY KEY AUTO_INCREMENT,
+    nome VARCHAR(100) NOT NULL UNIQUE
+);
+
+-- TABELA: GÊNERO - EMPRESA
+CREATE TABLE empresa_genero (
+    id_empresa INT NOT NULL,
+    id_genero INT NOT NULL,
+
+    PRIMARY KEY (id_empresa, id_genero),
+
+    FOREIGN KEY (id_empresa) REFERENCES empresa(id_empresa),
+    FOREIGN KEY (id_genero) REFERENCES genero(id_genero)
+);
 
 -- TABELA: PLATAFORMA
 CREATE TABLE plataforma (
@@ -138,3 +161,39 @@ CREATE TABLE log (
     data_hora DATETIME DEFAULT CURRENT_TIMESTAMP,
     status VARCHAR(30) NOT NULL
 );
+
+CREATE TABLE artista_aprovado (
+    id_empresa INT NOT NULL,
+    id_artista INT NOT NULL,
+    status_aprovacao VARCHAR(30) NOT NULL DEFAULT 'PENDENTE',
+    status_visualizacao VARCHAR(30) NOT NULL DEFAULT 'NAO_VISUALIZADO',
+    data_atualizacao DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    PRIMARY KEY (id_empresa, id_artista),
+    FOREIGN KEY (id_empresa) REFERENCES empresa(id_empresa),
+    FOREIGN KEY (id_artista) REFERENCES artista(id_artista)
+);
+
+
+-- =============================================
+-- 1. CADASTRO DOS CARGOS (Personas)
+-- =============================================
+INSERT INTO cargo (nome) VALUES 
+('Gerente / ADM (Carla)'),      -- id_cargo = 1
+('Operacional (Lucas)'),         -- id_cargo = 2
+('Suporte do Sistema');          -- id_cargo = 3
+
+-- =============================================
+-- 2. CADASTRO DOS ACESSOS / TELAS DO SISTEMA
+-- =============================================
+INSERT INTO acesso (nome) VALUES 
+('Tela Empresa / Perfil'),        -- id_acesso = 1
+('Tela Operacional / Dashboard'), -- id_acesso = 2
+('Tela Suporte / Chamados');      -- id_acesso = 3
+
+-- =============================================
+-- 3. ASSOCIAÇÃO DE CARGOS E ACESSOS (cargo_acesso)
+-- =============================================
+INSERT INTO cargo_acesso (id_cargo, id_acesso) VALUES 
+(1, 1), -- ADM (Carla) -> Tela Empresa
+(2, 2), -- Operacional (Lucas) -> Tela Operacional
+(3, 3); -- Suporte -> Tela Suporte

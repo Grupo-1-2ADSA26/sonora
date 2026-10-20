@@ -162,10 +162,11 @@ CREATE TABLE log (
     status VARCHAR(30) NOT NULL
 );
 
-CREATE TABLE empresa_artista (
+CREATE TABLE artista_aprovado (
     id_empresa INT NOT NULL,
     id_artista INT NOT NULL,
     status_aprovacao VARCHAR(30) NOT NULL DEFAULT 'PENDENTE',
+    status_visualizacao VARCHAR(30) NOT NULL DEFAULT 'NAO_VISUALIZADO',
     data_atualizacao DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     PRIMARY KEY (id_empresa, id_artista),
     FOREIGN KEY (id_empresa) REFERENCES empresa(id_empresa),

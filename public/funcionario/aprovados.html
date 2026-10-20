@@ -52,7 +52,7 @@
             var idEmpresa = sessionStorage.ID_EMPRESA || 1; 
 
             
-            fetch(`/funcionario/aprovados/${idEmpresa}`)
+            fetch(`/aprovados/aprovados/${idEmpresa}`)
                 .then(function (resposta) {
                     if (resposta.ok) {
                         if (resposta.status == 204) {

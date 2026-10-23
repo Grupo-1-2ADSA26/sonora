@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    
+</body>
+</html>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+    const params = new URLSearchParams(window.location.search);
+    const idArtista = params.get("idArtista");
+    const idEmpresa = params.get("idEmpresa");
+
+    if (!idArtista || !idEmpresa) {
+        alert("Parâmetros do artista não encontrados na URL!");
+        return;
+    }
+
+    buscarDadosAnalise(idArtista, idEmpresa);
+});
+
+function buscarDadosAnalise(idArtista, idEmpresa) {
+    fetch(`/funcionario/analise-artista/${idArtista}/${idEmpresa}`)
+        .then(function (resposta) {
+            if (resposta.ok) {
+                resposta.json().then(function (dados) {
+                    console.log("Dados recebidos:", dados);
+
+                    
+                    preencherCabecalho(dados.cabecalho);
+                    preencherKpis(dados.kpis);
+                    montarGraficoRadar(dados.graficoRadar);
+                    montarGraficoBarras(dados.graficoBarras);
+                    montarGraficoLinha(dados.graficoLinha);
+                });
+            } else {
+                console.error("Erro ao buscar dados da análise.");
+            }
+        })
+        .catch(function (erro) {
+            console.error("Erro de conexão com o servidor:", erro);
+        });
+}
+
+function preencherCabecalho(cabecalho) {
+    
+}
+
+function preencherKpis(kpis) {
+    
+}
+
+function montarGraficoRadar(dados) {  }
+function montarGraficoBarras(dados) {  }
+function montarGraficoLinha(dados) {  }
+</script>

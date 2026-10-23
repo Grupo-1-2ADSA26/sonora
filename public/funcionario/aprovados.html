@@ -121,7 +121,8 @@
         }
 
         function verAnalise(idArtista) {
-            window.location.href = `analise.html?id=${idArtista}`;
+            var idEmpresa = sessionStorage.ID_EMPRESA || 1;
+            window.location.href = `analise.html?idArtista=${idArtista}&idEmpresa=${idEmpresa}`;
         }
     </script>
 </body>

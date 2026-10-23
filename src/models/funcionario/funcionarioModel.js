@@ -70,6 +70,66 @@ function autenticar(email, senha) {
     return database.executar(instrucaoSql);
 }
 
+function buscarCabecalhoArtista(idArtista, idEmpresa) {
+    var instrucao = `
+        SELECT DISTINCT 
+            a.nome AS nome_artista, 
+            m.genero AS genero_principal, 
+            aa.status_aprovacao
+        FROM artista a
+        JOIN musica m ON a.id_artista = m.id_artista
+        JOIN artista_aprovado aa ON a.id_artista = aa.id_artista
+        WHERE a.id_artista = ${idArtista} AND aa.id_empresa = ${idEmpresa}
+        LIMIT 1;
+    `;
+    return database.executar(instrucao);
+}
+
+function buscarKpisEPerfilSonoro(idArtista) {
+    var instrucao = `
+        SELECT 
+            AVG(ms.energy) AS media_energy,
+            AVG(ms.danceability) AS media_danceability,
+            AVG(ms.tempo) AS media_bpm,
+            AVG(ms.acousticness) AS acousticness,
+            AVG(ms.valence) AS valence,
+            AVG(ms.speechiness) AS speechiness
+        FROM metrica_streaming ms
+        JOIN musica mu ON ms.id_musica = mu.id_musica
+        WHERE mu.id_artista = ${idArtista};
+    `;
+    return database.executar(instrucao);
+}
+
+function buscarEngajamentoPlataforma(idArtista) {
+    var instrucao = `
+        SELECT 
+            p.nome AS plataforma,
+            SUM(ms.streams) AS streams,
+            SUM(ms.views) AS views,
+            SUM(ms.likes) AS likes,
+            SUM(ms.comentarios) AS comentarios
+        FROM metrica_streaming ms
+        JOIN plataforma p ON ms.id_plataforma = p.id_plataforma
+        JOIN musica mu ON ms.id_musica = mu.id_musica
+        WHERE mu.id_artista = ${idArtista}
+        GROUP BY p.id_plataforma, p.nome;
+    `;
+    return database.executar(instrucao);
+}
+
+function buscarVariacaoRitmo(idArtista) {
+    var instrucao = `
+        SELECT 
+            mu.titulo,
+            ms.tempo
+        FROM metrica_streaming ms
+        JOIN musica mu ON ms.id_musica = mu.id_musica
+        WHERE mu.id_artista = ${idArtista};
+    `;
+    return database.executar(instrucao);
+}
+
 
 
 module.exports = {
@@ -78,5 +138,9 @@ module.exports = {
     buscarPorId,
     atualizar,
     deletar,
-    autenticar
+    autenticar,
+    buscarCabecalhoArtista,
+    buscarKpisEPerfilSonoro,
+    buscarEngajamentoPlataforma,
+    buscarVariacaoRitmo
 };

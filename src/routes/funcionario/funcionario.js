@@ -11,6 +11,8 @@ router.get("/empresa/:idEmpresa", (req, res) => funcionarioController.listarPorE
 router.get("/buscar/:idUsuario", (req, res) => funcionarioController.buscarPorId(req, res));
 router.put("/atualizar/:idUsuario", (req, res) => funcionarioController.atualizar(req, res));
 router.delete("/deletar/:idUsuario", (req, res) => funcionarioController.deletar(req, res));
-
+router.get("/analise-artista/:idArtista/:idEmpresa", function (req, res) {
+    funcionarioController.carregarAnaliseArtista(req, res);
+});
 
 module.exports = router;

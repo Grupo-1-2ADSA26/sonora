@@ -85,6 +85,82 @@ function autenticar(req, res) {
     }
 }
 
+function carregarAnaliseArtista(req, res) {
+    var idArtista = req.params.idArtista;
+    var idEmpresa = req.params.idEmpresa;
+
+    if (!idArtista || !idEmpresa) {
+        return res.status(400).send("ID do artista ou ID da empresa não informados!");
+    }
+
+   
+    funcionarioModel.buscarCabecalhoArtista(idArtista, idEmpresa)
+        .then(function (resultadoCabecalho) {
+            if (resultadoCabecalho.length === 0) {
+                return res.status(404).send("Artista não encontrado ou não aprovado para esta empresa.");
+            }
+
+            var cabecalho = resultadoCabecalho[0];
+
+     
+            funcionarioModel.buscarKpisEPerfilSonoro(idArtista)
+                .then(function (resultadoKpis) {
+                    var kpisDados = resultadoKpis[0];
+
+                
+                    funcionarioModel.buscarEngajamentoPlataforma(idArtista)
+                        .then(function (resultadoEngajamento) {
+
+                           
+                            funcionarioModel.buscarVariacaoRitmo(idArtista)
+                                .then(function (resultadoRitmo) {
+
+                                    
+                                    var dadosAnalise = {
+                                        cabecalho: cabecalho,
+                                        kpis: {
+                                            energiaMedia: kpisDados.media_energy,
+                                            dancabilidadeMedia: kpisDados.media_danceability,
+                                            bpmMedio: kpisDados.media_bpm
+                                        },
+                                        graficoRadar: {
+                                            energy: kpisDados.energy,
+                                            danceability: kpisDados.danceability,
+                                            acousticness: kpisDados.acousticness,
+                                            valence: kpisDados.valence,
+                                            speechiness: kpisDados.speechiness
+                                        },
+                                        graficoBarras: resultadoEngajamento,
+                                        graficoLinha: resultadoRitmo
+                                    };
+
+                                    res.json(dadosAnalise);
+
+                                })
+                                .catch(function (erro) {
+                                    console.error("Erro ao buscar variação de ritmo:", erro);
+                                    res.status(500).json(erro);
+                                });
+
+                        })
+                        .catch(function (erro) {
+                            console.error("Erro ao buscar engajamento:", erro);
+                            res.status(500).json(erro);
+                        });
+
+                })
+                .catch(function (erro) {
+                    console.error("Erro ao buscar KPIs:", erro);
+                    res.status(500).json(erro);
+                });
+
+        })
+        .catch(function (erro) {
+            console.error("Erro ao buscar cabeçalho:", erro);
+            res.status(500).json(erro);
+        });
+}
+
 
 
 module.exports = {
@@ -93,5 +169,6 @@ module.exports = {
     buscarPorId,
     atualizar,
     deletar, 
-    autenticar
+    autenticar,
+    carregarAnaliseArtista
 };

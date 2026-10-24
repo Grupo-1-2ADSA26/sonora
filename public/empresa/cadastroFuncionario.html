@@ -168,11 +168,14 @@
                     listaFuncionarios = funcionarios;
 
                     document.getElementById('badge-total').textContent =
-                        `${funcionarios.length} Funcionários Ativos`;
+                        `${funcionarios.length - 1} Funcionários Ativos`;
 
                     let linhas = '';
 
                     funcionarios.forEach(func => {
+                        if(func.id_usuario == sessionStorage.getItem("ID_USUARIO")) {
+                            return;
+                        }
                         linhas += `
                             <tr>
                                 <td>
@@ -206,6 +209,11 @@
         document.getElementById('btn-novo-funcionario').addEventListener('click', () => {
             idFuncionarioEditando = null;
             formulario.reset();
+
+            document
+                .querySelectorAll('#regras-senha li')
+                .forEach(item => item.classList.remove('ok'));
+
             document.getElementById('dica-senha').style.display = 'none';
             modalTitle.innerHTML = '<i class="fa-solid fa-user-plus"></i> Cadastrar Funcionário';
             abrirModal(modalForm);
@@ -221,6 +229,10 @@
             document.getElementById('emp-email').value = func.email;
             document.getElementById('emp-role').value = func.id_cargo;
             document.getElementById('emp-pass').value = '';
+
+            document
+                .querySelectorAll('#regras-senha li')
+                .forEach(item => item.classList.remove('ok'));
             document.getElementById('dica-senha').style.display = 'block';
 
             modalTitle.innerHTML = '<i class="fa-solid fa-pen-to-square"></i> Editar Funcionário';
@@ -240,33 +252,81 @@
         formulario.addEventListener('submit', (e) => {
             e.preventDefault();
 
+            const nome = document.getElementById('emp-name').value.trim();
+            const email = document.getElementById('emp-email').value.trim();
+            const idCargo = document.getElementById('emp-role').value;
+            const senha = document.getElementById('emp-pass').value;
+
+            if (!nome) {
+                alert('Informe o nome do funcionário.');
+                return;
+            }
+
+            if (!email) {
+                alert('Informe o e-mail.');
+                return;
+            }
+
+            if (!email.includes('@') || !email.includes('.')) {
+                alert('Informe um e-mail válido.');
+                return;
+            }
+
+            if (!idCargo) {
+                alert('Selecione um cargo.');
+                return;
+            }
+
+            const editando = idFuncionarioEditando !== null;
+
+            if (!editando && !senhaValida(senha)) {
+                alert('A senha não atende aos requisitos.');
+                return;
+            }
+
+            if (editando && senha && !senhaValida(senha)) {
+                alert('A senha não atende aos requisitos.');
+                return;
+            }
+
             const dados = {
-                nome: document.getElementById('emp-name').value,
-                email: document.getElementById('emp-email').value,
-                idCargo: document.getElementById('emp-role').value,
-                senha: document.getElementById('emp-pass').value,
-                idEmpresa: idEmpresa
+                nome,
+                email,
+                idCargo,
+                senha,
+                idEmpresa
             };
 
-            // Se tem id, está editando; senão, está cadastrando
-            const editando = idFuncionarioEditando !== null;
-            const url = editando ? `/funcionario/atualizar/${idFuncionarioEditando}` : `/funcionario/cadastrar`;
-            const metodo = editando ? 'PUT' : 'POST';
+            const url = editando
+                ? `/funcionario/atualizar/${idFuncionarioEditando}`
+                : `/funcionario/cadastrar`;
+
+            const metodo = editando
+                ? 'PUT'
+                : 'POST';
 
             fetch(url, {
                 method: metodo,
-                headers: { 'Content-Type': 'application/json' },
+                headers: {
+                    'Content-Type': 'application/json'
+                },
                 body: JSON.stringify(dados)
             })
-                .then(res => {
-                    if (res.ok) {
-                        fecharModais();
-                        listarFuncionarios();
-                    } else {
-                        alert(editando ? "Erro ao atualizar funcionário." : "Erro ao cadastrar funcionário.");
-                    }
-                })
-                .catch(err => console.error("Erro ao salvar funcionário:", err));
+            .then(res => {
+                if (res.ok) {
+                    fecharModais();
+                    listarFuncionarios();
+                } else {
+                    alert(
+                        editando
+                            ? 'Erro ao atualizar funcionário.'
+                            : 'Erro ao cadastrar funcionário.'
+                    );
+                }
+            })
+            .catch(err =>
+                console.error('Erro ao salvar funcionário:', err)
+            );
         });
 
         // ---------- EXCLUIR ----------
@@ -288,10 +348,86 @@
         });
 
         // ---------- MOSTRAR / OCULTAR SENHA ----------
-        document.querySelector('.toggle-pass').addEventListener('click', () => {
-            const campo = document.getElementById('emp-pass');
-            campo.type = campo.type === 'password' ? 'text' : 'password';
+        const togglePass = document.querySelector('.toggle-pass');
+        const campoSenha = document.getElementById('emp-pass');
+
+        togglePass.addEventListener('click', () => {
+            if (campoSenha.type === 'password') {
+                campoSenha.type = 'text';
+                togglePass.classList.remove('fa-eye');
+                togglePass.classList.add('fa-eye-slash');
+            } else {
+                campoSenha.type = 'password';
+                togglePass.classList.remove('fa-eye-slash');
+                togglePass.classList.add('fa-eye');
+            }
         });
+
+        // ---------- REQUISITOS SENHA ----------
+        
+        campoSenha.addEventListener('input', () => {
+            const senha = campoSenha.value;
+
+            atualizarRegra(
+                'tamanho',
+                senha.length >= 8 && senha.length <= 50
+            );
+
+            atualizarRegra(
+                'maiuscula',
+                /[A-Z]/.test(senha)
+            );
+
+            atualizarRegra(
+                'minuscula',
+                /[a-z]/.test(senha)
+            );
+
+            atualizarRegra(
+                'numero',
+                /\d/.test(senha)
+            );
+
+            atualizarRegra(
+                'especial',
+                /[@#$%!&*()_\-+=.?/{}[\]|\\]/.test(senha)
+            );
+
+            atualizarRegra(
+                'semEspaco',
+                !/\s/.test(senha)
+            );
+        });
+
+        function atualizarRegra(regra, valido) {
+            const item = document.querySelector(
+                `[data-regra="${regra}"]`
+            );
+
+            if (valido) {
+                item.classList.add('ok');
+            } else {
+                item.classList.remove('ok');
+            }
+        }
+
+        function senhaValida(senha) {
+            const temTamanho = senha.length >= 8;
+            const temMaiuscula = /[A-Z]/.test(senha);
+            const temMinuscula = /[a-z]/.test(senha);
+            const temNumero = /[0-9]/.test(senha);
+            const temEspecial = /[@#$%!&*()_\-+=.?/{}[\]|\\]/.test(senha);
+            const semEspacos = !senha.includes(' ');
+
+            return (
+                temTamanho &&
+                temMaiuscula &&
+                temMinuscula &&
+                temNumero &&
+                temEspecial &&
+                semEspacos
+            );
+        }
     </script>
 </body>
 </html>

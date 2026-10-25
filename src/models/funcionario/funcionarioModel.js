@@ -33,10 +33,22 @@ function buscarPorId(idUsuario) {
 
 function atualizar(idUsuario, nome, email, senha, idCargo) {
     var instrucaoSql = `
-        UPDATE usuario 
-        SET nome = '${nome}', email = '${email}', senha = '${senha}', id_cargo = ${idCargo} 
+        UPDATE usuario
+            SET nome = '${nome}', email = '${email}', senha = '${senha}', id_cargo = ${idCargo}
         WHERE id_usuario = ${idUsuario};
     `;
+    return database.executar(instrucaoSql);
+}
+
+function atualizarSemSenha(idUsuario, nome, email, idCargo) {
+    var instrucaoSql = `
+        UPDATE usuario
+        SET nome = '${nome}',
+            email = '${email}',
+            id_cargo = ${idCargo}
+        WHERE id_usuario = ${idUsuario};
+    `;
+
     return database.executar(instrucaoSql);
 }
 
@@ -137,6 +149,7 @@ module.exports = {
     listarPorEmpresa,
     buscarPorId,
     atualizar,
+    atualizarSemSenha,
     deletar,
     autenticar,
     buscarCabecalhoArtista,

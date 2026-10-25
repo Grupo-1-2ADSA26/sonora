@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Perfil Funcionário | Sonora</title>
+        <script src="https://kit.fontawesome.com/d840916580.js" crossorigin="anonymous"></script>
+
+        <link rel="stylesheet" href="../css/menu.css">
+        <link rel="stylesheet" href="../css/funcionario/perfil.css">
+    </head>
+    <body>
+        <aside class="box-menu">
+            <p class="logo">sonora.</p>
+            <ul class="lista">
+                <li><a href="dashboard.html"><i class="fa-solid fa-house"></i>Início</a></li>
+                <li><a href="pesquisa.html"><i class="fa-solid fa-magnifying-glass"></i>Artistas</a></li>
+                <li><a href="recomendacoes.html"><i class="fa-solid fa-music"></i>Recomendações</a></li>
+                <li><a href="aprovados.html"><i class="fa-solid fa-bell"></i>Aprovados</a></li>
+                <li class="ativo"><a href="perfil.html"><i class="fa-solid fa-user"></i>Perfil</a></li>
+            </ul>
+            <div class="box-sair">
+                <a class="botao-sair" href="../index.html"><i class="fa-solid fa-right-from-bracket"></i> Sair</a>
+            </div>
+        </aside>
+
+        <main class="main-content">
+
+            <header class="page-header">
+                <h1>PERFIL DO FUNCIONÁRIO</h1>
+            </header>
+
+            <div class="profile-container">
+                <section class="profile-card">
+
+                    <form class="profile-form" onsubmit="atualizarPerfil(event)">
+
+                        <div class="field-group">
+                            <label><i class="fa-solid fa-address-card"></i> Nome: <input type="text" id="input-nome"
+                                    placeholder="Seu nome" required></label>
+                        </div>
+
+                        <div class="field-group">
+                            <label>
+                                <i class="fa-solid fa-envelope"></i>E-mail:
+                                <input type="email" id="input-email" placeholder="voce@email.com" required>
+                            </label>
+                        </div>
+
+                        <div class="field-group">
+                            <label><i class="fa-solid fa-lock"></i> Senha</label>
+                            <div class="password-box">
+                                <input type="password" id="input-senha" placeholder="Deixe em branco para manter a senha atual">
+                                <i class="fa-solid fa-eye" id="toggle-senha" title="Mostrar/Ocultar Senha"></i>
+                            </div>
+                        </div>
+
+                        <div class="form-actions">
+                            <button type="submit" class="btn-primary">
+                                <i class="fa-solid fa-floppy-disk"></i> Salvar
+                            </button>
+                            <button type="button" class="btn-danger" onclick="excluirPerfil()">
+                                <i class="fa-solid fa-trash-can"></i> Excluir
+                            </button>
+                        </div>
+
+                    </form>
+
+                </section>
+            </div>
+
+        </main>
+
+        <script>
+        const inputNome = document.getElementById("input-nome");
+        const inputEmail = document.getElementById("input-email");
+        const inputSenha = document.getElementById("input-senha");
+        const toggleSenha = document.getElementById("toggle-senha");
+
+        toggleSenha.addEventListener("click", () => {
+
+            const isPassword = inputSenha.type === "password";
+
+            inputSenha.type = isPassword ? "text" : "password";
+
+            toggleSenha.classList.toggle("fa-eye", !isPassword);
+            toggleSenha.classList.toggle("fa-eye-slash", isPassword);
+
+        });
+
+        window.onload = () => {
+            carregarPerfil();
+        };
+
+        function carregarPerfil() {
+
+            const idUsuario = sessionStorage.ID_USUARIO || 2;
+
+            fetch(`/funcionario/perfil/${idUsuario}`)
+                .then(resposta => {
+
+                    if (!resposta.ok) {
+                        throw new Error("Erro ao carregar perfil");
+                    }
+
+                    return resposta.json();
+
+                })
+                .then(usuario => {
+
+                    console.log("Perfil carregado:", usuario);
+
+                    inputNome.value = usuario.nome;
+                    inputEmail.value = usuario.email;
+
+                    sessionStorage.EMAIL_USUARIO = usuario.email;
+                    sessionStorage.ID_CARGO = usuario.id_cargo;
+
+                    inputSenha.value = "";
+                })
+                .catch(erro => {
+                    console.error(erro);
+                });
+        }
+
+        function validarPerfil() {
+
+            const nome = inputNome.value.trim();
+            const email = inputEmail.value.trim();
+            const senha = inputSenha.value;
+
+            if (nome === "") {
+                alert("Preencha o nome.");
+                return false;
+            }
+
+            if (email === "") {
+                alert("Preencha o e-mail.");
+                return false;
+            }
+
+            if (!email.includes("@") || !email.includes(".")) {
+                alert("E-mail inválido.");
+                return false;
+            }
+
+            if (senha !== "") {
+
+                if (senha.length < 8) {
+                    alert("A senha deve ter no mínimo 8 caracteres.");
+                    return false;
+                }
+
+                if (!/[A-Z]/.test(senha)) {
+                    alert("A senha deve possuir pelo menos uma letra maiúscula.");
+                    return false;
+                }
+
+                if (!/[a-z]/.test(senha)) {
+                    alert("A senha deve possuir pelo menos uma letra minúscula.");
+                    return false;
+                }
+
+                if (!/[0-9]/.test(senha)) {
+                    alert("A senha deve conter pelo menos um número!");
+                    return false;
+                }
+
+                const especiais = "!@#$%^&*()_+[]{}|;:,.<>?";
+
+                let temEspecial = false;
+
+                for (let i = 0; i < senha.length; i++) {
+
+                    if (especiais.includes(senha[i])) {
+                        temEspecial = true;
+                        break;
+                    }
+
+                }
+
+                if (!temEspecial) {
+                    alert("A senha deve possuir pelo menos um caractere especial.");
+                    return false;
+                }
+
+            }
+
+            return true;
+        }
+
+        function atualizarPerfil(event) {
+
+            event.preventDefault();
+
+            if (!validarPerfil()) {
+                return;
+            }
+
+            const idUsuario = sessionStorage.ID_USUARIO;
+
+            if (!idUsuario) {
+                alert("Usuário não identificado.");
+                return;
+            }
+
+            const nomeVar = inputNome.value.trim();
+            const emailVar = inputEmail.value.trim();
+            const senhaVar = inputSenha.value.trim();
+            const idCargoVar = sessionStorage.ID_CARGO;
+
+            fetch(`/funcionario/atualizar/${idUsuario}`, {
+
+                method: "PUT",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    nome: nomeVar,
+                    email: emailVar,
+                    senha: senhaVar,
+                    idCargo: idCargoVar
+                })
+
+            })
+            .then(resposta => {
+
+                if (resposta.ok) {
+                    sessionStorage.EMAIL_USUARIO = emailVar;
+                    alert("Perfil atualizado com sucesso!");
+                    window.location.reload();
+
+                } else {
+                    alert("Erro ao atualizar perfil.");
+                }
+
+            })
+            .catch(erro => {
+                console.log("Erro:", erro);
+                alert("Erro de conexão com o servidor.");
+
+            });
+        }
+
+        function excluirPerfil() {
+
+            const idUsuario = sessionStorage.ID_USUARIO;
+
+            if (!idUsuario) {
+                alert("Usuário não identificado.");
+                return;
+            }
+
+            if (!confirm("Tem certeza que deseja excluir sua conta?")) {
+                return;
+            }
+
+            fetch(`/funcionario/deletar/${idUsuario}`, {
+                method: "DELETE",
+                headers: {
+                    "Content-Type": "application/json"
+                }
+            })
+            .then(resposta => {
+                if (resposta.ok) {
+                    alert("Conta excluída com sucesso!");
+                    sessionStorage.clear();
+                    window.location.href = "../index.html";
+                } else {
+                    alert("Erro ao excluir a conta.");
+                }
+
+            })
+            .catch(erro => {
+                console.log("Erro:", erro);
+                alert("Erro de conexão com o servidor.");
+            });
+
+        }
+        </script>
+
+    </body>
+
+</html>

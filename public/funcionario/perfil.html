@@ -1,93 +1,181 @@
-<!DOCTYPE html>
-<html lang="pt-BR">
+    <!DOCTYPE html>
+    <html lang="pt-BR">
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Perfil Empresa | Sonora</title>
-    <script src="https://kit.fontawesome.com/d840916580.js" crossorigin="anonymous"></script>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Perfil Empresa | Sonora</title>
+        <script src="https://kit.fontawesome.com/d840916580.js" crossorigin="anonymous"></script>
 
-    <link rel="stylesheet" href="../css/menu.css">
-    <link rel="stylesheet" href="../css/funcionario/perfil.css">
-</head>
+        <link rel="stylesheet" href="../css/menu.css">
+        <link rel="stylesheet" href="../css/funcionario/perfil.css">
+    </head>
 
-<body>
+    <body>
 
-    <aside class="box-menu">
-        <p class="logo">sonora.</p>
-        <ul class="lista">
-            <li><a href="dashboard.html"><i class="fa-solid fa-house"></i>Início</a></li>
-            <li><a href="pesquisa.html"><i class="fa-solid fa-magnifying-glass"></i>Artistas</a></li>
-            <li><a href="recomendacoes.html"><i class="fa-solid fa-music"></i>Recomendações</a></li>
-            <li><a href="aprovados.html"><i class="fa-solid fa-bell"></i>Aprovados</a></li>
-            <li class="ativo"><a href="perfil.html"><i class="fa-solid fa-user"></i>Perfil</a></li>
-        </ul>
-        <div class="box-sair">
-            <a class="botao-sair" href="../index.html"><i class="fa-solid fa-right-from-bracket"></i> Sair</a>
-        </div>
-    </aside>
+        <aside class="box-menu">
+            <p class="logo">sonora.</p>
+            <ul class="lista">
+                <li><a href="dashboard.html"><i class="fa-solid fa-house"></i>Início</a></li>
+                <li><a href="pesquisa.html"><i class="fa-solid fa-magnifying-glass"></i>Artistas</a></li>
+                <li><a href="recomendacoes.html"><i class="fa-solid fa-music"></i>Recomendações</a></li>
+                <li><a href="aprovados.html"><i class="fa-solid fa-bell"></i>Aprovados</a></li>
+                <li class="ativo"><a href="perfil.html"><i class="fa-solid fa-user"></i>Perfil</a></li>
+            </ul>
+            <div class="box-sair">
+                <a class="botao-sair" href="../index.html"><i class="fa-solid fa-right-from-bracket"></i> Sair</a>
+            </div>
+        </aside>
 
-    <main class="main-content">
+        <main class="main-content">
 
-        <header class="page-header">
-            <h1>PERFIL DO FUNCIONÁRIO</h1>
-        </header>
+            <header class="page-header">
+                <h1>PERFIL DO FUNCIONÁRIO</h1>
+            </header>
 
-        <div class="profile-container">
-            <section class="profile-card">
+            <div class="profile-container">
+                <section class="profile-card">
 
-                <form class="profile-form">
+                    <form class="profile-form" onsubmit="atualizarPerfil(event)">
 
-                    <div class="avatar-card">
-                        <div class="avatar-box">
-                            <i class="fa-solid fa-user"></i>
+                        <div class="avatar-card">
+                            <div class="avatar-box">
+                                <i class="fa-solid fa-user"></i>
+                            </div>
+                            <label for="upload-logo" class="btn-change-photo">
+                                <i class="fa-solid fa-camera"></i> Alterar Logo
+                            </label>
+                            <input type="file" id="upload-logo" accept="image/*" style="display: none;">
                         </div>
-                        <label for="upload-logo" class="btn-change-photo">
-                            <i class="fa-solid fa-camera"></i> Alterar Logo
-                        </label>
-                        <input type="file" id="upload-logo" accept="image/*" style="display: none;">
-                    </div>
 
-                    <div class="field-group">
-                        <label><i class="fa-solid fa-address-card"></i> Nome: <input type="text" value="Paulo Henrique da Silva"></label>
-                    </div>
-
-                    <div class="field-group">
-                        <label><i class="fa-solid fa-lock"></i> Senha</label>
-                        <div class="password-box">
-                            <input type="password" id="input-senha" value="12345678" placeholder="Sua senha" required>
-                            <i class="fa-solid fa-eye" id="toggle-senha" title="Mostrar/Ocultar Senha"></i>
+                        <div class="field-group">
+                            <label><i class="fa-solid fa-address-card"></i> Nome: <input type="text" id="input-nome"
+                                    placeholder="Seu nome"></label>
                         </div>
-                    </div>
 
-                    <div class="form-actions">
-                        <button type="submit" class="btn-primary">
-                            <i class="fa-solid fa-floppy-disk"></i> Salvar
-                        </button>
-                        <button type="button" class="btn-danger">
-                            <i class="fa-solid fa-trash-can"></i> Excluir
-                        </button>
-                    </div>
+                        <div class="field-group">
+                            <label><i class="fa-solid fa-lock"></i> Senha</label>
+                            <div class="password-box">
+                                <input type="password" id="input-senha" placeholder="Sua senha" required>
+                                <i class="fa-solid fa-eye" id="toggle-senha" title="Mostrar/Ocultar Senha"></i>
+                            </div>
+                        </div>
 
-                </form>
+                        <div class="form-actions">
+                            <button type="submit" class="btn-primary">
+                                <i class="fa-solid fa-floppy-disk"></i> Salvar
+                            </button>
+                            <button type="button" class="btn-danger" onclick="excluirPerfil()">
+                                <i class="fa-solid fa-trash-can"></i> Excluir
+                            </button>
+                        </div>
 
-            </section>
-        </div>
+                    </form>
 
-    </main>
+                </section>
+            </div>
 
-    <script>
-        const inputSenha = document.getElementById('input-senha');
-        const toggleSenha = document.getElementById('toggle-senha');
+        </main>
 
-        toggleSenha.addEventListener('click', () => {
-            const isPassword = inputSenha.type === 'password';
-            inputSenha.type = isPassword ? 'text' : 'password';
-            toggleSenha.classList.toggle('fa-eye', !isPassword);
-            toggleSenha.classList.toggle('fa-eye-slash', isPassword);
-        });
-    </script>
+        <script>
+            const inputNome = document.getElementById('input-nome');
+            const inputSenha = document.getElementById('input-senha');
+            const toggleSenha = document.getElementById('toggle-senha');
 
-</body>
 
-</html>
+            toggleSenha.addEventListener('click', () => {
+                const isPassword = inputSenha.type === 'password';
+                inputSenha.type = isPassword ? 'text' : 'password';
+                toggleSenha.classList.toggle('fa-eye', !isPassword);
+                toggleSenha.classList.toggle('fa-eye-slash', isPassword);
+            });
+
+            window.onload = function () {
+                carregarPerfil();
+            };
+
+            function carregarPerfil() {
+                const idUsuario = sessionStorage.ID_USUARIO || 2;
+
+                fetch(`/funcionario/perfil/${idUsuario}`)
+                    .then(function (resposta) {
+                        if (resposta.ok) {
+                            resposta.json().then(function (usuario) {
+                                console.log("Perfil carregado:", usuario);
+                                
+                                inputNome.value = usuario.nome;
+                        
+                                sessionStorage.EMAIL_USUARIO = usuario.email;
+                                sessionStorage.ID_CARGO = usuario.id_cargo;
+                                
+                                inputSenha.value = ""; 
+                                inputSenha.placeholder = "Digite sua senha para manter como a atual";
+                            });
+                        } else {
+                            console.error("Erro ao carregar os dados do perfil.");
+                        }
+                    })
+                    .catch(function (erro) {
+                        console.error("Erro de conexão com o servidor:", erro);
+                    });
+            }
+
+            function atualizarPerfil(event) {
+                event.preventDefault(); // Evita o reload padrão do formulário
+                const idUsuario = sessionStorage.ID_USUARIO || 2;
+
+                const nomeVar = inputNome.value;
+                const senhaVar = inputSenha.value;
+                const emailVar = sessionStorage.EMAIL_USUARIO;
+                const idCargoVar = sessionStorage.ID_CARGO;
+
+                fetch(`/funcionario/atualizar/${idUsuario}`, {
+                    method: "PUT",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        nome: nomeVar,
+                        email: emailVar,
+                        senha: senhaVar,
+                        idCargo: idCargoVar
+                    })
+                }).then(function (resposta) {
+                    if (resposta.ok) {
+                        alert("Perfil atualizado com sucesso!");
+                        window.location.reload();
+                    } else {
+                        alert("Houve um erro ao tentar atualizar o perfil!");
+                    }
+                }).catch(function (erro) {
+                    console.error("Erro:", erro);
+                });
+            }
+
+            function excluirPerfil() {
+                const idUsuario = sessionStorage.ID_USUARIO || 2;
+
+                if (confirm("Tem certeza de que deseja excluir a sua conta?")) {
+                    fetch(`/funcionario/deletar/${idUsuario}`, {
+                        method: "DELETE",
+                        headers: {
+                            "Content-Type": "application/json"
+                        }
+                    }).then(function (resposta) {
+                        if (resposta.ok) {
+                            alert("Conta excluída com sucesso!");
+                            sessionStorage.clear();
+                            window.location.href = "../index.html";
+                        } else {
+                            alert("Houve um erro ao tentar excluir a conta!");
+                        }
+                    }).catch(function (erro) {
+                        console.error("Erro:", erro);
+                    });
+                }
+            }
+        </script>
+
+    </body>
+
+    </html>

@@ -104,8 +104,8 @@ CREATE TABLE genero (
     nome VARCHAR(100) NOT NULL UNIQUE
 );
 
--- TABELA: GÊNERO - EMPRESA
-CREATE TABLE empresa_genero (
+-- TABELA: EMPRESA PREFERENCIAS GENERO
+CREATE TABLE empresa_preferencia_genero (
     id_empresa INT NOT NULL,
     id_genero INT NOT NULL,
 
@@ -168,9 +168,11 @@ CREATE TABLE artista_aprovado (
     status_aprovacao VARCHAR(30) NOT NULL DEFAULT 'PENDENTE',
     status_visualizacao VARCHAR(30) NOT NULL DEFAULT 'NAO_VISUALIZADO',
     data_atualizacao DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    id_evento INT NOT NULL,
     PRIMARY KEY (id_empresa, id_artista),
     FOREIGN KEY (id_empresa) REFERENCES empresa(id_empresa),
-    FOREIGN KEY (id_artista) REFERENCES artista(id_artista)
+    FOREIGN KEY (id_artista) REFERENCES artista(id_artista),
+    FOREIGN KEY (id_evento) REFERENCES evento(id_empresa)
 );
 
 
@@ -178,22 +180,22 @@ CREATE TABLE artista_aprovado (
 -- 1. CADASTRO DOS CARGOS (Personas)
 -- =============================================
 INSERT INTO cargo (nome) VALUES 
-('Gerente / ADM (Carla)'),      -- id_cargo = 1
-('Operacional (Lucas)'),         -- id_cargo = 2
-('Suporte do Sistema');          -- id_cargo = 3
+('Gerente / Administrador'),      -- id_cargo = 1
+('Operacional'),                  -- id_cargo = 2
+('Suporte do Sistema');           -- id_cargo = 3
 
 -- =============================================
 -- 2. CADASTRO DOS ACESSOS / TELAS DO SISTEMA
 -- =============================================
 INSERT INTO acesso (nome) VALUES 
-('Tela Empresa / Perfil'),        -- id_acesso = 1
-('Tela Operacional / Dashboard'), -- id_acesso = 2
-('Tela Suporte / Chamados');      -- id_acesso = 3
+('Gerente/Administrador'),        -- id_acesso = 1
+('Operacional'),                  -- id_acesso = 2
+('Suporte');                      -- id_acesso = 3
 
 -- =============================================
 -- 3. ASSOCIAÇÃO DE CARGOS E ACESSOS (cargo_acesso)
 -- =============================================
 INSERT INTO cargo_acesso (id_cargo, id_acesso) VALUES 
-(1, 1), -- ADM (Carla) -> Tela Empresa
-(2, 2), -- Operacional (Lucas) -> Tela Operacional
-(3, 3); -- Suporte -> Tela Suporte
+(1, 1), -- Administrador
+(2, 2), -- Operacional
+(3, 3); -- Suporte

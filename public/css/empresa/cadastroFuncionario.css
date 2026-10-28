@@ -258,10 +258,17 @@ body {
 .password-wrapper {
     display: flex;
     align-items: center;
+    justify-content: space-between;
 }
 
-.password-wrapper i {
+.password-wrapper input {
+    flex: 1;
+}
+
+.toggle-pass {
     cursor: pointer;
+    padding: 5px;
+    margin-left: 10px;
     color: #333;
 }
 

@@ -32,9 +32,16 @@ function atualizar(req, res) {
     var idUsuario = req.params.idUsuario;
     var { nome, email, senha, idCargo } = req.body;
 
-    funcionarioModel.atualizar(idUsuario, nome, email, senha, idCargo)
-        .then(resultado => res.status(200).json(resultado))
-        .catch(erro => res.status(500).json(erro.sqlMessage));
+    if (senha == "") {
+        funcionarioModel.atualizarSemSenha(idUsuario, nome, email, idCargo)
+            .then(resultado => res.status(200).json(resultado))
+            .catch(erro => res.status(500).json(erro.sqlMessage));
+    } else {
+        funcionarioModel.atualizar(idUsuario, nome, email, senha, idCargo)
+            .then(resultado => res.status(200).json(resultado))
+            .catch(erro => res.status(500).json(erro.sqlMessage));
+
+    }
 }
 
 function deletar(req, res) {

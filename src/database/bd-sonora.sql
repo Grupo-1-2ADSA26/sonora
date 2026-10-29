@@ -172,7 +172,7 @@ CREATE TABLE artista_aprovado (
     PRIMARY KEY (id_empresa, id_artista),
     FOREIGN KEY (id_empresa) REFERENCES empresa(id_empresa),
     FOREIGN KEY (id_artista) REFERENCES artista(id_artista),
-    FOREIGN KEY (id_evento) REFERENCES evento(id_empresa)
+    FOREIGN KEY (id_evento) REFERENCES evento(id_evento)
 );
 
 

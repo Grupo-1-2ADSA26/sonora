@@ -26,6 +26,11 @@ body {
     margin-bottom: 35px;
 }
 
+.cabecalho-pagina h1 {
+    font-size: 24px;
+    color: #222;
+}
+
 .icone-cabecalho {
     width: 55px;
     height: 55px;

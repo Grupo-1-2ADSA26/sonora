@@ -6,92 +6,18 @@
 }
 
 body {
-    background: #f1f2f4;
+    background-color: #d8d8d8;
     display: flex;
     min-height: 100vh;
 }
 
-/* ==========================================
-   MENU SIDEBAR (DESKTOP)
-   ========================================== */
-.box-menu {
-    background-color: #ebebeb;
-    width: 210px;
-    height: 100vh;
+.main-content {
+    margin-left: 210px;
+    padding: 30px;
+    width: calc(100% - 210px);
+    min-width: 0;
     display: flex;
     flex-direction: column;
-    padding: 25px 20px;
-    position: fixed;
-    top: 0;
-    left: 0;
-    border-top-right-radius: 30px;
-    border-bottom-right-radius: 30px;
-    box-shadow: 4px 0 15px rgba(0, 0, 0, 0.08);
-    z-index: 1000;
-}
-
-/* Oculta os botões do hambúrguer no Desktop */
-.menu-toggle,
-.btn-hamburguer {
-    display: none;
-}
-
-.logo {
-    font-size: 28px;
-    font-weight: bold;
-    letter-spacing: -1px;
-    margin: 0;
-    color: #333;
-    align-self: center;
-}
-
-.lista {
-    list-style: none;
-    display: flex;
-    flex-direction: column;
-    gap: 22px;
-    margin: 50px 0 0;
-    padding: 0;
-}
-
-.lista li a {
-    display: flex;
-    align-items: center;
-    gap: 15px;
-    text-decoration: none;
-    color: #000;
-    font-size: 14px;
-    font-weight: 500;
-    transition: opacity 0.2s;
-}
-
-.lista li a i {
-    width: 20px;
-    text-align: center;
-    font-size: 17px;
-}
-
-.lista li a:hover {
-    opacity: 0.6;
-}
-
-.box-sair {
-    margin-top: auto;
-    text-align: center;
-}
-
-.botao-sair {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    text-decoration: none;
-    color: #46454a;
-    font-size: 16px;
-    font-weight: bold;
-}
-
-.botao-sair:hover {
-    color: #000;
 }
 
 /* ==========================================

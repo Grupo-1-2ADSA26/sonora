@@ -190,7 +190,7 @@
         let idEventoExcluir = null;
 
         // Pega o ID da empresa do sessionStorage de forma segura
-        const idEmpresa = sessionStorage.ID_EMPRESA || sessionStorage.id_empresa;
+        const idEmpresa = sessionStorage.ID_EMPRESA;
 
         document.addEventListener("DOMContentLoaded", () => {
             if (!idEmpresa) {

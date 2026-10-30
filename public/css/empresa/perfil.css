@@ -15,6 +15,7 @@ body {
     margin-left: 210px;
     padding: 30px;
     width: calc(100% - 210px);
+    min-width: 0;
     display: flex;
     flex-direction: column;
 }
@@ -25,6 +26,7 @@ body {
     font-weight: 800;
     margin-bottom: 20px;
     text-transform: uppercase;
+    overflow-wrap: anywhere;
 }
 
 .profile-container {
@@ -91,6 +93,7 @@ body {
     padding: 14px 20px;
     display: flex;
     flex-direction: column;
+    min-width: 0;
 }
 
 .field-group label {
@@ -112,6 +115,7 @@ body {
     color: #111;
     font-weight: 500;
     width: 100%;
+    min-width: 0;
 }
 
 .password-box {
@@ -172,8 +176,6 @@ body {
     background-color: #9a0007;
 }
 
-
-
 /* ==============================
    RESPONSIVIDADE
 ============================== */
@@ -193,30 +195,16 @@ body {
     }
 }
 
-/* Celulares */
+/* Tablet pequeno e celular */
 @media (max-width: 768px) {
-
     body {
-        display: flex;
         flex-direction: column;
-        width: 100%;
-        min-width: 0;
-        overflow-x: hidden;
-    }
-
-    .box-menu {
-        width: 100%;
-        min-width: 0;
-        flex: 0 0 auto;
     }
 
     .main-content {
-        margin: 0;
-        padding: 20px 16px;
+        margin-left: 0;
         width: 100%;
-        max-width: 100%;
-        min-width: 0;
-        flex: 1 1 auto;
+        padding: 20px 16px;
     }
 
     .page-header h1 {
@@ -224,52 +212,36 @@ body {
         margin-bottom: 18px;
     }
 
-    .profile-container {
-        width: 100%;
-        justify-content: center;
-    }
-
     .profile-card {
-        width: 100%;
-        max-width: 100%;
         padding: 18px;
         border-radius: 18px;
     }
 
     .profile-form {
         gap: 12px;
-        width: 100%;
     }
 
     .field-group {
-        width: 100%;
-        min-width: 0;
-        padding: 12px;
+        padding: 12px 14px;
         border-radius: 14px;
     }
 
     .field-group label {
         flex-wrap: wrap;
+        row-gap: 4px;
         font-size: 12px;
+        line-height: 1.4;
     }
 
-    /* Campos de nome e e-mail */
+    /* Funcionário: input dentro do label, desce para a linha de baixo */
     .field-group label input {
         flex: 1 1 100%;
-        width: 100%;
-        min-width: 0;
-        margin-top: 5px;
-        font-size: 16px;
     }
 
-    /* Campo de senha */
-    .password-box {
-        width: 100%;
-        min-width: 0;
-    }
-
-    .password-box input {
-        min-width: 0;
+    /* Vale para as duas telas: label+input irmãos, select e senha */
+    .field-group input,
+    .field-group select {
+        min-height: 28px;
         font-size: 16px;
     }
 
@@ -285,15 +257,14 @@ body {
 
     .btn-primary,
     .btn-danger {
+        flex: none;
         width: 100%;
-        flex: auto;
-        padding: 13px;
+        padding: 14px;
     }
 }
 
 /* Celulares pequenos */
 @media (max-width: 380px) {
-
     .main-content {
         padding: 16px 12px;
     }
@@ -307,6 +278,6 @@ body {
     }
 
     .field-group {
-        padding: 10px;
+        padding: 10px 12px;
     }
 }

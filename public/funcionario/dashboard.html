@@ -1,14 +1,19 @@
+
 <!DOCTYPE html>
 <html lang="pt-BR">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <title>Dashboard | Sonora</title>
-    <script src="https://kit.fontawesome.com/d840916580.js" crossorigin="anonymous"></script>
+
+    <script src="https://kit.fontawesome.com/d840916580.js"
+        crossorigin="anonymous"></script>
 
     <link rel="stylesheet" href="../css/menu.css">
     <link rel="stylesheet" href="../css/funcionario/dashboard.css">
+
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 
@@ -18,16 +23,46 @@
         <p class="logo">sonora.</p>
 
         <ul class="lista">
-            <li class="ativo"><a href="dashboard.html"><i class="fa-solid fa-house"></i>Início</a></li>
-            <li><a href="pesquisa.html"><i class="fa-solid fa-magnifying-glass"></i>Artistas</a></li>
-            <li><a href="recomendacoes.html"><i class="fa-solid fa-music"></i>Recomendações</a></li>
-            <li><a href="aprovados.html"><i class="fa-solid fa-bell"></i>Aprovados</a></li>
-            <li><a href="perfil.html"><i class="fa-solid fa-user"></i>Perfil</a></li>
+            <li class="ativo">
+                <a href="dashboard.html">
+                    <i class="fa-solid fa-house"></i>
+                    <span>Início</span>
+                </a>
+            </li>
+
+            <li>
+                <a href="pesquisa.html">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                    <span>Artistas</span>
+                </a>
+            </li>
+
+            <li>
+                <a href="recomendacoes.html">
+                    <i class="fa-solid fa-music"></i>
+                    <span>Recomendações</span>
+                </a>
+            </li>
+
+            <li>
+                <a href="aprovados.html">
+                    <i class="fa-solid fa-bell"></i>
+                    <span>Aprovados</span>
+                </a>
+            </li>
+
+            <li>
+                <a href="perfil.html">
+                    <i class="fa-solid fa-user"></i>
+                    <span>Perfil</span>
+                </a>
+            </li>
         </ul>
 
         <div class="box-sair">
             <a class="botao-sair" href="../index.html">
-                <i class="fa-solid fa-right-from-bracket"></i> Sair
+                <i class="fa-solid fa-right-from-bracket"></i>
+                Sair
             </a>
         </div>
     </aside>
@@ -35,128 +70,380 @@
     <main class="main-content">
 
         <header class="page-header">
-            <h1>DASHBOARD</h1>
-            <p>Visão geral dos shows realizados pela empresa.</p>
+
+            <div class="header-info">
+                <span class="eyebrow">SONORA / VISÃO GERAL</span>
+
+                <h1>Dashboard</h1>
+
+                <p>
+                    Acompanhe os dados e o desempenho dos shows.
+                </p>
+            </div>
+
+
+
         </header>
 
         <section class="summary">
 
-            <div class="summary-card">
+            <article class="summary-card">
+
                 <div class="summary-icon">
                     <i class="fa-solid fa-calendar-check"></i>
                 </div>
 
-                <div>
+                <div class="summary-info">
                     <span>Shows realizados</span>
                     <strong>24</strong>
+                    <small>
+                        <i class="fa-solid fa-chart-line"></i>
+                        Visão geral dos eventos
+                    </small>
                 </div>
-            </div>
 
-            <div class="summary-card">
+            </article>
+
+            <article class="summary-card">
+
                 <div class="summary-icon">
                     <i class="fa-solid fa-star"></i>
                 </div>
 
-                <div>
+                <div class="summary-info">
                     <span>Ambiente preferido</span>
                     <strong>Palco</strong>
                     <small>87% de efetividade</small>
                 </div>
-            </div>
+
+            </article>
 
         </section>
 
+        <div id="emptyState" class="empty-state" hidden>
+            <i class="fa-solid fa-magnifying-glass"></i>
+            <h2>Nenhum resultado encontrado</h2>
+            <p>Tente pesquisar por outro termo.</p>
+        </div>
+
         <section class="dashboard-grid">
 
-            <div class="dashboard-card effectiveness">
+            <article class="dashboard-card effectiveness">
+
                 <div class="card-header">
                     <div>
-                        <h2>EFETIVIDADE POR AMBIENTE</h2>
-                        <p>Desempenho dos usuários em cada ambiente.</p>
+                        <span class="card-label">DESEMPENHO</span>
+                        <h2>Efetividade por ambiente</h2>
+                        <p>
+                            Comparativo de efetividade em cada ambiente.
+                        </p>
+                    </div>
+
+                    <div class="card-icon">
+                        <i class="fa-solid fa-chart-column"></i>
                     </div>
                 </div>
 
                 <div class="chart-container">
                     <canvas id="environmentChart"></canvas>
                 </div>
-            </div>
 
-            <div class="dashboard-card shows">
+                <div class="card-footer">
+                    <span class="footer-dot"></span>
+                    <span>Efetividade por ambiente (%)</span>
+                </div>
+
+            </article>
+
+            <article class="dashboard-card shows">
+
                 <div class="card-header">
                     <div>
-                        <h2>SHOWS REALIZADOS</h2>
-                        <p>Quantidade de shows por período.</p>
+                        <span class="card-label">ACOMPANHAMENTO</span>
+                        <h2>Shows realizados</h2>
+                        <p>
+                            Quantidade de shows por mês.
+                        </p>
+                    </div>
+
+                    <div class="card-icon">
+                        <i class="fa-solid fa-chart-line"></i>
                     </div>
                 </div>
 
                 <div class="chart-container">
                     <canvas id="showsChart"></canvas>
                 </div>
-            </div>
+
+                <div class="card-footer">
+                    <span class="footer-dot"></span>
+                    <span>Quantidade de eventos por mês</span>
+                </div>
+
+            </article>
 
         </section>
 
     </main>
 
     <script>
-        new Chart(document.getElementById('environmentChart'), {
-            type: 'bar',
-            data: {
-                labels: ['Palco', 'Ar Livre', 'Bar', 'Balada'],
-                datasets: [{
-                    data: [87, 78, 71, 63],
-                    borderRadius: 6,
-                    barThickness: 28
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: {
-                        display: false
-                    }
-                },
-                scales: {
-                    y: {
-                        beginAtZero: true,
-                        max: 100,
-                        ticks: {
-                            callback: value => value + '%'
-                        }
-                    }
-                }
-            }
-        });
+        // Configuração visual dos gráficos
+        Chart.defaults.font.family =
+            "system-ui, -apple-system, sans-serif";
 
-        new Chart(document.getElementById('showsChart'), {
-            type: 'line',
-            data: {
-                labels: ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun'],
-                datasets: [{
-                    data: [2, 4, 3, 5, 4, 6],
-                    tension: 0.4,
-                    borderWidth: 2,
-                    pointRadius: 4
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: {
-                        display: false
-                    }
+        Chart.defaults.color = "#858585";
+
+        Chart.defaults.plugins.tooltip.backgroundColor = "#242424";
+        Chart.defaults.plugins.tooltip.padding = 12;
+        Chart.defaults.plugins.tooltip.cornerRadius = 10;
+        Chart.defaults.plugins.tooltip.displayColors = false;
+
+        // Gráfico de efetividade por ambiente
+        const environmentChart = new Chart(
+            document.getElementById("environmentChart"),
+            {
+                type: "bar",
+
+                data: {
+                    labels: [
+                        "Palco",
+                        "Ar Livre",
+                        "Bar",
+                        "Balada"
+                    ],
+
+                    datasets: [{
+                        label: "Efetividade",
+                        data: [87, 78, 71, 63],
+
+                        backgroundColor: [
+                            "#292929",
+                            "#555555",
+                            "#858585",
+                            "#b8b8b8"
+                        ],
+
+                        borderRadius: 7,
+                        borderSkipped: false,
+                        barThickness: 27
+                    }]
                 },
-                scales: {
-                    y: {
-                        beginAtZero: true,
-                        ticks: {
-                            stepSize: 1
+
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+
+                    animation: {
+                        duration: 700
+                    },
+
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+
+                        tooltip: {
+                            callbacks: {
+                                label: context =>
+                                    ` ${context.parsed.y}%`
+                            }
+                        }
+                    },
+
+                    scales: {
+                        x: {
+                            grid: {
+                                display: false
+                            },
+
+                            border: {
+                                display: false
+                            },
+
+                            ticks: {
+                                color: "#777",
+                                font: {
+                                    size: 11
+                                }
+                            }
+                        },
+
+                        y: {
+                            beginAtZero: true,
+                            max: 100,
+
+                            border: {
+                                display: false
+                            },
+
+                            grid: {
+                                color: "#eeeeee",
+                                drawTicks: false
+                            },
+
+                            ticks: {
+                                stepSize: 20,
+                                padding: 10,
+
+                                callback: value =>
+                                    value + "%"
+                            }
                         }
                     }
                 }
             }
+        );
+
+        // Gráfico de shows por mês
+        const showsChart = new Chart(
+            document.getElementById("showsChart"),
+            {
+                type: "line",
+
+                data: {
+                    labels: [
+                        "Jan",
+                        "Fev",
+                        "Mar",
+                        "Abr",
+                        "Mai",
+                        "Jun"
+                    ],
+
+                    datasets: [{
+                        label: "Shows",
+                        data: [2, 4, 3, 5, 4, 6],
+
+                        borderColor: "#292929",
+                        backgroundColor: "rgba(41, 41, 41, 0.08)",
+
+                        fill: true,
+                        tension: 0.4,
+                        borderWidth: 2.5,
+
+                        pointRadius: 4,
+                        pointHoverRadius: 6,
+
+                        pointBackgroundColor: "#292929",
+                        pointBorderColor: "#ffffff",
+                        pointBorderWidth: 2
+                    }]
+                },
+
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+
+                    animation: {
+                        duration: 700
+                    },
+
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+
+                        tooltip: {
+                            callbacks: {
+                                label: context =>
+                                    ` ${context.parsed.y} shows`
+                            }
+                        }
+                    },
+
+                    scales: {
+                        x: {
+                            grid: {
+                                display: false
+                            },
+
+                            border: {
+                                display: false
+                            }
+                        },
+
+                        y: {
+                            beginAtZero: true,
+
+                            border: {
+                                display: false
+                            },
+
+                            grid: {
+                                color: "#eeeeee",
+                                drawTicks: false
+                            },
+
+                            ticks: {
+                                stepSize: 1,
+                                padding: 10
+                            }
+                        }
+                    }
+                }
+            }
+        );
+
+        // Pesquisa dinâmica
+        const searchInput =
+            document.getElementById("searchInput");
+
+        const clearSearch =
+            document.getElementById("clearSearch");
+
+        const emptyState =
+            document.getElementById("emptyState");
+
+        const dashboardItems =
+            document.querySelectorAll(
+                ".summary-card, .dashboard-card"
+            );
+
+        function normalizarTexto(texto) {
+            return texto
+                .normalize("NFD")
+                .replace(/[\u0300-\u036f]/g, "")
+                .toLowerCase()
+                .trim();
+        }
+
+        function filtrarDashboard() {
+            const termo = normalizarTexto(searchInput.value);
+
+            let resultados = 0;
+
+            dashboardItems.forEach(item => {
+                const conteudo = normalizarTexto(
+                    item.textContent
+                );
+
+                const corresponde =
+                    conteudo.includes(termo);
+
+                item.hidden = !corresponde;
+
+                if (corresponde) {
+                    resultados++;
+                }
+            });
+
+            clearSearch.hidden = termo.length === 0;
+
+            emptyState.hidden =
+                termo.length === 0 || resultados > 0;
+        }
+
+        searchInput.addEventListener(
+            "input",
+            filtrarDashboard
+        );
+
+        clearSearch.addEventListener("click", () => {
+            searchInput.value = "";
+
+            filtrarDashboard();
+
+            searchInput.focus();
         });
     </script>
 

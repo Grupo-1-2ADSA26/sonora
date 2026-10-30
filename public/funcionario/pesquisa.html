@@ -181,114 +181,341 @@
         </div>
     </main>
 
-    <script>
-        let meuchart = null;
-        let idArtistaAtual = null;
 
-        window.onload = function () {
-            // Página inixia toda limpa
-        };
+<script>
+    let meuchart = null;
+    let idArtistaAtual = null;
+    let temporizadorPesquisa = null;
+    let ultimaPesquisa = 0;
 
-        function atualizarGrafico(popularidade, energy, danceability) {
-            const ctx = document.getElementById('artistChart').getContext('2d');
+    window.onload = function () {
+        const inputPesquisa = document.getElementById('input-pesquisa');
 
-            if (meuchart) {
-                meuchart.destroy();
-            }
+        if (inputPesquisa) {
+            // Pesquisar automaticamente enquanto digita
+            inputPesquisa.addEventListener('input', function () {
+                clearTimeout(temporizadorPesquisa);
 
-            meuchart = new Chart(ctx, {
-                type: 'bar',
-                data: {
-                    labels: ['Popularidade', 'Energy', 'Danceability'],
-                    datasets: [{
-                        label: 'Índice (%)',
-                        data: [popularidade, energy * 100, danceability * 100],
-                        borderWidth: 1
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    scales: {
-                        y: { beginAtZero: true, max: 100 }
-                    },
-                    plugins: { legend: { display: false } }
+                const nome = this.value.trim();
+
+                // Aguarda pelo menos 2 caracteres
+                if (nome.length < 2) {
+                    return;
+                }
+
+                // Espera a pessoa parar de digitar
+                temporizadorPesquisa = setTimeout(function () {
+                    buscarArtista(true);
+                }, 400);
+            });
+
+            // Também permite pesquisar pressionando Enter
+            inputPesquisa.addEventListener('keydown', function (event) {
+                if (event.key === 'Enter') {
+                    event.preventDefault();
+
+                    clearTimeout(temporizadorPesquisa);
+                    buscarArtista();
                 }
             });
         }
+    };
 
-        function buscarArtista() {
-            const nome = document.getElementById('input-pesquisa').value;
+    function atualizarGrafico(popularidade, energy, danceability) {
+        const canvas = document.getElementById('artistChart');
 
-            if (!nome || nome.trim() === "") {
-                alert("Digite o nome de um artista para pesquisar!");
+        if (!canvas) return;
+
+        const ctx = canvas.getContext('2d');
+
+        if (meuchart) {
+            meuchart.destroy();
+        }
+
+        meuchart = new Chart(ctx, {
+            type: 'bar',
+
+            data: {
+                labels: [
+                    'Popularidade',
+                    'Energy',
+                    'Danceability'
+                ],
+
+                datasets: [{
+                    label: 'Índice (%)',
+
+                    data: [
+                        Number(popularidade) || 0,
+                        (Number(energy) || 0) * 100,
+                        (Number(danceability) || 0) * 100
+                    ],
+
+                    backgroundColor: [
+                        '#222222',
+                        '#555555',
+                        '#888888'
+                    ],
+
+                    borderColor: [
+                        '#111111',
+                        '#333333',
+                        '#666666'
+                    ],
+
+                    borderWidth: 1,
+                    borderRadius: 6
+                }]
+            },
+
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        max: 100,
+
+                        ticks: {
+                            callback: function (valor) {
+                                return valor + '%';
+                            }
+                        }
+                    }
+                },
+
+                plugins: {
+                    legend: {
+                        display: false
+                    },
+
+                    tooltip: {
+                        callbacks: {
+                            label: function (context) {
+                                return context.parsed.y.toFixed(1) + '%';
+                            }
+                        }
+                    }
+                }
+            }
+        });
+    }
+
+    async function buscarArtista(silenciosa = false) {
+        const inputPesquisa = document.getElementById('input-pesquisa');
+
+        if (!inputPesquisa) return;
+
+        const nome = inputPesquisa.value.trim();
+
+        if (!nome) {
+            if (!silenciosa) {
+                alert('Digite o nome de um artista para pesquisar!');
+                inputPesquisa.focus();
+            }
+
+            return;
+        }
+
+        // Identifica cada pesquisa para ignorar respostas antigas
+        const pesquisaAtual = ++ultimaPesquisa;
+
+        try {
+            const resposta = await fetch(
+                `/artista/pesquisar?nome=${encodeURIComponent(nome)}`
+            );
+
+            // Ignora resultados de pesquisas anteriores
+            if (pesquisaAtual !== ultimaPesquisa) return;
+
+            // Se a pessoa continuou digitando, descarta esta resposta
+            if (inputPesquisa.value.trim() !== nome) return;
+
+            if (!resposta.ok) {
+                if (!silenciosa) {
+                    if (resposta.status === 404) {
+                        alert('Artista não encontrado!');
+                    } else {
+                        alert(
+                            'Não foi possível pesquisar o artista. Tente novamente.'
+                        );
+                    }
+                }
+
                 return;
             }
 
-            fetch(`/artista/pesquisar?nome=${encodeURIComponent(nome)}`)
-                .then(resposta => {
-                    if (resposta.ok) {
-                        resposta.json().then(dados => {
-                            idArtistaAtual = dados.id_artista;
+            const dados = await resposta.json();
 
-                            // Atualizar Cabeçalho
-                            document.getElementById('nome-artista').innerHTML = `${dados.nome} <i class="fa-solid fa-circle-check verified" title="Artista verificado"></i>`;
-                            document.getElementById('genero-artista').innerText = dados.genero;
+            // Confere novamente antes de atualizar a dashboard
+            if (pesquisaAtual !== ultimaPesquisa) return;
+            if (inputPesquisa.value.trim() !== nome) return;
 
-                            // Atualizar KPIs individuais
-                            document.getElementById('kpi-popularidade').innerText = `${dados.popularidade}/100`;
-                            document.getElementById('kpi-energy').innerText = dados.energy;
-                            document.getElementById('kpi-danceability').innerText = dados.danceability;
-                            document.getElementById('kpi-bpm').innerText = dados.bpm;
+            if (!dados || !dados.id_artista) {
+                if (!silenciosa) {
+                    alert(
+                        'Não foram encontrados dados válidos para esse artista.'
+                    );
+                }
 
-                            // Texto de Interpretação Dinâmico
-                            document.getElementById('texto-interpretacao').innerText = 
-                                `${dados.nome} destaca-se com uma média de ${dados.bpm} BPM e energia de ${(dados.energy * 100).toFixed(0)}%, com forte aceitação em faixas do gênero ${dados.genero}.`;
+                return;
+            }
 
-                            // Atualizar Top 3 Faixas
-                            const listaFaixas = document.getElementById('lista-faixas');
-                            listaFaixas.innerHTML = '';
+            idArtistaAtual = dados.id_artista;
 
-                            if (dados.topFaixas && dados.topFaixas.length > 0) {
-                                dados.topFaixas.forEach((faixa, idx) => {
-                                    const streamsFormatado = Number(faixa.total_streams).toLocaleString('pt-BR');
-                                    listaFaixas.innerHTML += `
-                                        <li>
-                                            <div class="track-info">
-                                                <span class="rank">${idx + 1}</span>
-                                                <div>
-                                                    <strong>${faixa.titulo}</strong>
-                                                    <small>${faixa.album || 'Single'}</small>
-                                                </div>
-                                            </div>
-                                            <span class="track-stats">${streamsFormatado} streams</span>
-                                        </li>
-                                    `;
-                                });
-                            } else {
-                                listaFaixas.innerHTML = '<li><span>Nenhuma faixa cadastrada.</span></li>';
-                            }
+            // Atualizar cabeçalho
+            const nomeArtista = document.getElementById('nome-artista');
+            const generoArtista = document.getElementById('genero-artista');
 
-                            
-                            atualizarGrafico(dados.popularidade, dados.energy, dados.danceability);
-                        });
-                    } else {
-                        alert("Artista não encontrado!");
-                    }
-                })
-                .catch(erro => console.error("Erro na busca:", erro));
-        }
+            if (nomeArtista) {
+                // Evita acumular ícones em pesquisas sucessivas
+                nomeArtista.textContent = dados.nome || 'Artista sem nome';
 
-        function irParaAnalise() {
-            if (idArtistaAtual) {
-                const idEmpresa = sessionStorage.ID_EMPRESA || 1;
-                window.location.href = `analise.html?idArtista=${idArtistaAtual}&idEmpresa=${idEmpresa}`;
-            } else {
-                alert("Busque um artista primeiro para visualizar a análise completa!");
+                const iconeVerificado = document.createElement('i');
+                iconeVerificado.className =
+                    'fa-solid fa-circle-check verified';
+
+                iconeVerificado.title = 'Artista verificado';
+
+                nomeArtista.appendChild(document.createTextNode(' '));
+                nomeArtista.appendChild(iconeVerificado);
+            }
+
+            if (generoArtista) {
+                generoArtista.textContent =
+                    dados.genero || 'Gênero não informado';
+            }
+
+            // Atualizar KPIs
+            const popularidade = Number(dados.popularidade) || 0;
+            const energy = Number(dados.energy) || 0;
+            const danceability = Number(dados.danceability) || 0;
+            const bpm = Number(dados.bpm) || 0;
+
+            const kpiPopularidade =
+                document.getElementById('kpi-popularidade');
+
+            const kpiEnergy =
+                document.getElementById('kpi-energy');
+
+            const kpiDanceability =
+                document.getElementById('kpi-danceability');
+
+            const kpiBpm =
+                document.getElementById('kpi-bpm');
+
+            if (kpiPopularidade) {
+                kpiPopularidade.textContent = `${popularidade}/100`;
+            }
+
+            if (kpiEnergy) {
+                kpiEnergy.textContent = `${(energy * 100).toFixed(0)}%`;
+            }
+
+            if (kpiDanceability) {
+                kpiDanceability.textContent =
+                    `${(danceability * 100).toFixed(0)}%`;
+            }
+
+            if (kpiBpm) {
+                kpiBpm.textContent = bpm;
+            }
+
+            // Atualizar interpretação
+            const interpretacao =
+                document.getElementById('texto-interpretacao');
+
+            if (interpretacao) {
+                interpretacao.textContent =
+                    `${dados.nome || 'O artista'} destaca-se com uma média de ${bpm} BPM e energia de ${(energy * 100).toFixed(0)}%, com forte aceitação em faixas do gênero ${dados.genero || 'não informado'}.`;
+            }
+
+            // Atualizar Top 3 faixas
+            const listaFaixas =
+                document.getElementById('lista-faixas');
+
+            if (listaFaixas) {
+                listaFaixas.innerHTML = '';
+
+                if (dados.topFaixas && dados.topFaixas.length > 0) {
+                    dados.topFaixas.forEach((faixa, idx) => {
+                        const streams = Number(faixa.total_streams) || 0;
+
+                        const streamsFormatado =
+                            streams.toLocaleString('pt-BR');
+
+                        const item = document.createElement('li');
+
+                        const trackInfo = document.createElement('div');
+                        trackInfo.className = 'track-info';
+
+                        const rank = document.createElement('span');
+                        rank.className = 'rank';
+                        rank.textContent = idx + 1;
+
+                        const detalhes = document.createElement('div');
+
+                        const titulo = document.createElement('strong');
+                        titulo.textContent =
+                            faixa.titulo || 'Faixa sem título';
+
+                        const album = document.createElement('small');
+                        album.textContent = faixa.album || 'Single';
+
+                        detalhes.appendChild(titulo);
+                        detalhes.appendChild(album);
+
+                        trackInfo.appendChild(rank);
+                        trackInfo.appendChild(detalhes);
+
+                        const estatisticas = document.createElement('span');
+                        estatisticas.className = 'track-stats';
+                        estatisticas.textContent =
+                            `${streamsFormatado} streams`;
+
+                        item.appendChild(trackInfo);
+                        item.appendChild(estatisticas);
+
+                        listaFaixas.appendChild(item);
+                    });
+                } else {
+                    listaFaixas.innerHTML =
+                        '<li><span>Nenhuma faixa cadastrada.</span></li>';
+                }
+            }
+
+            // Atualizar gráfico
+            atualizarGrafico(
+                popularidade,
+                energy,
+                danceability
+            );
+
+        } catch (erro) {
+            console.error('Erro na busca:', erro);
+
+            if (!silenciosa) {
+                alert(
+                    'Ocorreu um erro ao pesquisar o artista. Verifique sua conexão e tente novamente.'
+                );
             }
         }
-    </script>
+    }
 
+    function irParaAnalise() {
+        if (idArtistaAtual) {
+            const idEmpresa = sessionStorage.ID_EMPRESA || 1;
+
+            window.location.href =
+                `analise.html?idArtista=${encodeURIComponent(idArtistaAtual)}&idEmpresa=${encodeURIComponent(idEmpresa)}`;
+        } else {
+            alert(
+                'Busque um artista primeiro para visualizar a análise completa!'
+            );
+        }
+    }
+</script>
 </body>
 
 </html>

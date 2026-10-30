@@ -17,6 +17,26 @@ function listarAprovados(req, res) {
         });
 }
 
+function enviarParaAprovados(req, res) {
+    var idEmpresa = req.body.idEmpresa;
+    var idArtista = req.body.idArtista;
+    var idUsuario = req.body.idUsuario;
+    var idEvento = req.body.idEvento;
+
+    aprovadosModel.enviarParaAprovados(idEmpresa, idArtista, idUsuario, idEvento)    
+        .then(function (resultado) {
+            res.status(201).json({
+                mensagem: "Artista enviado para aprovação com sucesso!",
+                resultado: resultado
+            });
+        })
+        .catch(function (erro) {
+            console.error("Erro ao enviar artista para aprovação:", erro);
+            res.status(500).json(erro);
+        });
+}
+
 module.exports = {
-    listarAprovados
+    listarAprovados,
+    enviarParaAprovados
 };

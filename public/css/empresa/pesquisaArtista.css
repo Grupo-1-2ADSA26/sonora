@@ -1,0 +1,766 @@
+
+/* ==========================
+   CONFIGURAÇÕES GERAIS
+========================== */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: system-ui, -apple-system, sans-serif;
+}
+
+body {
+    background: #f4f4f4;
+    display: flex;
+    min-height: 100vh;
+    color: #292929;
+}
+
+.main-content {
+    margin-left: 210px;
+    padding: 30px;
+    width: calc(100% - 210px);
+    min-width: 0;
+}
+
+/* ==========================
+   BARRA DE PESQUISA
+========================== */
+
+.search-bar {
+    display: flex;
+    align-items: stretch;
+    gap: 15px;
+    margin-bottom: 25px;
+}
+
+.search-input {
+    background-color: #fff;
+    flex: 1;
+    min-width: 0;
+    min-height: 50px;
+
+    display: flex;
+    align-items: center;
+
+    padding: 0 18px;
+    border: 1px solid transparent;
+    border-radius: 16px;
+
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+
+    transition:
+        border-color 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+.search-input:focus-within {
+    border-color: #888;
+    box-shadow: 0 0 0 4px rgba(0, 0, 0, 0.04);
+}
+
+.search-input i {
+    color: #888;
+    margin-right: 12px;
+    font-size: 15px;
+}
+
+.search-input input {
+    border: none;
+    outline: none;
+    background: transparent;
+
+    width: 100%;
+    min-width: 0;
+
+    font-size: 14px;
+    color: #333;
+}
+
+.search-input input::placeholder {
+    color: #999;
+}
+
+.btn-primary {
+    background-color: #333;
+    color: #fff;
+
+    border: none;
+    padding: 12px 28px;
+    border-radius: 16px;
+
+    font-size: 13px;
+    font-weight: 700;
+
+    cursor: pointer;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+
+    transition:
+        background-color 0.2s ease,
+        transform 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+.btn-primary:hover {
+    background-color: #000;
+    box-shadow: 0 5px 12px rgba(0, 0, 0, 0.12);
+}
+
+.btn-primary:active {
+    transform: scale(0.98);
+}
+
+.btn-primary:focus-visible {
+    outline: 2px solid #555;
+    outline-offset: 3px;
+}
+
+.full-width {
+    width: 100%;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+/* ==========================
+   CARDS PRINCIPAIS
+========================== */
+
+.card {
+    background-color: #fff;
+    border: 1px solid rgba(0, 0, 0, 0.035);
+    border-radius: 20px;
+    padding: 24px;
+
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.035);
+    margin-bottom: 22px;
+
+    min-width: 0;
+}
+
+.card h3 {
+    font-size: 15px;
+    color: #333;
+    margin-bottom: 15px;
+
+    display: flex;
+    align-items: center;
+    gap: 9px;
+
+    font-weight: 750;
+}
+
+.card h3 > i {
+    color: #555;
+}
+
+/* ==========================
+   CABEÇALHO DO CARD
+========================== */
+
+.card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 18px;
+}
+
+.card-header h3 {
+    margin-bottom: 7px;
+}
+
+.card-header small {
+    color: #888;
+    font-size: 11px;
+    line-height: 1.5;
+}
+
+.data-badge {
+    background-color: #f2f2f2;
+    color: #666;
+
+    font-size: 10px;
+    font-weight: 650;
+
+    padding: 7px 11px;
+    border-radius: 10px;
+    white-space: nowrap;
+}
+
+/* ==========================
+   PERFIL DO ARTISTA
+========================== */
+
+.artist-header {
+    margin-bottom: 22px;
+    background: linear-gradient(120deg, #fff 0%, #f8f8f8 100%);
+}
+
+.artist-header .profile-header {
+    margin-bottom: 0;
+}
+
+.profile-header {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    margin-bottom: 20px;
+    min-width: 0;
+}
+
+.avatar-lg {
+    width: 70px;
+    height: 70px;
+    flex-shrink: 0;
+
+    border-radius: 19px;
+
+    background-color: #ededed;
+    border: 1px solid #e5e5e5;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    font-size: 27px;
+    color: #333;
+}
+
+.profile-meta {
+    min-width: 0;
+}
+
+.profile-meta h2 {
+    font-size: 22px;
+    color: #222;
+
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 7px;
+
+    font-weight: 800;
+    letter-spacing: -0.5px;
+    overflow-wrap: anywhere;
+}
+
+.profile-meta > small {
+    display: block;
+    margin-top: 8px;
+
+    font-size: 11px;
+    color: #888;
+    line-height: 1.5;
+}
+
+.verified {
+    color: #1da1f2;
+    font-size: 15px;
+}
+
+.genre-tag {
+    display: inline-block;
+    font-size: 12px;
+    color: #666;
+    margin-top: 5px;
+}
+
+/* ==========================
+   INDICADORES MUSICAIS
+========================== */
+
+.artist-analysis-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 14px;
+    margin-top: 22px;
+}
+
+.analysis-card {
+    background-color: #f8f8f8;
+    border: 1px solid #eeeeee;
+
+    padding: 16px;
+    border-radius: 15px;
+
+    display: flex;
+    align-items: center;
+    gap: 12px;
+
+    min-width: 0;
+
+    transition:
+        background-color 0.2s ease,
+        transform 0.2s ease,
+        border-color 0.2s ease;
+}
+
+.analysis-card:hover {
+    background-color: #f1f1f1;
+    border-color: #e3e3e3;
+    transform: translateY(-2px);
+}
+
+.analysis-card > div:last-child {
+    min-width: 0;
+}
+
+.analysis-icon {
+    width: 43px;
+    height: 43px;
+    flex-shrink: 0;
+
+    border-radius: 12px;
+    background-color: #eaeaea;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    color: #333;
+    font-size: 17px;
+}
+
+.analysis-card small {
+    display: block;
+    color: #777;
+    font-size: 11px;
+    margin-bottom: 5px;
+}
+
+.analysis-card strong {
+    display: block;
+    color: #222;
+    font-size: 21px;
+    font-weight: 800;
+    letter-spacing: -0.5px;
+    overflow-wrap: anywhere;
+}
+
+.analysis-description {
+    display: block;
+    margin-top: 4px;
+    color: #888;
+    font-size: 10px;
+    line-height: 1.4;
+}
+
+/* ==========================
+   ÁREA DE ANÁLISE
+========================== */
+
+.analysis-content {
+    display: grid;
+    grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+    gap: 28px;
+    margin-top: 28px;
+    padding-top: 24px;
+    border-top: 1px solid #eeeeee;
+}
+
+.chart-area,
+.analysis-summary {
+    min-width: 0;
+}
+
+.chart-area h4,
+.analysis-summary h4 {
+    font-size: 14px;
+    color: #333;
+
+    display: flex;
+    align-items: center;
+    gap: 8px;
+
+    margin-bottom: 15px;
+    font-weight: 750;
+}
+
+.chart-area h4 i,
+.analysis-summary h4 i {
+    color: #555;
+}
+
+.chart-container {
+    height: 250px;
+    position: relative;
+    width: 100%;
+}
+
+.analysis-summary {
+    padding: 5px 0;
+}
+
+.analysis-summary > p {
+    color: #666;
+    font-size: 12px;
+    line-height: 1.8;
+    margin-bottom: 18px;
+}
+
+/* ==========================
+   RESUMO DA ANÁLISE
+========================== */
+
+.summary-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    margin-bottom: 17px;
+}
+
+.summary-item > i {
+    width: 34px;
+    height: 34px;
+    flex-shrink: 0;
+
+    background-color: #ededed;
+    border-radius: 10px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    color: #333;
+    font-size: 13px;
+}
+
+.summary-item strong {
+    display: block;
+    color: #333;
+    font-size: 12px;
+    margin-bottom: 4px;
+}
+
+.summary-item span {
+    display: block;
+    color: #777;
+    font-size: 11px;
+    line-height: 1.6;
+}
+
+/* ==========================
+   GRID INFERIOR
+========================== */
+
+.dashboard-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 22px;
+    align-items: stretch;
+}
+
+.section-panel {
+    background-color: #e2e2e2;
+    padding: 16px;
+    border: 1px solid #dcdcdc;
+    border-radius: 22px;
+
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+
+    min-width: 0;
+}
+
+.section-panel .card {
+    flex: 1;
+    margin-bottom: 0;
+}
+
+.section-panel .card h3 {
+    line-height: 1.5;
+}
+
+/* ==========================
+   LISTA DE FAIXAS
+========================== */
+
+.track-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+}
+
+.track-list li {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+
+    padding: 14px 0;
+    border-bottom: 1px solid #eeeeee;
+}
+
+.track-list li:first-child {
+    padding-top: 5px;
+}
+
+.track-list li:last-child {
+    border-bottom: none;
+    padding-bottom: 5px;
+}
+
+.track-info {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    min-width: 0;
+}
+
+.track-info .rank {
+    font-weight: 800;
+    color: #999;
+    font-size: 13px;
+    width: 18px;
+    flex-shrink: 0;
+}
+
+.track-info > div {
+    min-width: 0;
+}
+
+.track-info strong {
+    font-size: 12px;
+    color: #292929;
+    display: block;
+    overflow-wrap: anywhere;
+}
+
+.track-info small {
+    display: block;
+    font-size: 10px;
+    color: #888;
+    margin-top: 4px;
+}
+
+.track-stats {
+    font-size: 10px;
+    font-weight: 700;
+    color: #555;
+    text-align: right;
+    flex-shrink: 0;
+}
+
+/* ==========================
+   RECOMENDAÇÕES
+========================== */
+
+.curation-text {
+    font-size: 12px;
+    color: #666;
+    line-height: 1.7;
+    margin-bottom: 15px;
+}
+
+.event-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 18px;
+}
+
+.event-tags span {
+    background-color: #ededed;
+    color: #444;
+
+    font-size: 10px;
+    padding: 7px 11px;
+    border-radius: 12px;
+
+    font-weight: 650;
+
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.recommendation-box {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+
+    background-color: #f5f5f5;
+    border: 1px solid #eeeeee;
+
+    padding: 15px;
+    border-radius: 14px;
+    margin-bottom: 18px;
+}
+
+.recommendation-box > i {
+    color: #555;
+    font-size: 15px;
+    margin-top: 2px;
+    flex-shrink: 0;
+}
+
+.recommendation-box strong {
+    display: block;
+    color: #333;
+    font-size: 12px;
+    margin-bottom: 5px;
+}
+
+.recommendation-box p {
+    color: #777;
+    font-size: 11px;
+    line-height: 1.7;
+    margin: 0;
+}
+
+/* ==========================
+   ACESSIBILIDADE
+========================== */
+
+button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+button:focus-visible,
+input:focus-visible {
+    outline-offset: 3px;
+}
+
+/* ==========================
+   TABLETS
+========================== */
+
+@media (max-width: 1100px) {
+    .artist-analysis-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .analysis-content {
+        grid-template-columns: 1fr;
+        gap: 24px;
+    }
+
+    .dashboard-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* ==========================
+   TELAS MENORES
+========================== */
+
+@media (max-width: 700px) {
+    .main-content {
+        margin-left: 0;
+        width: 100%;
+        padding: 20px;
+    }
+
+    .search-bar {
+        flex-direction: column;
+        gap: 12px;
+    }
+
+    .search-input {
+        min-height: 48px;
+        flex: auto;
+        width: 100%;
+    }
+
+    .btn-primary {
+        width: 100%;
+    }
+
+    .card {
+        padding: 19px;
+        border-radius: 17px;
+    }
+
+    .artist-analysis-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 10px;
+    }
+
+    .analysis-card {
+        padding: 12px;
+        gap: 10px;
+    }
+
+    .analysis-icon {
+        width: 36px;
+        height: 36px;
+        font-size: 14px;
+    }
+
+    .analysis-card strong {
+        font-size: 18px;
+    }
+
+    .dashboard-grid {
+        grid-template-columns: 1fr;
+        gap: 16px;
+    }
+
+    .section-panel {
+        padding: 12px;
+        border-radius: 18px;
+    }
+
+    .card-header {
+        align-items: flex-start;
+    }
+
+    .data-badge {
+        white-space: normal;
+        text-align: center;
+    }
+}
+
+/* ==========================
+   CELULARES PEQUENOS
+========================== */
+
+@media (max-width: 400px) {
+    .main-content {
+        padding: 14px;
+    }
+
+    .artist-analysis-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .profile-header {
+        align-items: flex-start;
+        gap: 12px;
+    }
+
+    .avatar-lg {
+        width: 54px;
+        height: 54px;
+        border-radius: 15px;
+        font-size: 21px;
+    }
+
+    .profile-meta h2 {
+        font-size: 18px;
+    }
+
+    .track-list li {
+        align-items: flex-start;
+    }
+
+    .track-stats {
+        max-width: 100px;
+        overflow-wrap: anywhere;
+    }
+
+    .chart-container {
+        height: 220px;
+    }
+}

@@ -163,6 +163,7 @@ CREATE TABLE log (
 );
 
 CREATE TABLE artista_aprovado (
+    id_usuario INT NOT NULL,
     id_empresa INT NOT NULL,
     id_artista INT NOT NULL,
     status_aprovacao VARCHAR(30) NOT NULL DEFAULT 'PENDENTE',
@@ -170,6 +171,7 @@ CREATE TABLE artista_aprovado (
     data_atualizacao DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     id_evento INT NOT NULL,
     PRIMARY KEY (id_empresa, id_artista),
+    FOREIGN KEY (id_usuario) REFERENCES usuario(id_usuario),
     FOREIGN KEY (id_empresa) REFERENCES empresa(id_empresa),
     FOREIGN KEY (id_artista) REFERENCES artista(id_artista),
     FOREIGN KEY (id_evento) REFERENCES evento(id_evento)

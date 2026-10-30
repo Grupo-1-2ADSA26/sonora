@@ -49,7 +49,12 @@
 
         function carregarArtistasAprovados() {
             
-            var idEmpresa = sessionStorage.ID_EMPRESA || 1; 
+            var idEmpresa = sessionStorage.ID_EMPRESA;
+
+            if (!idEmpresa) {
+                window.location.href = "login.html";
+                return;
+            }
 
             
             fetch(`/aprovados/aprovados/${idEmpresa}`)
@@ -74,6 +79,7 @@
                                         <div class="approved-info">
                                             <h2>${item.nome_artista} <i class="fa-solid fa-circle-check"></i></h2>
                                             <span>${item.genero || 'Gênero não informado'}</span>
+                                            <span>Sugerido por ${item.criador}</span>
                                         </div>
 
                                         <div class="approved-metrics">

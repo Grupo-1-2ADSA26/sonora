@@ -1,213 +1,409 @@
-*{
-    margin:0;
-    padding:0;
-    box-sizing:border-box;
-    font-family:system-ui, -apple-system, sans-serif;
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: system-ui, -apple-system, sans-serif;
 }
 
-body{
-    background:#f1f2f4;
-    display:flex;
-    min-height:100vh;
+body {
+    background: #f1f2f4;
+    display: flex;
+    min-height: 100vh;
 }
 
-.main-content{
-    margin-left:210px;
-    padding:30px;
-    width:calc(100% - 210px);
+/* ==========================================
+   MENU SIDEBAR (DESKTOP)
+   ========================================== */
+.box-menu {
+    background-color: #ebebeb;
+    width: 210px;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    padding: 25px 20px;
+    position: fixed;
+    top: 0;
+    left: 0;
+    border-top-right-radius: 30px;
+    border-bottom-right-radius: 30px;
+    box-shadow: 4px 0 15px rgba(0, 0, 0, 0.08);
+    z-index: 1000;
 }
 
-.dashboard-header{
-    margin-bottom:25px;
+/* Oculta os botões do hambúrguer no Desktop */
+.menu-toggle,
+.btn-hamburguer {
+    display: none;
 }
 
-.dashboard-header h1{
-    font-size:24px;
-    color:#222;
+.logo {
+    font-size: 28px;
+    font-weight: bold;
+    letter-spacing: -1px;
+    margin: 0;
+    color: #333;
+    align-self: center;
 }
 
-.dashboard-header p{
-    margin-top:4px;
-    color:#666;
-    font-size:14px;
+.lista {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 22px;
+    margin: 50px 0 0;
+    padding: 0;
 }
 
-/* PAINEL PRINCIPAL */
-
-.dashboard-grid{
-    background:#e2e2e2;
-    border-radius:24px;
-    padding:20px;
-    display:flex;
-    flex-direction:column;
-    gap:20px;
-    border:2px solid #bdbdbd;
-
+.lista li a {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    text-decoration: none;
+    color: #000;
+    font-size: 14px;
+    font-weight: 500;
+    transition: opacity 0.2s;
 }
 
-/* KPIS */
-
-.secao-kpis{
-    display:grid;
-    grid-template-columns:repeat(3,1fr);
-    gap:15px;
+.lista li a i {
+    width: 20px;
+    text-align: center;
+    font-size: 17px;
 }
 
-.card-kpi{
-    background:white;
-    border-radius:16px;
-    min-height:120px;
-    padding:20px;
-    text-align:center;
-    display:flex;
-    flex-direction:column;
-    justify-content:center;
-    border:1px solid #d7d7d7;
-    box-shadow:0 2px 8px rgba(0,0,0,.05);
+.lista li a:hover {
+    opacity: 0.6;
 }
 
-.titulo-kpi{
-    font-size:16px;
-    color:#666;
+.box-sair {
+    margin-top: auto;
+    text-align: center;
 }
 
-.card-kpi h2{
-    margin-top:10px;
-    font-size:34px;
-    color:#333;
+.botao-sair {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    text-decoration: none;
+    color: #46454a;
+    font-size: 16px;
+    font-weight: bold;
 }
 
-.card-kpi p{
-    margin-top:8px;
-    font-size:12px;
-    letter-spacing:1px;
-    font-weight:600;
-    text-transform:uppercase;
-    color:#666;
+.botao-sair:hover {
+    color: #000;
 }
 
-/* GRAFICOS */
-
-.secao-graficos{
-    display:grid;
-    grid-template-columns:40% 60%;
-    gap:15px;
+/* ==========================================
+   CONTEÚDO PRINCIPAL (DESKTOP)
+   ========================================== */
+.main-content {
+    margin-left: 210px;
+    padding: 30px;
+    width: calc(100% - 210px);
 }
 
-.card{
-    background:#fff;
-    border-radius:18px;
-    padding:20px;
-    border:1px solid #d7d7d7;
-    box-shadow:0 2px 8px rgba(0,0,0,.05);
+.dashboard-header {
+    margin-bottom: 25px;
 }
 
-.card-header{
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    margin-bottom:15px;
+.dashboard-header h1 {
+    font-size: 24px;
+    color: #222;
 }
 
-.card-header h3{
-    font-size:15px;
-    color:#333;
+.dashboard-header p {
+    margin-top: 4px;
+    color: #666;
+    font-size: 14px;
 }
 
-.chart-container{
-    height:220px;
-    position:relative;
+.dashboard-grid {
+    background: #e2e2e2;
+    border-radius: 24px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    border: 2px solid #bdbdbd;
 }
 
-/* EVENTOS */
-
-.secao-eventos{
-    width:100%;
+.secao-kpis {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 15px;
 }
 
-.btn-link{
-    text-decoration:none;
-
-    color:#555;
-
-    font-size:13px;
-
-    font-weight:bold;
+.card-kpi {
+    background: white;
+    border-radius: 16px;
+    min-height: 120px;
+    padding: 20px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    border: 1px solid #d7d7d7;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, .05);
 }
 
-.btn-link:hover{
-    text-decoration:underline;
-
+.titulo-kpi {
+    font-size: 16px;
+    color: #666;
 }
 
-.eventos-table{
-    width:100%;
-    border-collapse:collapse;
+.card-kpi h2 {
+    margin-top: 10px;
+    font-size: 34px;
+    color: #333;
 }
 
-.eventos-table th{
-    text-align:left;
-
-    padding:12px;
-
-    color:#666;
-
-    background:#f5f5f5;
-
-    border-bottom:1px solid #e0e0e0;
+.card-kpi p {
+    margin-top: 8px;
+    font-size: 12px;
+    letter-spacing: 1px;
+    font-weight: 600;
+    text-transform: uppercase;
+    color: #666;
 }
 
-.eventos-table td{
-    padding:14px 12px;
-
-    border-bottom:1px solid #f0f0f0;
-
-    color:#333;
+.secao-graficos {
+    display: grid;
+    grid-template-columns: 40% 60%;
+    gap: 15px;
 }
 
-.eventos-table tr:hover{
-    background:#fafafa;
+.card {
+    background: #fff;
+    border-radius: 18px;
+    padding: 20px;
+    border: 1px solid #d7d7d7;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, .05);
 }
 
-/* STATUS */
-
-.status{
-    display:inline-block;
-
-    padding:6px 12px;
-
-    font-size:11px;
-
-    border-radius:20px;
-
-    font-weight:600;
+.card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
 }
 
-.status-ok{
-    background:#e8f5e9;
-    color:#2e7d32;
+.card-header h3 {
+    font-size: 15px;
+    color: #333;
 }
 
-.status-pending{
-    background:#fff3e0;
-    color:#ef6c00;
+.chart-container {
+    height: 220px;
+    position: relative;
 }
 
-/* RESPONSIVO */
+.secao-eventos {
+    width: 100%;
+}
 
-@media (max-width: 900px){
+.btn-link {
+    text-decoration: none;
+    color: #555;
+    font-size: 13px;
+    font-weight: bold;
+}
 
-    .main-content{
-        margin-left:0;
-        width:100%;
+.btn-link:hover {
+    text-decoration: underline;
+}
+
+.eventos-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.eventos-table th {
+    text-align: left;
+    padding: 12px;
+    color: #666;
+    background: #f5f5f5;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+.eventos-table td {
+    padding: 14px 12px;
+    border-bottom: 1px solid #f0f0f0;
+    color: #333;
+}
+
+.eventos-table tr:hover {
+    background: #fafafa;
+}
+
+.status {
+    display: inline-block;
+    padding: 6px 12px;
+    font-size: 11px;
+    border-radius: 20px;
+    font-weight: 600;
+}
+
+.status-ok {
+    background: #e8f5e9;
+    color: #2e7d32;
+}
+
+.status-pending {
+    background: #fff3e0;
+    color: #ef6c00;
+}
+
+/* Esconde o checkbox visualmente em todas as telas */
+.menu-toggle {
+    display: none;
+}
+
+/* Esconde o checkbox visualmente em todas as telas */
+.menu-toggle {
+    display: none;
+}
+
+/* ==========================================
+   RESPONSIVO: TABLET E CELULAR (max-width: 768px)
+   ========================================== */
+@media only screen and (max-width: 768px) {
+
+    /* Altera o layout principal para coluna */
+    body {
+        flex-direction: column;
     }
 
-    .secao-kpis{
-        grid-template-columns:1fr;
+    .main-content {
+        margin-left: 0 !important;
+        width: 100% !important;
+        padding: 15px !important;
     }
 
-    .secao-graficos{
-        grid-template-columns:1fr;
+    /* BARRA SUPERIOR E TOPO DO MENU */
+    .box-menu {
+        position: relative;
+        width: 100%;
+        height: auto;
+        padding: 12px 18px;
+        border-radius: 0 0 16px 16px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+        z-index: 1000;
+        display: block;
     }
 
+    .menu-top {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        width: 100%;
+    }
+
+    .btn-hamburguer {
+        display: block;
+        font-size: 22px;
+        cursor: pointer;
+        color: #333;
+    }
+
+    .logo {
+        font-size: 22px;
+        margin: 0;
+        align-self: auto;
+    }
+
+    .box-sair {
+        margin-top: 0;
+        position: static;
+    }
+
+    .botao-sair {
+        font-size: 14px;
+    }
+
+    /* LISTA DO MENU FLUTUANTE */
+    .lista {
+        display: none !important;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        width: 100%;
+        background-color: #ebebeb;
+        flex-direction: column;
+        margin: 0;
+        padding: 15px 20px;
+        gap: 12px;
+        border-radius: 0 0 16px 16px;
+        box-shadow: 0 8px 15px rgba(0, 0, 0, 0.12);
+        z-index: 999;
+    }
+
+    .menu-toggle:checked~.lista {
+        display: flex !important;
+    }
+
+    .lista li a {
+        font-size: 14px;
+        padding: 10px 12px;
+        background: #fff;
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+
+    /* CORREÇÃO DOS GRÁFICOS E KPIS (1 COLUNA) */
+    .secao-kpis {
+        grid-template-columns: 1fr !important;
+        /* Força 1 KPI por linha */
+        gap: 12px;
+    }
+
+    .card-kpi {
+        padding: 15px;
+        min-height: auto;
+    }
+
+    .card-kpi h2 {
+        font-size: 26px;
+    }
+
+    .secao-graficos {
+        grid-template-columns: 1fr !important;
+        /* Força 1 Gráfico por linha */
+        gap: 15px;
+    }
+
+    .chart-container {
+        height: 200px;
+        width: 100%;
+    }
+
+    /* TABELA COM SCROLL SE FOR MAIOR QUE O ECRÃ */
+    .secao-eventos .card {
+        overflow-x: auto;
+    }
+
+    .eventos-table {
+        min-width: 450px;
+    }
+
+    /* Ajuste de tamanho dos gráficos para caberem no container */
+    .secao-graficos .card {
+        padding: 12px;
+        width: 100%;
+        box-sizing: border-box;
+    }
+
+    .card-header h3 {
+        font-size: 13px;
+        margin-bottom: 8px;
+    }
+
+    .chart-container {
+        height: 130px !important;
+        /* Reduz a altura para não vazar */
+        position: relative;
+        width: 90%;
+    }
 }

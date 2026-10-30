@@ -13,9 +13,16 @@
 </head>
 
 <body>
-
     <aside class="box-menu">
-        <p class="logo">sonora.</p>
+        <input type="checkbox" id="menu-toggle" class="menu-toggle">
+
+        <div class="menu-top">
+            <label for="menu-toggle" class="btn-hamburguer">
+                <i class="fa-solid fa-bars"></i>
+            </label>
+            <p class="logo">sonora.</p>
+        </div>
+
         <ul class="lista">
             <li class="ativo"><a href="dashboard.html"><i class="fa-solid fa-house"></i>Início</a></li>
             <li><a href="pesquisaArtista.html"><i class="fa-solid fa-magnifying-glass"></i>Artistas</a></li>
@@ -25,10 +32,11 @@
             <li><a href="notificacoes.html"><i class="fa-solid fa-bell"></i>Notificações</a></li>
             <li><a href="perfilEmpresa.html"><i class="fa-solid fa-building"></i>Perfil Empresa</a></li>
             <li><a href="perfil.html"><i class="fa-solid fa-user"></i>Perfil</a></li>
+
+            <li class="box-sair">
+                <a class="botao-sair" href="../index.html"><i class="fa-solid fa-right-from-bracket"></i> Sair</a>
+            </li>
         </ul>
-        <div class="box-sair">
-            <a class="botao-sair" href="../index.html"><i class="fa-solid fa-right-from-bracket"></i> Sair</a>
-        </div>
     </aside>
 
     <main class="main-content">

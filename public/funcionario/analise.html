@@ -1,60 +1,533 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-BR">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-</head>
-<body>
-    
-</body>
-</html>
-<script>
-    document.addEventListener("DOMContentLoaded", function () {
-    const params = new URLSearchParams(window.location.search);
-    const idArtista = params.get("idArtista");
-    const idEmpresa = params.get("idEmpresa");
 
-    if (!idArtista || !idEmpresa) {
-        alert("Parâmetros do artista não encontrados na URL!");
-        return;
+    <title>Análise do Artista | Sonora</title>
+
+    <link rel="stylesheet" href="../css/menu.css">
+    <link rel="stylesheet" href="../css/funcionario/analise.css">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="../js/funcionario/analise.js" defer></script>
+</head>
+
+<body>
+
+    <main class="main-content">
+
+        <header class="page-header">
+            <div>
+                <span class="eyebrow">SONORA / INTELIGÊNCIA MUSICAL</span>
+                <h1>Análise de artista</h1>
+                <p>Explore os indicadores e descubra características musicais.</p>
+            </div>
+
+            <button class="btn-voltar" onclick="history.back()">
+                <i class="fa-solid fa-arrow-left"></i>
+                Voltar
+            </button>
+        </header>
+
+        <!-- Cabeçalho do artista -->
+        <section class="artist-card">
+            <div class="artist-icon">
+                <i class="fa-solid fa-music"></i>
+            </div>
+
+            <div class="artist-info">
+                <span class="artist-label">ARTISTA ANALISADO</span>
+                <h2 id="nome-artista">Carregando artista...</h2>
+                <p id="genero-artista">Buscando informações musicais</p>
+            </div>
+
+            <div class="artist-status">
+                <i class="fa-solid fa-chart-line"></i>
+                <span>Análise de desempenho</span>
+            </div>
+        </section>
+
+        <!-- Indicadores -->
+        <section class="section-block">
+            <div class="section-heading">
+                <div>
+                    <h2>Visão geral</h2>
+                    <p>Principais indicadores do artista</p>
+                </div>
+            </div>
+
+            <div class="kpi-grid">
+
+                <article class="kpi-card">
+                    <div class="kpi-top">
+                        <span>Popularidade</span>
+                        <span class="kpi-icon"><i class="fa-solid fa-fire"></i></span>
+                    </div>
+                    <div class="kpi-value" id="kpi-popularidade">--</div>
+                    <div class="kpi-footer">Índice de popularidade</div>
+                </article>
+
+                <article class="kpi-card">
+                    <div class="kpi-top">
+                        <span>Energia</span>
+                        <span class="kpi-icon"><i class="fa-solid fa-bolt"></i></span>
+                    </div>
+                    <div class="kpi-value" id="kpi-energy">--</div>
+                    <div class="kpi-footer">Intensidade musical</div>
+                </article>
+
+                <article class="kpi-card">
+                    <div class="kpi-top">
+                        <span>Dançabilidade</span>
+                        <span class="kpi-icon"><i class="fa-solid fa-compact-disc"></i></span>
+                    </div>
+                    <div class="kpi-value" id="kpi-danceability">--</div>
+                    <div class="kpi-footer">Potencial para dançar</div>
+                </article>
+
+                <article class="kpi-card">
+                    <div class="kpi-top">
+                        <span>Tempo musical</span>
+                        <span class="kpi-icon"><i class="fa-solid fa-stopwatch"></i></span>
+                    </div>
+                    <div class="kpi-value" id="kpi-bpm">--</div>
+                    <div class="kpi-footer">Batidas por minuto (BPM)</div>
+                </article>
+
+            </div>
+        </section>
+
+        <!-- Gráfico principal e resumo -->
+        <section class="section-block">
+            <div class="section-heading">
+                <div>
+                    <h2>Perfil musical</h2>
+                    <p>Comparação das características sonoras</p>
+                </div>
+            </div>
+
+            <div class="charts-grid">
+
+                <article class="chart-card chart-card-large">
+                    <div class="card-heading">
+                        <div>
+                            <h3>Características do artista</h3>
+                            <p>Distribuição dos atributos musicais</p>
+                        </div>
+                        <i class="fa-solid fa-chart-radar card-heading-icon"></i>
+                    </div>
+
+                    <div class="chart-container radar-container">
+                        <canvas id="graficoRadar"></canvas>
+                    </div>
+                </article>
+
+                <article class="chart-card">
+                    <div class="card-heading">
+                        <div>
+                            <h3>Comparativo de atributos</h3>
+                            <p>Intensidade de cada indicador</p>
+                        </div>
+                        <i class="fa-solid fa-chart-column card-heading-icon"></i>
+                    </div>
+
+                    <div class="chart-container">
+                        <canvas id="graficoBarras"></canvas>
+                    </div>
+                </article>
+
+            </div>
+        </section>
+
+        <!-- Evolução e interpretação -->
+        <section class="section-block">
+            <div class="charts-grid bottom-grid">
+
+                <article class="chart-card">
+                    <div class="card-heading">
+                        <div>
+                            <h3>Desempenho musical</h3>
+                            <p>Comparação dos dados disponíveis</p>
+                        </div>
+                        <i class="fa-solid fa-chart-line card-heading-icon"></i>
+                    </div>
+
+                    <div class="chart-container">
+                        <canvas id="graficoLinha"></canvas>
+                    </div>
+                </article>
+
+                <article class="chart-card interpretation-card">
+                    <div class="card-heading">
+                        <div>
+                            <h3>Interpretação dos dados</h3>
+                            <p>Resumo do perfil musical</p>
+                        </div>
+                        <i class="fa-solid fa-lightbulb card-heading-icon"></i>
+                    </div>
+
+                    <div class="interpretation-content">
+                        <div class="interpretation-icon">
+                            <i class="fa-solid fa-music"></i>
+                        </div>
+
+                        <p id="texto-interpretacao">
+                            A interpretação será exibida quando os dados do artista forem carregados.
+                        </p>
+                    </div>
+                </article>
+
+            </div>
+        </section>
+
+        <footer class="page-footer">
+            <span>SONORA</span>
+            <span>Análise de dados musicais</span>
+        </footer>
+
+    </main>
+
+</body>
+
+</html>
+
+<script>
+
+    let graficoRadar = null;
+    let graficoBarras = null;
+    let graficoLinha = null;
+
+    document.addEventListener("DOMContentLoaded", function () {
+        const params = new URLSearchParams(window.location.search);
+
+        const idArtista = params.get("idArtista");
+        const idEmpresa = params.get("idEmpresa");
+
+        if (!idArtista || !idEmpresa) {
+            mostrarErro("Parâmetros do artista não encontrados na URL.");
+            return;
+        }
+
+        buscarDadosAnalise(idArtista, idEmpresa);
+    });
+
+    async function buscarDadosAnalise(idArtista, idEmpresa) {
+        try {
+            const resposta = await fetch(
+                `/funcionario/analise-artista/${encodeURIComponent(idArtista)}/${encodeURIComponent(idEmpresa)}`
+            );
+
+            if (!resposta.ok) {
+                throw new Error("Não foi possível buscar os dados da análise.");
+            }
+
+            const dados = await resposta.json();
+
+            console.log("Dados recebidos:", dados);
+
+            preencherCabecalho(dados.cabecalho || {});
+            preencherKpis(dados.kpis || {});
+
+            montarGraficoRadar(dados.graficoRadar);
+            montarGraficoBarras(dados.graficoBarras);
+            montarGraficoLinha(dados.graficoLinha);
+
+            preencherInterpretacao(dados.cabecalho || {}, dados.kpis || {});
+
+        } catch (erro) {
+            console.error("Erro na análise:", erro);
+            mostrarErro("Não foi possível carregar a análise. Tente novamente.");
+        }
     }
 
-    buscarDadosAnalise(idArtista, idEmpresa);
-});
+    function preencherCabecalho(cabecalho) {
+        const nome = document.getElementById("nome-artista");
+        const genero = document.getElementById("genero-artista");
 
-function buscarDadosAnalise(idArtista, idEmpresa) {
-    fetch(`/funcionario/analise-artista/${idArtista}/${idEmpresa}`)
-        .then(function (resposta) {
-            if (resposta.ok) {
-                resposta.json().then(function (dados) {
-                    console.log("Dados recebidos:", dados);
+        if (nome) {
+            nome.textContent = cabecalho.nome || "Artista sem nome";
+        }
 
-                    
-                    preencherCabecalho(dados.cabecalho);
-                    preencherKpis(dados.kpis);
-                    montarGraficoRadar(dados.graficoRadar);
-                    montarGraficoBarras(dados.graficoBarras);
-                    montarGraficoLinha(dados.graficoLinha);
-                });
-            } else {
-                console.error("Erro ao buscar dados da análise.");
+        if (genero) {
+            genero.textContent = cabecalho.genero || "Gênero não informado";
+        }
+    }
+
+    function preencherKpis(kpis) {
+        definirTexto("kpi-popularidade", formatarIndice(kpis.popularidade));
+        definirTexto("kpi-energy", formatarPercentual(kpis.energy));
+        definirTexto("kpi-danceability", formatarPercentual(kpis.danceability));
+        definirTexto("kpi-bpm", kpis.bpm != null ? `${kpis.bpm} BPM` : "--");
+    }
+
+    function formatarIndice(valor) {
+        if (valor == null || valor === "") return "--";
+
+        const numero = Number(valor);
+
+        return Number.isFinite(numero) ? `${numero}/100` : "--";
+    }
+
+    function formatarPercentual(valor) {
+        if (valor == null || valor === "") return "--";
+
+        let numero = Number(valor);
+
+        if (!Number.isFinite(numero)) return "--";
+
+        // Energy e danceability normalmente vêm entre 0 e 1.
+        if (numero >= 0 && numero <= 1) {
+            numero *= 100;
+        }
+
+        return `${numero.toFixed(0)}%`;
+    }
+
+    function definirTexto(id, texto) {
+        const elemento = document.getElementById(id);
+
+        if (elemento) {
+            elemento.textContent = texto;
+        }
+    }
+
+    function montarGraficoRadar(dados) {
+        if (!dados) return;
+
+        const canvas = document.getElementById("graficoRadar");
+        if (!canvas) return;
+
+        const labels = dados.labels || [
+            "Popularidade",
+            "Energia",
+            "Dançabilidade",
+            "Acústica",
+            "Instrumentalidade",
+            "Valência"
+        ];
+
+        const valores = dados.valores || dados.data || [];
+
+        if (!valores.length) return;
+
+        if (graficoRadar) graficoRadar.destroy();
+
+        graficoRadar = new Chart(canvas, {
+            type: "radar",
+
+            data: {
+                labels,
+                datasets: [{
+                    label: "Perfil musical",
+                    data: valores,
+                    backgroundColor: "rgba(55, 55, 55, 0.16)",
+                    borderColor: "#333333",
+                    pointBackgroundColor: "#333333",
+                    pointBorderColor: "#ffffff",
+                    pointRadius: 4,
+                    borderWidth: 2
+                }]
+            },
+
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+
+                scales: {
+                    r: {
+                        beginAtZero: true,
+                        suggestedMax: 100,
+                        ticks: {
+                            display: false
+                        },
+                        pointLabels: {
+                            color: "#666666",
+                            font: {
+                                size: 11
+                            }
+                        }
+                    }
+                },
+
+                plugins: {
+                    legend: {
+                        display: false
+                    }
+                }
             }
-        })
-        .catch(function (erro) {
-            console.error("Erro de conexão com o servidor:", erro);
         });
-}
+    }
 
-function preencherCabecalho(cabecalho) {
-    
-}
+    function montarGraficoBarras(dados) {
+        if (!dados) return;
 
-function preencherKpis(kpis) {
-    
-}
+        const canvas = document.getElementById("graficoBarras");
+        if (!canvas) return;
 
-function montarGraficoRadar(dados) {  }
-function montarGraficoBarras(dados) {  }
-function montarGraficoLinha(dados) {  }
+        const labels = dados.labels || [];
+        const valores = dados.valores || dados.data || [];
+
+        if (!labels.length || !valores.length) return;
+
+        if (graficoBarras) graficoBarras.destroy();
+
+        graficoBarras = new Chart(canvas, {
+            type: "bar",
+
+            data: {
+                labels,
+                datasets: [{
+                    label: "Valor",
+                    data: valores,
+                    backgroundColor: [
+                        "#292929",
+                        "#505050",
+                        "#777777",
+                        "#999999",
+                        "#b5b5b5",
+                        "#d0d0d0"
+                    ],
+                    borderRadius: 7,
+                    maxBarThickness: 42
+                }]
+            },
+
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        suggestedMax: 100,
+                        grid: {
+                            color: "#eeeeee"
+                        }
+                    },
+                    x: {
+                        grid: {
+                            display: false
+                        }
+                    }
+                },
+
+                plugins: {
+                    legend: {
+                        display: false
+                    }
+                }
+            }
+        });
+    }
+
+    function montarGraficoLinha(dados) {
+        if (!dados) return;
+
+        const canvas = document.getElementById("graficoLinha");
+        if (!canvas) return;
+
+        const labels = dados.labels || [];
+        const valores = dados.valores || dados.data || [];
+
+        if (!labels.length || !valores.length) return;
+
+        if (graficoLinha) graficoLinha.destroy();
+
+        graficoLinha = new Chart(canvas, {
+            type: "line",
+
+            data: {
+                labels,
+                datasets: [{
+                    label: dados.label || "Desempenho",
+                    data: valores,
+                    borderColor: "#333333",
+                    backgroundColor: "rgba(51, 51, 51, 0.10)",
+                    fill: true,
+                    tension: 0.35,
+                    pointRadius: 4,
+                    pointBackgroundColor: "#333333"
+                }]
+            },
+
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        grid: {
+                            color: "#eeeeee"
+                        }
+                    },
+                    x: {
+                        grid: {
+                            display: false
+                        }
+                    }
+                },
+
+                plugins: {
+                    legend: {
+                        display: false
+                    }
+                }
+            }
+        });
+    }
+
+    function preencherInterpretacao(cabecalho, kpis) {
+        const texto = document.getElementById("texto-interpretacao");
+
+        if (!texto) return;
+
+        const nome = cabecalho.nome || "O artista";
+        const genero = cabecalho.genero || "gênero não informado";
+        const bpm = Number(kpis.bpm);
+        const energia = Number(kpis.energy);
+        const dancabilidade = Number(kpis.danceability);
+
+        const partes = [`${nome} pertence ao gênero ${genero}.`];
+
+        if (Number.isFinite(bpm) && bpm > 0) {
+            partes.push(`Suas faixas apresentam um andamento médio de ${bpm} BPM.`);
+        }
+
+        if (Number.isFinite(energia)) {
+            const percentualEnergia =
+                energia <= 1 ? energia * 100 : energia;
+
+            partes.push(
+                `O índice de energia é de ${percentualEnergia.toFixed(0)}%.`
+            );
+        }
+
+        if (Number.isFinite(dancabilidade)) {
+            const percentualDanca =
+                dancabilidade <= 1 ? dancabilidade * 100 : dancabilidade;
+
+            partes.push(
+                `A dançabilidade registrada é de ${percentualDanca.toFixed(0)}%.`
+            );
+        }
+
+        texto.textContent = partes.join(" ");
+    }
+
+    function mostrarErro(mensagem) {
+        const texto = document.getElementById("texto-interpretacao");
+
+        if (texto) {
+            texto.textContent = mensagem;
+        }
+    }
+
 </script>

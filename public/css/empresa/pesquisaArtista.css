@@ -631,7 +631,6 @@ button:focus-visible,
 input:focus-visible {
     outline-offset: 3px;
 }
-
 /* ==========================
    TABLETS
 ========================== */
@@ -652,25 +651,31 @@ input:focus-visible {
 }
 
 /* ==========================
-   TELAS MENORES
+   TABLET PEQUENO E CELULAR
 ========================== */
 
-@media (max-width: 700px) {
+@media (max-width: 768px) {
+    body {
+        flex-direction: column;
+    }
+
     .main-content {
         margin-left: 0;
         width: 100%;
-        padding: 20px;
+        padding: 18px;
     }
 
     .search-bar {
         flex-direction: column;
         gap: 12px;
+        margin-bottom: 20px;
     }
 
     .search-input {
-        min-height: 48px;
-        flex: auto;
         width: 100%;
+        flex: auto;
+        min-height: 48px;
+        padding: 0 15px;
     }
 
     .btn-primary {
@@ -678,13 +683,40 @@ input:focus-visible {
     }
 
     .card {
-        padding: 19px;
+        padding: 18px;
         border-radius: 17px;
+        margin-bottom: 16px;
+    }
+
+    .card-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+    }
+
+    .data-badge {
+        white-space: normal;
+    }
+
+    .profile-header {
+        gap: 14px;
+    }
+
+    .avatar-lg {
+        width: 56px;
+        height: 56px;
+        border-radius: 16px;
+        font-size: 22px;
+    }
+
+    .profile-meta h2 {
+        font-size: 19px;
     }
 
     .artist-analysis-grid {
         grid-template-columns: repeat(2, minmax(0, 1fr));
         gap: 10px;
+        margin-top: 18px;
     }
 
     .analysis-card {
@@ -702,6 +734,16 @@ input:focus-visible {
         font-size: 18px;
     }
 
+    .analysis-content {
+        gap: 20px;
+        margin-top: 22px;
+        padding-top: 20px;
+    }
+
+    .chart-container {
+        height: 230px;
+    }
+
     .dashboard-grid {
         grid-template-columns: 1fr;
         gap: 16px;
@@ -710,15 +752,12 @@ input:focus-visible {
     .section-panel {
         padding: 12px;
         border-radius: 18px;
+        gap: 14px;
     }
 
-    .card-header {
+    .track-list li {
         align-items: flex-start;
-    }
-
-    .data-badge {
-        white-space: normal;
-        text-align: center;
+        gap: 8px;
     }
 }
 
@@ -728,6 +767,10 @@ input:focus-visible {
 
 @media (max-width: 400px) {
     .main-content {
+        padding: 12px;
+    }
+
+    .card {
         padding: 14px;
     }
 
@@ -741,26 +784,22 @@ input:focus-visible {
     }
 
     .avatar-lg {
-        width: 54px;
-        height: 54px;
-        border-radius: 15px;
-        font-size: 21px;
+        width: 48px;
+        height: 48px;
+        border-radius: 14px;
+        font-size: 19px;
     }
 
     .profile-meta h2 {
-        font-size: 18px;
-    }
-
-    .track-list li {
-        align-items: flex-start;
+        font-size: 17px;
     }
 
     .track-stats {
-        max-width: 100px;
+        max-width: 90px;
         overflow-wrap: anywhere;
     }
 
     .chart-container {
-        height: 220px;
+        height: 200px;
     }
 }

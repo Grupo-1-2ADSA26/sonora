@@ -166,6 +166,17 @@ body {
 .btn-danger { background-color: #d32f2f; color: #fff; }
 .btn-danger:hover { background-color: #9a0007; }
 
+
+.table-responsive {
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+.table-responsive .data-table {
+    min-width: 650px;
+}
+
 /* Modais */
 .modal-overlay {
     position: fixed;
@@ -331,4 +342,199 @@ input.invalido {
 
 #regras-senha li.ok::before {
     content: "✓ ";
+}
+
+/* ==========================================
+   RESPONSIVO - TABLET E CELULAR
+   ========================================== */
+
+@media only screen and (max-width: 768px) {
+
+    /* Layout principal */
+    body {
+        flex-direction: column;
+    }
+
+    .main-content {
+        margin-left: 0 !important;
+        width: 100% !important;
+        padding: 15px !important;
+    }
+
+    /* Cabeçalho da página */
+    .page-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 15px;
+        margin-bottom: 20px;
+    }
+
+    .page-header h1 {
+        font-size: 21px;
+    }
+
+    .page-header p {
+        font-size: 12px;
+    }
+
+    .page-header .btn-primary {
+        width: 100%;
+    }
+
+    /* Painel principal */
+    .section-panel {
+        padding: 12px;
+        border-radius: 16px;
+        width: 100%;
+    }
+
+    .card {
+        padding: 15px;
+        border-radius: 14px;
+        width: 100%;
+    }
+
+    /* Cabeçalho do card */
+    .card-header {
+        flex-wrap: wrap;
+        gap: 10px;
+        margin-bottom: 15px;
+    }
+
+    .card-header h3 {
+        font-size: 15px;
+    }
+
+    .badge {
+        font-size: 11px;
+    }
+
+    /* Tabela responsiva */
+    .data-table {
+        min-width: 650px;
+        font-size: 12px;
+    }
+
+    .data-table th {
+        padding: 10px 8px;
+        font-size: 12px;
+        white-space: nowrap;
+    }
+
+    .data-table td {
+        padding: 12px 8px;
+        white-space: nowrap;
+    }
+
+    /* Permite rolagem horizontal da tabela */
+    .card:has(.data-table) {
+        overflow-x: auto;
+    }
+
+    .user-cell {
+        gap: 8px;
+    }
+
+    .avatar {
+        width: 32px;
+        height: 32px;
+        flex-shrink: 0;
+    }
+
+    .role-tag {
+        font-size: 11px;
+        padding: 5px 8px;
+    }
+
+    /* Botões de ação */
+    .btn-icon {
+        font-size: 14px;
+        padding: 6px;
+    }
+
+    /* Modal */
+    .modal-overlay {
+        padding: 15px;
+    }
+
+    .modal-box {
+        width: 100%;
+        max-width: 100%;
+        padding: 18px;
+        border-radius: 16px;
+        max-height: 90vh;
+        overflow-y: auto;
+    }
+
+    .modal-header h3 {
+        font-size: 16px;
+    }
+
+    /* Campos do formulário */
+    .field-group {
+        padding: 9px 12px;
+    }
+
+    .field-group input,
+    .field-group select {
+        font-size: 14px;
+    }
+
+    /* Botões do modal */
+    .modal-actions {
+        flex-direction: column;
+    }
+
+    .modal-actions .btn-primary,
+    .modal-actions .btn-danger,
+    .modal-actions .btn-secondary {
+        flex: none;
+        width: 100%;
+    }
+
+}
+
+
+/* ==========================================
+   RESPONSIVO - CELULARES PEQUENOS
+   ========================================== */
+
+@media only screen and (max-width: 480px) {
+
+    .main-content {
+        padding: 12px !important;
+    }
+
+    .page-header h1 {
+        font-size: 19px;
+    }
+
+    .section-panel {
+        padding: 10px;
+    }
+
+    .card {
+        padding: 12px;
+    }
+
+    .card-header h3 {
+        font-size: 14px;
+    }
+
+    .data-table {
+        min-width: 600px;
+    }
+
+    .modal-box {
+        padding: 15px;
+    }
+
+    .modal-header h3 {
+        font-size: 15px;
+    }
+
+    .modal-actions {
+        gap: 8px;
+    }
+
 }

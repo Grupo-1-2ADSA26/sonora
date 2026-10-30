@@ -171,3 +171,142 @@ body {
 .btn-danger:hover {
     background-color: #9a0007;
 }
+
+
+
+/* ==============================
+   RESPONSIVIDADE
+============================== */
+
+/* Tablets */
+@media (max-width: 900px) {
+    .main-content {
+        padding: 22px;
+    }
+
+    .page-header h1 {
+        font-size: 21px;
+    }
+
+    .profile-card {
+        padding: 24px;
+    }
+}
+
+/* Celulares */
+@media (max-width: 768px) {
+
+    body {
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+        min-width: 0;
+        overflow-x: hidden;
+    }
+
+    .box-menu {
+        width: 100%;
+        min-width: 0;
+        flex: 0 0 auto;
+    }
+
+    .main-content {
+        margin: 0;
+        padding: 20px 16px;
+        width: 100%;
+        max-width: 100%;
+        min-width: 0;
+        flex: 1 1 auto;
+    }
+
+    .page-header h1 {
+        font-size: 19px;
+        margin-bottom: 18px;
+    }
+
+    .profile-container {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .profile-card {
+        width: 100%;
+        max-width: 100%;
+        padding: 18px;
+        border-radius: 18px;
+    }
+
+    .profile-form {
+        gap: 12px;
+        width: 100%;
+    }
+
+    .field-group {
+        width: 100%;
+        min-width: 0;
+        padding: 12px;
+        border-radius: 14px;
+    }
+
+    .field-group label {
+        flex-wrap: wrap;
+        font-size: 12px;
+    }
+
+    /* Campos de nome e e-mail */
+    .field-group label input {
+        flex: 1 1 100%;
+        width: 100%;
+        min-width: 0;
+        margin-top: 5px;
+        font-size: 16px;
+    }
+
+    /* Campo de senha */
+    .password-box {
+        width: 100%;
+        min-width: 0;
+    }
+
+    .password-box input {
+        min-width: 0;
+        font-size: 16px;
+    }
+
+    .password-box i {
+        padding: 8px;
+    }
+
+    .form-actions {
+        flex-direction: column;
+        gap: 10px;
+        margin-top: 5px;
+    }
+
+    .btn-primary,
+    .btn-danger {
+        width: 100%;
+        flex: auto;
+        padding: 13px;
+    }
+}
+
+/* Celulares pequenos */
+@media (max-width: 380px) {
+
+    .main-content {
+        padding: 16px 12px;
+    }
+
+    .page-header h1 {
+        font-size: 17px;
+    }
+
+    .profile-card {
+        padding: 14px;
+    }
+
+    .field-group {
+        padding: 10px;
+    }
+}

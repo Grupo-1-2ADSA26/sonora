@@ -14,19 +14,28 @@
 <body>
 
     <aside class="box-menu">
-        <p class="logo">sonora.</p>
+        <input type="checkbox" id="menu-toggle" class="menu-toggle">
+
+        <div class="menu-top">
+            <label for="menu-toggle" class="btn-hamburguer">
+                <i class="fa-solid fa-bars"></i>
+            </label>
+            <p class="logo">sonora.</p>
+        </div>
+
         <ul class="lista">
-            <li><a href="dashboard.html"><i class="fa-solid fa-house"></i>Início</a></li>
+            <li class="ativo"><a href="dashboard.html"><i class="fa-solid fa-house"></i>Início</a></li>
             <li><a href="artista.html"><i class="fa-solid fa-magnifying-glass"></i>Artistas</a></li>
             <li><a href="cadastroFuncionario.html"><i class="fa-solid fa-users"></i>Funcionários</a></li>
             <li><a href="gerenciamentoEventos.html"><i class="fa-solid fa-music"></i>Eventos</a></li>
             <li><a href="notificacoes.html"><i class="fa-solid fa-bell"></i>Notificações</a></li>
-            <li class="ativo"><a href="perfilEmpresa.html"><i class="fa-solid fa-building"></i>Perfil Empresa</a></li>
+            <li><a href="perfilEmpresa.html"><i class="fa-solid fa-building"></i>Perfil Empresa</a></li>
             <li><a href="perfil.html"><i class="fa-solid fa-user"></i>Perfil</a></li>
+
+            <li class="box-sair">
+                <a class="botao-sair" href="../index.html"><i class="fa-solid fa-right-from-bracket"></i> Sair</a>
+            </li>
         </ul>
-        <div class="box-sair">
-            <a class="botao-sair" href="../index.html"><i class="fa-solid fa-right-from-bracket"></i> Sair</a>
-        </div>
     </aside>
 
     <main class="main-content">
@@ -51,7 +60,8 @@
                     </div>
 
                     <div class="field-group">
-                        <label for="select_tipo_empresa"><i class="fa-solid fa-store"></i> Tipo de Estabelecimento</label>
+                        <label for="select_tipo_empresa"><i class="fa-solid fa-store"></i> Tipo de
+                            Estabelecimento</label>
                         <select id="select_tipo_empresa" required>
                             <option value="">Selecione</option>
                             <option value="Casa de Shows">Casa de Shows</option>
@@ -136,17 +146,17 @@
                     tipoEstabelecimento: tipoEstabelecimento
                 })
             })
-            .then(resposta => {
-                if (resposta.ok) {
-                    alert('Dados atualizados com sucesso!');
-                } else {
-                    throw new Error("Erro ao atualizar perfil da empresa");
-                }
-            })
-            .catch(erro => {
-                console.error("Erro: ", erro);
-                alert("Erro ao atualizar dados.");
-            });
+                .then(resposta => {
+                    if (resposta.ok) {
+                        alert('Dados atualizados com sucesso!');
+                    } else {
+                        throw new Error("Erro ao atualizar perfil da empresa");
+                    }
+                })
+                .catch(erro => {
+                    console.error("Erro: ", erro);
+                    alert("Erro ao atualizar dados.");
+                });
         }
 
         function excluirEmpresa() {
@@ -154,19 +164,19 @@
                 fetch(`/empresa/deletar/${idEmpresa}`, {
                     method: "DELETE"
                 })
-                .then(resposta => {
-                    if (resposta.ok) {
-                        alert("Conta excluída com sucesso.");
-                        sessionStorage.clear();
-                        window.location.href = "../index.html";
-                    } else {
-                        throw new Error("Erro ao excluir conta");
-                    }
-                })
-                .catch(erro => {
-                    console.error("Erro: ", erro);
-                    alert("Não foi possível excluir a conta.");
-                });
+                    .then(resposta => {
+                        if (resposta.ok) {
+                            alert("Conta excluída com sucesso.");
+                            sessionStorage.clear();
+                            window.location.href = "../index.html";
+                        } else {
+                            throw new Error("Erro ao excluir conta");
+                        }
+                    })
+                    .catch(erro => {
+                        console.error("Erro: ", erro);
+                        alert("Não foi possível excluir a conta.");
+                    });
             }
         }
     </script>

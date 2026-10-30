@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,24 +9,260 @@
 
     <link rel="stylesheet" href="../css/index.css">
     <link rel="stylesheet" href="../css/menu.css">
-    
+    <link rel="stylesheet" href="../css/empresa/notificacoes.css">
+
 </head>
+
 <body>
-    <div class="box-menu">
-        <p class="logo">sonora.</p>
+    <aside class="box-menu">
+        <input type="checkbox" id="menu-toggle" class="menu-toggle">
+
+        <div class="menu-top">
+            <label for="menu-toggle" class="btn-hamburguer">
+                <i class="fa-solid fa-bars"></i>
+            </label>
+            <p class="logo">sonora.</p>
+        </div>
+
         <ul class="lista">
-            <li><a href="dashboard.html"><i class="fa-solid fa-house"></i>Início</a></li>
+            <li class="ativo"><a href="dashboard.html"><i class="fa-solid fa-house"></i>Início</a></li>
             <li><a href="artista.html"><i class="fa-solid fa-magnifying-glass"></i>Artistas</a></li>
             <li><a href="cadastroFuncionario.html"><i class="fa-solid fa-users"></i>Funcionários</a></li>
             <li><a href="gerenciamentoEventos.html"><i class="fa-solid fa-music"></i>Eventos</a></li>
-            <li class="ativo"><a href="notificacoes.html"><i class="fa-solid fa-bell"></i>Notificações</a></li>
+            <li><a href="notificacoes.html"><i class="fa-solid fa-bell"></i>Notificações</a></li>
             <li><a href="perfilEmpresa.html"><i class="fa-solid fa-building"></i>Perfil Empresa</a></li>
             <li><a href="perfil.html"><i class="fa-solid fa-user"></i>Perfil</a></li>
+
+            <li class="box-sair">
+                <a class="botao-sair" href="../index.html"><i class="fa-solid fa-right-from-bracket"></i> Sair</a>
+            </li>
         </ul>
-        <div class="box-sair">
-            <a class="botao-sair" href="../index.html"><i class="fa-solid fa-right-from-bracket"></i> Sair</a>
-        </div>
-    </div>
+    </aside>
+
+
+     <main class="main-content">
+
+        <header class="page-header">
+            <div>
+                <h1>NOTIFICAÇÕES</h1>
+                <p>Acompanhe as atividades e atualizações da sua empresa.</p>
+            </div>
+        </header>
+
+        <!-- INDICADORES -->
+        <section class="cards-resumo">
+
+            <div class="card-resumo">
+                <div class="card-icon">
+                    <i class="fa-solid fa-users"></i>
+                </div>
+
+                <div>
+                    <span>Funcionários</span>
+                    <h2>12</h2>
+                    <p>Cadastrados</p>
+                </div>
+            </div>
+
+            <div class="card-resumo">
+                <div class="card-icon">
+                    <i class="fa-solid fa-music"></i>
+                </div>
+
+                <div>
+                    <span>Novos artistas</span>
+                    <h2>08</h2>
+                    <p>Disponíveis</p>
+                </div>
+            </div>
+
+            <div class="card-resumo">
+                <div class="card-icon">
+                    <i class="fa-solid fa-bell"></i>
+                </div>
+
+                <div>
+                    <span>Notificações</span>
+                    <h2>25</h2>
+                    <p>Registradas</p>
+                </div>
+            </div>
+
+            <div class="card-resumo">
+                <div class="card-icon">
+                    <i class="fa-solid fa-file-lines"></i>
+                </div>
+
+                <div>
+                    <span>Logs</span>
+                    <h2>43</h2>
+                    <p>Registros do sistema</p>
+                </div>
+            </div>
+
+        </section>
+
+        <!-- HISTÓRICO DE ATIVIDADES -->
+        <section class="atividades-panel">
+
+            <div class="atividades-header">
+                <div>
+                    <h2>Atividades recentes</h2>
+                    <p>Confira as últimas movimentações do sistema.</p>
+                </div>
+
+                <button class="btn-atualizar" type="button">
+                    <i class="fa-solid fa-rotate"></i>
+                    Atualizar
+                </button>
+            </div>
+
+            <!-- FILTROS -->
+            <div class="filtros">
+                <button class="filtro ativo">Todas</button>
+                <button class="filtro">Funcionários</button>
+                <button class="filtro">Artistas</button>
+                <button class="filtro">Sistema</button>
+            </div>
+
+            <!-- TABELA -->
+            <div class="tabela-responsiva">
+                <table class="tabela-atividades">
+
+                    <thead>
+                        <tr>
+                            <th>Atividade</th>
+                            <th>Descrição</th>
+                            <th>Data</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+
+                        <tr>
+                            <td>
+                                <div class="atividade-tipo">
+                                    <i class="fa-solid fa-user-plus"></i>
+                                    Funcionário
+                                </div>
+                            </td>
+
+                            <td>Novo funcionário cadastrado.</td>
+                            <td>29/10/2026</td>
+
+                            <td>
+                                <span class="status sucesso">Concluído</span>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td>
+                                <div class="atividade-tipo">
+                                    <i class="fa-solid fa-music"></i>
+                                    Artista
+                                </div>
+                            </td>
+
+                            <td>Novo artista disponível para aprovação.</td>
+                            <td>29/10/2026</td>
+
+                            <td>
+                                <span class="status pendente">Pendente</span>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td>
+                                <div class="atividade-tipo">
+                                    <i class="fa-solid fa-check"></i>
+                                    Artista
+                                </div>
+                            </td>
+
+                            <td>Artista aprovado pela empresa.</td>
+                            <td>28/10/2026</td>
+
+                            <td>
+                                <span class="status sucesso">Concluído</span>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td>
+                                <div class="atividade-tipo">
+                                    <i class="fa-solid fa-database"></i>
+                                    Sistema
+                                </div>
+                            </td>
+
+                            <td>Importação de dados finalizada.</td>
+                            <td>28/10/2026</td>
+
+                            <td>
+                                <span class="status sucesso">Concluído</span>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td>
+                                <div class="atividade-tipo">
+                                    <i class="fa-solid fa-triangle-exclamation"></i>
+                                    Sistema
+                                </div>
+                            </td>
+
+                            <td>Erro durante a leitura de uma planilha.</td>
+                            <td>27/10/2026</td>
+
+                            <td>
+                                <span class="status erro">Erro</span>
+                            </td>
+                        </tr>
+
+                    </tbody>
+
+                </table>
+            </div>
+
+        </section>
+
+    </main>
+
 </body>
 
 </html>
+
+<script>
+    const filtros = document.querySelectorAll(".filtro");
+    const linhas = document.querySelectorAll(".tabela-atividades tbody tr");
+
+    filtros.forEach(filtro => {
+        filtro.addEventListener("click", () => {
+
+            // Remove o ativo dos outros filtros
+            filtros.forEach(item => item.classList.remove("ativo"));
+
+            // Ativa o filtro clicado
+            filtro.classList.add("ativo");
+
+            const categoria = filtro.textContent.trim();
+
+            linhas.forEach(linha => {
+                const tipo = linha.querySelector(".atividade-tipo").textContent.trim();
+
+                if (categoria === "Todas") {
+                    linha.style.display = "";
+                } else if (categoria === "Funcionários" && tipo === "Funcionário") {
+                    linha.style.display = "";
+                } else if (categoria === "Artistas" && tipo === "Artista") {
+                    linha.style.display = "";
+                } else if (categoria === "Sistema" && tipo === "Sistema") {
+                    linha.style.display = "";
+                } else {
+                    linha.style.display = "none";
+                }
+            });
+        });
+    });
+</script>

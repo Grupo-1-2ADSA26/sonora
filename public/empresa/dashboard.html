@@ -40,10 +40,15 @@
     </aside>
 
     <main class="main-content">
-        <header class="dashboard-header">
-            <div>
-                <h1>Visão Geral da Empresa (Dashboard)</h1>
-                <p>Acompanhe tendências de artistas, gêneros em alta e recomendações para seus eventos.</p>
+        <header class="cabecalho-pagina">
+            <div class="cabecalho-info">
+                <span class="sobretitulo">SONORA / VISÃO GERAL</span>
+
+                <h1>Dashboard</h1>
+
+                <p>
+                    Acompanhe tendências de artistas, gêneros em alta e recomendações para seus eventos.
+                </p>
             </div>
         </header>
 
@@ -84,7 +89,7 @@
                 </div>
                 <div class="card grafico-maior">
                     <div class="card-header">
-                        <h3>Músicas com Mais Visualizações</h3>
+                        <h3>Gêneros com Mais Visualizações</h3>
                     </div>
                     <div class="chart-container">
                         <canvas id="chartGeneros2"></canvas>
@@ -104,49 +109,24 @@
                             Gerenciar
                         </a>
                     </div>
+                    <div class="tabela-rolagem">
+                        <table class="eventos-table">
+                            <thead>
+                                <tr>
+                                    <th>Evento</th>
+                                    <th>Data</th>
+                                    <th>Local</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
 
-                    <table class="eventos-table">
-                        <thead>
-                            <tr>
-                                <th>Evento</th>
-                                <th>Data</th>
-                                <th>Local</th>
-                                <th>Status</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td><strong>Sonora Summer Fest</strong></td>
-                                <td>15/10/2026</td>
-                                <td>Arena Central</td>
-                                <td>
-                                    <span class="status status-ok">
-                                        Confirmado
-                                    </span>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td><strong>Noite do Trap</strong></td>
-                                <td>28/10/2026</td>
-                                <td>Club Sonora</td>
-                                <td>
-                                    <span class="status status-pending">
-                                        Em Planejamento
-                                    </span>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td><strong>Sertanejo VIP</strong></td>
-                                <td>12/11/2026</td>
-                                <td>Espaço das Américas</td>
-                                <td>
-                                    <span class="status status-ok">
-                                        Confirmado
-                                    </span>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
+                            <tbody id="lista-eventos">
+                                <tr>
+                                    <td colspan="4">Carregando eventos...</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </section>
         </div>
@@ -154,6 +134,113 @@
     </main>
 
     <script>
+
+        const idEmpresa = sessionStorage.getItem('ID_EMPRESA');
+
+        if (idEmpresa) {
+            listarEventos();
+        } else {
+            const tabela = document.getElementById('lista-eventos');
+            tabela.innerHTML = '<tr><td colspan="4">Empresa não identificada.</td></tr>';
+        }
+
+        async function listarEventos() {
+            const tabela = document.getElementById('lista-eventos');
+
+            try {
+                const resposta = await fetch(`/evento/listar/${idEmpresa}`);
+
+                if (!resposta.ok) {
+                    throw new Error('Erro ao buscar eventos.');
+                }
+
+                const eventos = await resposta.json();
+
+                tabela.replaceChildren();
+
+                if (!Array.isArray(eventos) || eventos.length === 0) {
+                    const linha = document.createElement('tr');
+                    const coluna = document.createElement('td');
+
+                    coluna.colSpan = 4;
+                    coluna.textContent = 'Nenhum evento cadastrado.';
+
+                    linha.appendChild(coluna);
+                    tabela.appendChild(linha);
+
+                    return;
+                }
+
+                eventos.forEach(function(evento) {
+                    const linha = document.createElement('tr');
+
+                    const colunaNome = document.createElement('td');
+                    const nome = document.createElement('strong');
+                    nome.textContent = evento.nome;
+                    colunaNome.appendChild(nome);
+
+                    const colunaData = document.createElement('td');
+                    colunaData.textContent = evento.data_evento;
+
+                    const colunaLocal = document.createElement('td');
+                    colunaLocal.textContent = evento.local_evento;
+
+                    const colunaStatus = document.createElement('td');
+                    const status = document.createElement('span');
+
+                    status.classList.add('status');
+
+                    switch (evento.status_evento) {
+                        case 'Confirmado':
+                            status.classList.add('status-ok');
+                            break;
+
+                        case 'Planejado':
+                            status.classList.add('status-pendente');
+                            break;
+
+                        case 'Cancelado':
+                            status.classList.add('status-cancelado');
+                            break;
+
+                        case 'Finalizado':
+                            status.classList.add('status-finalizado');
+                            break;
+
+                        default:
+                            status.classList.add('status-pendente');
+                    }
+
+                    status.textContent = evento.status_evento;
+
+                    colunaStatus.appendChild(status);
+
+                    linha.append(
+                        colunaNome,
+                        colunaData,
+                        colunaLocal,
+                        colunaStatus
+                    );
+
+                    tabela.appendChild(linha);
+                });
+
+            } catch (erro) {
+                console.error('Erro ao listar eventos:', erro);
+
+                tabela.replaceChildren();
+
+                const linha = document.createElement('tr');
+                const coluna = document.createElement('td');
+
+                coluna.colSpan = 4;
+                coluna.textContent = 'Não foi possível carregar os eventos.';
+
+                linha.appendChild(coluna);
+                tabela.appendChild(linha);
+            }
+        }
+
         const ctx = document.getElementById('chartGeneros').getContext('2d');
         new Chart(ctx, {
             type: 'bar',

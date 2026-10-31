@@ -14,7 +14,7 @@ body {
     background: #f4f4f4;
     display: flex;
     min-height: 100vh;
-    color: #292929;
+    font-size: 16px;
 }
 
 .main-content {
@@ -22,6 +22,8 @@ body {
     padding: 30px;
     width: calc(100% - 210px);
     min-width: 0;
+    display: flex;
+    flex-direction: column;
 }
 
 /* ==========================
@@ -63,7 +65,7 @@ body {
 .search-input i {
     color: #888;
     margin-right: 12px;
-    font-size: 15px;
+    font-size: 17px;
 }
 
 .search-input input {
@@ -74,7 +76,7 @@ body {
     width: 100%;
     min-width: 0;
 
-    font-size: 14px;
+    font-size: 16px;
     color: #333;
 }
 
@@ -87,10 +89,10 @@ body {
     color: #fff;
 
     border: none;
-    padding: 12px 28px;
+    padding: 14px 28px;
     border-radius: 16px;
 
-    font-size: 13px;
+    font-size: 15px;
     font-weight: 700;
 
     cursor: pointer;
@@ -146,7 +148,7 @@ body {
 }
 
 .card h3 {
-    font-size: 15px;
+    font-size: 18px;
     color: #333;
     margin-bottom: 15px;
 
@@ -179,7 +181,7 @@ body {
 
 .card-header small {
     color: #888;
-    font-size: 11px;
+    font-size: 14px;
     line-height: 1.5;
 }
 
@@ -187,10 +189,10 @@ body {
     background-color: #f2f2f2;
     color: #666;
 
-    font-size: 10px;
+    font-size: 13px;
     font-weight: 650;
 
-    padding: 7px 11px;
+    padding: 8px 12px;
     border-radius: 10px;
     white-space: nowrap;
 }
@@ -239,7 +241,7 @@ body {
 }
 
 .profile-meta h2 {
-    font-size: 22px;
+    font-size: 25px;
     color: #222;
 
     display: flex;
@@ -256,19 +258,19 @@ body {
     display: block;
     margin-top: 8px;
 
-    font-size: 11px;
+    font-size: 14px;
     color: #888;
     line-height: 1.5;
 }
 
 .verified {
     color: #1da1f2;
-    font-size: 15px;
+    font-size: 17px;
 }
 
 .genre-tag {
     display: inline-block;
-    font-size: 12px;
+    font-size: 14px;
     color: #666;
     margin-top: 5px;
 }
@@ -279,7 +281,7 @@ body {
 
 .artist-analysis-grid {
     display: grid;
-    grid-template-columns: repeat(4, minmax(0, 1fr));
+    grid-template-columns: repeat(3, minmax(0, 1fr));
     gap: 14px;
     margin-top: 22px;
 }
@@ -288,12 +290,12 @@ body {
     background-color: #f8f8f8;
     border: 1px solid #eeeeee;
 
-    padding: 16px;
+    padding: 20px;
     border-radius: 15px;
 
     display: flex;
     align-items: center;
-    gap: 12px;
+    gap: 15px;
 
     min-width: 0;
 
@@ -314,8 +316,8 @@ body {
 }
 
 .analysis-icon {
-    width: 43px;
-    height: 43px;
+    width: 48px;
+    height: 48px;
     flex-shrink: 0;
 
     border-radius: 12px;
@@ -326,20 +328,20 @@ body {
     justify-content: center;
 
     color: #333;
-    font-size: 17px;
+    font-size: 19px;
 }
 
 .analysis-card small {
     display: block;
     color: #777;
-    font-size: 11px;
+    font-size: 14px;
     margin-bottom: 5px;
 }
 
 .analysis-card strong {
     display: block;
     color: #222;
-    font-size: 21px;
+    font-size: 26px;
     font-weight: 800;
     letter-spacing: -0.5px;
     overflow-wrap: anywhere;
@@ -349,8 +351,8 @@ body {
     display: block;
     margin-top: 4px;
     color: #888;
-    font-size: 10px;
-    line-height: 1.4;
+    font-size: 13px;
+    line-height: 1.5;
 }
 
 /* ==========================
@@ -373,7 +375,7 @@ body {
 
 .chart-area h4,
 .analysis-summary h4 {
-    font-size: 14px;
+    font-size: 17px;
     color: #333;
 
     display: flex;
@@ -401,7 +403,7 @@ body {
 
 .analysis-summary > p {
     color: #666;
-    font-size: 12px;
+    font-size: 14px;
     line-height: 1.8;
     margin-bottom: 18px;
 }
@@ -418,8 +420,8 @@ body {
 }
 
 .summary-item > i {
-    width: 34px;
-    height: 34px;
+    width: 36px;
+    height: 36px;
     flex-shrink: 0;
 
     background-color: #ededed;
@@ -430,21 +432,21 @@ body {
     justify-content: center;
 
     color: #333;
-    font-size: 13px;
+    font-size: 15px;
 }
 
 .summary-item strong {
     display: block;
     color: #333;
-    font-size: 12px;
+    font-size: 14px;
     margin-bottom: 4px;
 }
 
 .summary-item span {
     display: block;
     color: #777;
-    font-size: 11px;
-    line-height: 1.6;
+    font-size: 13px;
+    line-height: 1.7;
 }
 
 /* ==========================
@@ -520,8 +522,8 @@ body {
 .track-info .rank {
     font-weight: 800;
     color: #999;
-    font-size: 13px;
-    width: 18px;
+    font-size: 15px;
+    width: 20px;
     flex-shrink: 0;
 }
 
@@ -530,7 +532,7 @@ body {
 }
 
 .track-info strong {
-    font-size: 12px;
+    font-size: 15px;
     color: #292929;
     display: block;
     overflow-wrap: anywhere;
@@ -538,13 +540,13 @@ body {
 
 .track-info small {
     display: block;
-    font-size: 10px;
+    font-size: 13px;
     color: #888;
     margin-top: 4px;
 }
 
 .track-stats {
-    font-size: 10px;
+    font-size: 13px;
     font-weight: 700;
     color: #555;
     text-align: right;
@@ -556,9 +558,9 @@ body {
 ========================== */
 
 .curation-text {
-    font-size: 12px;
+    font-size: 15px;
     color: #666;
-    line-height: 1.7;
+    line-height: 1.8;
     margin-bottom: 15px;
 }
 
@@ -573,8 +575,8 @@ body {
     background-color: #ededed;
     color: #444;
 
-    font-size: 10px;
-    padding: 7px 11px;
+    font-size: 13px;
+    padding: 8px 12px;
     border-radius: 12px;
 
     font-weight: 650;
@@ -599,7 +601,7 @@ body {
 
 .recommendation-box > i {
     color: #555;
-    font-size: 15px;
+    font-size: 17px;
     margin-top: 2px;
     flex-shrink: 0;
 }
@@ -607,15 +609,143 @@ body {
 .recommendation-box strong {
     display: block;
     color: #333;
-    font-size: 12px;
+    font-size: 14px;
     margin-bottom: 5px;
 }
 
 .recommendation-box p {
     color: #777;
-    font-size: 11px;
-    line-height: 1.7;
+    font-size: 14px;
+    line-height: 1.8;
     margin: 0;
+}
+
+/* ==========================
+   SELECT DE EVENTOS
+========================== */
+
+.event-select-container {
+    width: 100%;
+    margin: 22px 0;
+}
+
+.event-select-container label {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+
+    color: #333;
+    font-size: 14px;
+    font-weight: 750;
+
+    margin-bottom: 10px;
+}
+
+.event-select-container label i {
+    color: #555;
+    font-size: 15px;
+}
+
+.event-select-wrapper {
+    position: relative;
+    width: 100%;
+}
+
+.event-select-wrapper select {
+    appearance: none;
+    -webkit-appearance: none;
+
+    width: 100%;
+    min-height: 54px;
+
+    padding: 0 48px 0 17px;
+
+    background-color: #f8f8f8;
+    border: 1px solid #e5e5e5;
+    border-radius: 13px;
+
+    color: #333;
+    font-size: 15px;
+    font-weight: 600;
+
+    cursor: pointer;
+    outline: none;
+
+    transition:
+        border-color 0.2s ease,
+        background-color 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+.event-select-wrapper select:hover {
+    background-color: #f2f2f2;
+    border-color: #ccc;
+}
+
+.event-select-wrapper select:focus {
+    background-color: #fff;
+    border-color: #555;
+    box-shadow: 0 0 0 4px rgba(0, 0, 0, 0.06);
+}
+
+.event-select-wrapper select:disabled {
+    background-color: #eeeeee;
+    color: #999;
+    border-color: #e5e5e5;
+    cursor: not-allowed;
+    opacity: 0.8;
+}
+
+.event-select-wrapper select option {
+    background-color: #fff;
+    color: #333;
+    padding: 12px;
+}
+
+.select-arrow {
+    position: absolute;
+    top: 50%;
+    right: 18px;
+
+    transform: translateY(-50%);
+
+    color: #666;
+    font-size: 13px;
+
+    pointer-events: none;
+    transition: transform 0.2s ease;
+}
+
+.event-select-wrapper:focus-within .select-arrow {
+    color: #222;
+    transform: translateY(-50%) rotate(180deg);
+}
+
+.select-description {
+    display: block;
+    margin-top: 9px;
+
+    color: #999;
+    font-size: 12px;
+    line-height: 1.6;
+}
+
+/* ==========================
+   BOTÃO DE ENVIAR PARA APROVAÇÃO (JÁ ENVIADO)
+========================== */
+
+.btn-primary.ja-enviado {
+    background-color: #e8f3ec;
+    color: #39845a;
+    border: 1px solid #c8e3d1;
+    opacity: 1;
+    cursor: not-allowed;
+    box-shadow: none;
+}
+
+.btn-primary.ja-enviado:hover {
+    background-color: #e8f3ec;
+    box-shadow: none;
 }
 
 /* ==========================
@@ -631,6 +761,7 @@ button:focus-visible,
 input:focus-visible {
     outline-offset: 3px;
 }
+
 /* ==========================
    TABLETS
 ========================== */
@@ -694,8 +825,13 @@ input:focus-visible {
         gap: 10px;
     }
 
+    .card-header small {
+        font-size: 13px;
+    }
+
     .data-badge {
         white-space: normal;
+        font-size: 12px;
     }
 
     .profile-header {
@@ -710,7 +846,11 @@ input:focus-visible {
     }
 
     .profile-meta h2 {
-        font-size: 19px;
+        font-size: 21px;
+    }
+
+    .profile-meta > small {
+        font-size: 13px;
     }
 
     .artist-analysis-grid {
@@ -720,7 +860,7 @@ input:focus-visible {
     }
 
     .analysis-card {
-        padding: 12px;
+        padding: 14px;
         gap: 10px;
     }
 
@@ -730,8 +870,16 @@ input:focus-visible {
         font-size: 14px;
     }
 
+    .analysis-card small {
+        font-size: 13px;
+    }
+
     .analysis-card strong {
-        font-size: 18px;
+        font-size: 21px;
+    }
+
+    .analysis-description {
+        font-size: 12px;
     }
 
     .analysis-content {
@@ -758,6 +906,18 @@ input:focus-visible {
     .track-list li {
         align-items: flex-start;
         gap: 8px;
+    }
+
+    .track-info strong {
+        font-size: 14px;
+    }
+
+    .track-stats {
+        font-size: 12px;
+    }
+
+    .curation-text {
+        font-size: 14px;
     }
 }
 
@@ -791,7 +951,7 @@ input:focus-visible {
     }
 
     .profile-meta h2 {
-        font-size: 17px;
+        font-size: 18px;
     }
 
     .track-stats {
@@ -801,5 +961,119 @@ input:focus-visible {
 
     .chart-container {
         height: 200px;
+    }
+
+    .search-input input {
+        font-size: 14px;
+    }
+}
+
+/* ==========================
+   COMPLEMENTOS DA PESQUISA
+   Mantém a identidade visual original do Sonora
+========================== */
+
+.search-bar-form {
+    display: flex;
+    align-items: stretch;
+    gap: 15px;
+    width: 100%;
+    min-width: 0;
+}
+
+.search-feedback {
+    color: #888;
+    font-size: 14px;
+    line-height: 1.6;
+    margin: -12px 2px 18px;
+}
+
+.search-feedback[data-type="error"] {
+    color: #a33;
+}
+
+.search-feedback[data-type="success"] {
+    color: #35734b;
+}
+
+.artist-header[hidden],
+#indicadores-section[hidden],
+#details-grid[hidden],
+.empty-state[hidden] {
+    display: none !important;
+}
+
+.metric-note {
+    align-items: flex-start;
+    color: #888;
+    display: flex;
+    font-size: 13px;
+    gap: 7px;
+    line-height: 1.7;
+    margin-top: 15px;
+}
+
+.metric-note i {
+    color: #777;
+    margin-top: 2px;
+}
+
+.empty-state {
+    text-align: center;
+    padding: 34px 24px;
+}
+
+.empty-state-icon {
+    align-items: center;
+    background: #ededed;
+    border-radius: 15px;
+    color: #444;
+    display: flex;
+    font-size: 22px;
+    height: 54px;
+    justify-content: center;
+    margin: 0 auto 14px;
+    width: 54px;
+}
+
+.empty-state h3 {
+    justify-content: center;
+    margin-bottom: 8px;
+    font-size: 19px;
+}
+
+.empty-state p {
+    color: #888;
+    font-size: 14px;
+    line-height: 1.8;
+    margin: 0 auto;
+    max-width: 460px;
+}
+
+.approval-hint {
+    color: #888;
+    display: block;
+    font-size: 13px;
+    line-height: 1.6;
+    margin-top: 10px;
+    text-align: center;
+}
+
+.search-bar-form .btn-primary {
+    flex-shrink: 0;
+}
+
+@media (max-width: 768px) {
+    .search-bar-form {
+        flex-direction: column;
+    }
+
+    .search-bar-form .btn-primary {
+        width: 100%;
+    }
+
+    .search-feedback {
+        margin-top: -8px;
+        font-size: 13px;
     }
 }

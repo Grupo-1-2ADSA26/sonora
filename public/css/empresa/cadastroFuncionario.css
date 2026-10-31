@@ -6,9 +6,61 @@
 }
 
 body {
-    background-color: #d8d8d8;
+    background: #f4f4f4;
     display: flex;
     min-height: 100vh;
+}
+
+/* ==========================
+   CABEÇALHO
+========================== */
+
+.cabecalho-pagina {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 22px;
+    margin-bottom: 30px;
+}
+
+.cabecalho-info {
+    flex: 1 1 320px;
+    min-width: 0;
+}
+
+.sobretitulo {
+    display: block;
+    margin-bottom: 8px;
+    color: #858585;
+    font-size: 10px;
+    font-weight: 750;
+    letter-spacing: 2px;
+}
+
+.cabecalho-pagina h1 {
+    color: #242424;
+    font-size: clamp(26px, 3vw, 34px);
+    font-weight: 800;
+    letter-spacing: -1px;
+}
+
+.cabecalho-pagina p {
+    margin-top: 7px;
+    color: #858585;
+    font-size: 13px;
+    line-height: 1.6;
+}
+
+.botao-cabecalho {
+    flex-shrink: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 13px 22px;
+    border-radius: 14px;
+    white-space: nowrap;
 }
 
 .main-content {
@@ -137,14 +189,26 @@ body {
     transition: background 0.2s;
 }
 
-.btn-icon.edit { color: #1976d2; }
-.btn-icon.edit:hover { background-color: #e3f2fd; }
+.btn-icon.edit {
+    color: #1976d2;
+}
 
-.btn-icon.delete { color: #d32f2f; }
-.btn-icon.delete:hover { background-color: #ffebee; }
+.btn-icon.edit:hover {
+    background-color: #e3f2fd;
+}
+
+.btn-icon.delete {
+    color: #d32f2f;
+}
+
+.btn-icon.delete:hover {
+    background-color: #ffebee;
+}
 
 /* Botões Globais */
-.btn-primary, .btn-secondary, .btn-danger {
+.btn-primary,
+.btn-secondary,
+.btn-danger {
     border: none;
     padding: 12px 20px;
     border-radius: 12px;
@@ -157,14 +221,32 @@ body {
     transition: background 0.2s;
 }
 
-.btn-primary { background-color: #333; color: #fff; }
-.btn-primary:hover { background-color: #000; }
+.btn-primary {
+    background-color: #333;
+    color: #fff;
+}
 
-.btn-secondary { background-color: #bebebe; color: #333; }
-.btn-secondary:hover { background-color: #a8a8a8; }
+.btn-primary:hover {
+    background-color: #000;
+}
 
-.btn-danger { background-color: #d32f2f; color: #fff; }
-.btn-danger:hover { background-color: #9a0007; }
+.btn-secondary {
+    background-color: #bebebe;
+    color: #333;
+}
+
+.btn-secondary:hover {
+    background-color: #a8a8a8;
+}
+
+.btn-danger {
+    background-color: #d32f2f;
+    color: #fff;
+}
+
+.btn-danger:hover {
+    background-color: #9a0007;
+}
 
 
 .table-responsive {
@@ -257,7 +339,8 @@ body {
     gap: 6px;
 }
 
-.field-group input, .field-group select {
+.field-group input,
+.field-group select {
     background: transparent;
     border: none;
     outline: none;
@@ -288,8 +371,13 @@ body {
     color: #333;
 }
 
-.modal-body p { margin-bottom: 6px; }
-.modal-body small { color: #666; }
+.modal-body p {
+    margin-bottom: 6px;
+}
+
+.modal-body small {
+    color: #666;
+}
 
 .modal-actions {
     display: flex;
@@ -297,11 +385,18 @@ body {
     margin-top: 15px;
 }
 
-.modal-actions .btn-primary, 
-.modal-actions .btn-danger { flex: 2; }
-.modal-actions .btn-secondary { flex: 1; }
+.modal-actions .btn-primary,
+.modal-actions .btn-danger {
+    flex: 2;
+}
 
-.danger-text { color: #d32f2f; }
+.modal-actions .btn-secondary {
+    flex: 1;
+}
+
+.danger-text {
+    color: #d32f2f;
+}
 
 .erro-campo {
     display: block;
@@ -361,12 +456,23 @@ input.invalido {
         padding: 15px !important;
     }
 
+
     /* Cabeçalho da página */
     .page-header {
         flex-direction: column;
         align-items: flex-start;
         gap: 15px;
         margin-bottom: 20px;
+    }
+
+    .cabecalho-pagina {
+        margin-bottom: 22px;
+        gap: 16px;
+    }
+
+    .botao-cabecalho {
+        width: 100%;
+        flex-shrink: 1;
     }
 
     .page-header h1 {

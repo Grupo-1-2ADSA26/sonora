@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Perfil Empresa | Sonora</title>
+    <title>Aprovados | Sonora</title>
     <script src="https://kit.fontawesome.com/d840916580.js" crossorigin="anonymous"></script>
 
     <link rel="stylesheet" href="../css/menu.css">
@@ -14,41 +14,53 @@
 <body>
 
     <aside class="box-menu">
-        <p class="logo">sonora.</p>
-        <ul class="lista">
-            <li><a href="dashboard.html"><i class="fa-solid fa-house"></i>Início</a></li>
-            <li><a href="pesquisa.html"><i class="fa-solid fa-magnifying-glass"></i>Artistas</a></li>
-            <li><a href="recomendacoes.html"><i class="fa-solid fa-music"></i>Recomendações</a></li>
-            <li class="ativo"><a href="aprovados.html"><i class="fa-solid fa-bell"></i>Aprovados</a></li>
-            <li><a href="perfil.html"><i class="fa-solid fa-user"></i>Perfil</a></li>
-        </ul>
-        <div class="box-sair">
-            <a class="botao-sair" href="../index.html"><i class="fa-solid fa-right-from-bracket"></i> Sair</a>
-        </div>
-    </aside>
+        <input type="checkbox" id="menu-toggle" class="menu-toggle">
+        <div class="menu-top">
+            <label for="menu-toggle" class="btn-hamburguer"><i class="fa-solid fa-bars"></i></label>
+            <p class="logo">sonora.</p>
 
+        </div>
+        <ul class="lista">
+            <li><a href="dashboard.html"><i class="fa-solid fa-house"></i><span>Início</span></a></li>
+            <li><a href="pesquisa.html"><i class="fa-solid fa-magnifying-glass"></i><span>Artistas</span></a></li>
+            <li><a href="recomendacoes.html"><i class="fa-solid fa-music"></i><span>Recomendações</span></a></li>
+            <li class="ativo"><a href="aprovados.html"><i class="fa-solid fa-bell"></i><span>Aprovados</span></a></li>
+            <li><a href="perfil.html"><i class="fa-solid fa-user"></i><span>Perfil</span></a></li>
+            <li class="box-sair">
+                <a class="botao-sair" href="../index.html"><i class="fa-solid fa-right-from-bracket"></i> Sair</a>
+            </li>
+        </ul>
+    </aside>
     <main class="main-content">
 
-        <header class="page-header">
-            <h1>ARTISTAS APROVADOS</h1>
+        <header class="cabecalho-pagina">
+            <div class="cabecalho-info">
+                <span class="sobretitulo">SONORA / APROVADOS</span>
+
+                <h1>Artistas aprovados</h1>
+
+                <p>
+                    Confira os artistas aprovados para a sua empresa.
+                </p>
+            </div>
         </header>
 
-        
+
         <section class="approved-list" id="feed-aprovados">
-         
+
         </section>
 
     </main>
 
-    
+
     <script>
-       
+
         window.onload = function () {
             carregarArtistasAprovados();
         };
 
         function carregarArtistasAprovados() {
-            
+
             var idEmpresa = sessionStorage.ID_EMPRESA;
 
             if (!idEmpresa) {
@@ -56,19 +68,20 @@
                 return;
             }
 
-            
+
             fetch(`/aprovados/aprovados/${idEmpresa}`)
                 .then(function (resposta) {
                     if (resposta.ok) {
                         if (resposta.status == 204) {
-                            document.getElementById("feed-aprovados").innerHTML = "<p>Nenhum artista aprovado no momento.</p>";
+                            document.getElementById("feed-aprovados").innerHTML =
+                                '<p class="mensagem-vazia">Nenhum artista aprovado no momento.</p>';
                             return;
                         }
 
                         resposta.json().then(function (artistas) {
                             var feed = document.getElementById("feed-aprovados");
-                            feed.innerHTML = ""; 
-                            
+                            feed.innerHTML = "";
+
                             artistas.forEach(function (item) {
                                 feed.innerHTML += `
                                     <article class="approved-card">

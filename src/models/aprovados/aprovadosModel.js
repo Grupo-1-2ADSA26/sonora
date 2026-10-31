@@ -40,7 +40,19 @@ function enviarParaAprovados(idEmpresa, idArtista, idUsuario, idEvento) {
     return database.executar(instrucaoSql);
 }
 
+function verificarArtistaEnviado(idEmpresa, idArtista) {
+    var instrucaoSql = `
+        SELECT id_artista
+        FROM artista_aprovado
+        WHERE id_empresa = ${idEmpresa}
+          AND id_artista = ${idArtista};
+    `;
+
+    return database.executar(instrucaoSql);
+}
+
 module.exports = {
     listarAprovadosPorEmpresa,
-    enviarParaAprovados
-};
+    enviarParaAprovados,
+    verificarArtistaEnviado
+}

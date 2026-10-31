@@ -6,8 +6,12 @@ router.get("/aprovados/:idEmpresa", function (req, res) {
     aprovadosController.listarAprovados(req, res);
 });
 
-router.post("/aprovados/enviar", function (req, res) {
+router.post("/enviar", function (req, res) {
     aprovadosController.enviarParaAprovados(req, res);
-}) 
+});
+
+router.get("/verificar/:idEmpresa/:idArtista", function (req, res) {
+    aprovadosController.verificarArtistaEnviado(req, res);
+});
 
 module.exports = router;

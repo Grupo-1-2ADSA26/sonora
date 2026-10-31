@@ -6,9 +6,64 @@
 }
 
 body {
-    background-color: #d8d8d8;
+    background: #f4f4f4;
     display: flex;
     min-height: 100vh;
+}
+
+/* ==========================
+   CABEÇALHO
+========================== */
+
+.cabecalho-pagina {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 22px;
+    margin-bottom: 30px;
+}
+
+.cabecalho-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.sobretitulo {
+    display: block;
+    margin-bottom: 8px;
+    color: #858585;
+    font-size: 10px;
+    font-weight: 750;
+    letter-spacing: 2px;
+}
+
+.cabecalho-pagina h1 {
+    color: #242424;
+    font-size: clamp(26px, 3vw, 34px);
+    font-weight: 800;
+    letter-spacing: -1px;
+}
+
+.cabecalho-pagina p {
+    margin-top: 7px;
+    color: #858585;
+    font-size: 13px;
+    line-height: 1.6;
+}
+
+.icone-cabecalho {
+    width: 55px;
+    height: 55px;
+    flex-shrink: 0;
+    background: #242424;
+    color: #fff;
+    border-radius: 14px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    font-size: 21px;
 }
 
 .conteudo-principal {
@@ -18,18 +73,7 @@ body {
     min-width: 0;
 }
 
-.cabecalho-pagina {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 15px;
-    margin-bottom: 35px;
-}
 
-.cabecalho-pagina h1 {
-    font-size: 24px;
-    color: #222;
-}
 
 .icone-cabecalho {
     width: 55px;
@@ -315,6 +359,7 @@ body {
 .botao-detalhes:hover i {
     transform: translateX(3px);
 }
+
 /* ==========================
    TABLETS
 ========================== */
@@ -336,6 +381,20 @@ body {
 
     .botao-detalhes {
         grid-column: span 2;
+    }
+
+    .cabecalho-pagina h1 {
+        font-size: 20px;
+        letter-spacing: -0.5px;
+    }
+
+    .cabecalho-pagina p {
+        font-size: 13px;
+    }
+
+    .cabecalho-pagina {
+        margin-bottom: 22px;
+        gap: 12px;
     }
 }
 

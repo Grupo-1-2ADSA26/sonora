@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="pt-BR">
 
@@ -8,8 +7,7 @@
 
     <title>Dashboard | Sonora</title>
 
-    <script src="https://kit.fontawesome.com/d840916580.js"
-        crossorigin="anonymous"></script>
+    <script src="https://kit.fontawesome.com/d840916580.js" crossorigin="anonymous"></script>
 
     <link rel="stylesheet" href="../css/menu.css">
     <link rel="stylesheet" href="../css/funcionario/dashboard.css">
@@ -18,53 +16,23 @@
 </head>
 
 <body>
-
     <aside class="box-menu">
-        <p class="logo">sonora.</p>
+        <input type="checkbox" id="menu-toggle" class="menu-toggle">
+        <div class="menu-top">
+            <label for="menu-toggle" class="btn-hamburguer"><i class="fa-solid fa-bars"></i></label>
+            <p class="logo">sonora.</p>
 
+        </div>
         <ul class="lista">
-            <li class="ativo">
-                <a href="dashboard.html">
-                    <i class="fa-solid fa-house"></i>
-                    <span>Início</span>
-                </a>
-            </li>
-
-            <li>
-                <a href="pesquisa.html">
-                    <i class="fa-solid fa-magnifying-glass"></i>
-                    <span>Artistas</span>
-                </a>
-            </li>
-
-            <li>
-                <a href="recomendacoes.html">
-                    <i class="fa-solid fa-music"></i>
-                    <span>Recomendações</span>
-                </a>
-            </li>
-
-            <li>
-                <a href="aprovados.html">
-                    <i class="fa-solid fa-bell"></i>
-                    <span>Aprovados</span>
-                </a>
-            </li>
-
-            <li>
-                <a href="perfil.html">
-                    <i class="fa-solid fa-user"></i>
-                    <span>Perfil</span>
-                </a>
+            <li class="ativo"><a href="dashboard.html"><i class="fa-solid fa-house"></i><span>Início</span></a></li>
+            <li><a href="pesquisa.html"><i class="fa-solid fa-magnifying-glass"></i><span>Artistas</span></a></li>
+            <li><a href="recomendacoes.html"><i class="fa-solid fa-music"></i><span>Recomendações</span></a></li>
+            <li><a href="aprovados.html"><i class="fa-solid fa-bell"></i><span>Aprovados</span></a></li>
+            <li><a href="perfil.html"><i class="fa-solid fa-user"></i><span>Perfil</span></a></li>
+            <li class="box-sair">
+                <a class="botao-sair" href="../index.html"><i class="fa-solid fa-right-from-bracket"></i> Sair</a>
             </li>
         </ul>
-
-        <div class="box-sair">
-            <a class="botao-sair" href="../index.html">
-                <i class="fa-solid fa-right-from-bracket"></i>
-                Sair
-            </a>
-        </div>
     </aside>
 
     <main class="main-content">
@@ -448,4 +416,5 @@
     </script>
 
 </body>
+
 </html>

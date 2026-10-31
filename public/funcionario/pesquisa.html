@@ -16,17 +16,26 @@
 <body>
 
     <aside class="box-menu">
-        <p class="logo">sonora.</p>
-        <ul class="lista">
-            <li><a href="dashboard.html"><i class="fa-solid fa-house"></i>Início</a></li>
-            <li class="ativo"><a href="pesquisa.html"><i class="fa-solid fa-magnifying-glass"></i>Artistas</a></li>
-            <li><a href="recomendacoes.html"><i class="fa-solid fa-music"></i>Recomendações</a></li>
-            <li><a href="aprovados.html"><i class="fa-solid fa-bell"></i>Aprovados</a></li>
-            <li><a href="perfil.html"><i class="fa-solid fa-user"></i>Perfil</a></li>
-        </ul>
-        <div class="box-sair">
-            <a class="botao-sair" href="../index.html"><i class="fa-solid fa-right-from-bracket"></i> Sair</a>
+        <input type="checkbox" id="menu-toggle" class="menu-toggle">
+
+        <div class="menu-top">
+            <label for="menu-toggle" class="btn-hamburguer">
+                <i class="fa-solid fa-bars"></i>
+            </label>
+            <p class="logo">sonora.</p>
         </div>
+
+        <ul class="lista">
+            <li><a href="dashboard.html"><i class="fa-solid fa-house"></i><span>Início</span></a></li>
+            <li class="ativo"><a href="pesquisa.html"><i class="fa-solid fa-magnifying-glass"></i><span>Artistas</span></a></li>
+            <li><a href="recomendacoes.html"><i class="fa-solid fa-music"></i><span>Recomendações</span></a></li>
+            <li><a href="aprovados.html"><i class="fa-solid fa-bell"></i><span>Aprovados</span></a></li>
+            <li><a href="perfil.html"><i class="fa-solid fa-user"></i><span>Perfil</span></a></li>
+
+            <li class="box-sair">
+                <a class="botao-sair" href="../index.html"><i class="fa-solid fa-right-from-bracket"></i> Sair</a>
+            </li>
+        </ul>
     </aside>
 
     <main class="main-content">
@@ -36,30 +45,26 @@
                 <i class="fa-solid fa-magnifying-glass"></i>
                 <input type="text" id="input-pesquisa" placeholder="Digite o nome do artista (ex: Anitta, Alok)...">
             </div>
-            <button class="btn-primary" onclick="buscarArtista()">Pesquisar</button>
+
+            <button class="btn-primary" onclick="buscarArtista()">
+                Pesquisar
+            </button>
         </header>
 
-        
         <section class="card artist-header">
             <div class="profile-header">
                 <div class="avatar-lg">
                     <i class="fa-solid fa-microphone-lines"></i>
                 </div>
+
                 <div class="profile-meta">
-                    <h2 id="nome-artista">
-                        Nenhum artista pesquisado
-                    </h2>
-                    <p class="genre-tag" id="genero-artista">
-                        ---
-                    </p>
-                    <small>
-                        Análise baseada nos dados disponíveis do Spotify e YouTube
-                    </small>
+                    <h2 id="nome-artista">Nenhum artista pesquisado</h2>
+                    <p class="genre-tag" id="genero-artista">---</p>
+                    <small>Análise baseada nos dados disponíveis do Spotify e YouTube</small>
                 </div>
             </div>
         </section>
 
-        
         <section class="card">
             <div class="card-header">
                 <div>
@@ -67,16 +72,14 @@
                         <i class="fa-solid fa-chart-line"></i>
                         Análise completa do artista
                     </h3>
-                    <small>
-                        Principais indicadores de desempenho e características musicais
-                    </small>
+                    <small>Principais indicadores de desempenho e características musicais</small>
                 </div>
-                <span class="data-badge">
-                    Dados consolidados
-                </span>
+
+                <span class="data-badge">Dados consolidados</span>
             </div>
 
             <div class="artist-analysis-grid">
+
                 <div class="analysis-card">
                     <div class="analysis-icon">
                         <i class="fa-solid fa-fire"></i>
@@ -120,11 +123,14 @@
                         <span class="analysis-description">Andamento</span>
                     </div>
                 </div>
+
             </div>
 
             <div class="analysis-content">
+
                 <div class="chart-area">
                     <h4>Perfil musical</h4>
+
                     <div class="chart-container">
                         <canvas id="artistChart"></canvas>
                     </div>
@@ -135,15 +141,18 @@
                         <i class="fa-solid fa-magnifying-glass-chart"></i>
                         Interpretação
                     </h4>
+
                     <p id="texto-interpretacao">
-                        Utilize a barra de pesquisa acima para buscar um artista e visualizar seus indicadores consolidados.
+                        Utilize a barra de pesquisa acima para buscar um artista e visualizar seus indicadores
+                        consolidados.
                     </p>
                 </div>
+
             </div>
         </section>
 
-        
         <div class="dashboard-grid">
+
             <section class="section-panel">
                 <div class="card">
                     <div class="card-header">
@@ -151,371 +160,379 @@
                             <i class="fa-solid fa-compact-disc"></i>
                             Faixas em destaque
                         </h3>
+
                         <small>Top reproduções por streams</small>
                     </div>
 
                     <ul class="track-list" id="lista-faixas">
-                        <li><span>Nenhum artista selecionado.</span></li>
+                        <li>
+                            <span>Nenhum artista selecionado.</span>
+                        </li>
                     </ul>
                 </div>
             </section>
 
             <section class="section-panel">
-                <div class="card" style="display: flex; flex-direction: column; justify-content: space-between; height: 100%;">
+                <div class="card cartao-detalhamento">
+
                     <div>
                         <h3>
                             <i class="fa-solid fa-chart-pie"></i>
                             Detalhamento do Artista
                         </h3>
-                        <p style="margin-top: 15px; color: #a0a0a0; font-size: 14px; line-height: 1.5;">
-                            Acesse a página de análise profunda para visualizar o radar sonoro, comparativo entre plataformas e variação temporal do repertório deste artista.
+
+                        <p class="texto-detalhamento">
+                            Acesse a página de análise profunda para visualizar o radar sonoro, comparativo entre
+                            plataformas e variação temporal do repertório deste artista.
                         </p>
                     </div>
 
-                    <button class="btn-primary full-width" onclick="irParaAnalise()" style="margin-top: 25px; padding: 15px;">
+                    <button class="btn-primary full-width botao-analise" onclick="irParaAnalise()">
                         <i class="fa-solid fa-arrow-right-to-bracket"></i>
                         Ver Análise Completa
                     </button>
                 </div>
             </section>
+
         </div>
     </main>
 
+    <script>
+        let meuchart = null;
+        let idArtistaAtual = null;
+        let temporizadorPesquisa = null;
+        let ultimaPesquisa = 0;
 
-<script>
-    let meuchart = null;
-    let idArtistaAtual = null;
-    let temporizadorPesquisa = null;
-    let ultimaPesquisa = 0;
+        window.onload = function () {
+            const inputPesquisa = document.getElementById('input-pesquisa');
 
-    window.onload = function () {
-        const inputPesquisa = document.getElementById('input-pesquisa');
+            if (inputPesquisa) {
 
-        if (inputPesquisa) {
-            // Pesquisar automaticamente enquanto digita
-            inputPesquisa.addEventListener('input', function () {
-                clearTimeout(temporizadorPesquisa);
+                // Pesquisar automaticamente enquanto digita
+                inputPesquisa.addEventListener('input', function () {
+                    clearTimeout(temporizadorPesquisa);
 
-                const nome = this.value.trim();
+                    const nome = this.value.trim();
 
-                // Aguarda pelo menos 2 caracteres
-                if (nome.length < 2) {
+                    // Aguarda pelo menos 2 caracteres
+                    if (nome.length < 2) {
+                        return;
+                    }
+
+                    // Espera a pessoa parar de digitar
+                    temporizadorPesquisa = setTimeout(function () {
+                        buscarArtista(true);
+                    }, 400);
+                });
+
+                // Também permite pesquisar pressionando Enter
+                inputPesquisa.addEventListener('keydown', function (event) {
+                    if (event.key === 'Enter') {
+                        event.preventDefault();
+
+                        clearTimeout(temporizadorPesquisa);
+                        buscarArtista();
+                    }
+                });
+            }
+        };
+
+        function atualizarGrafico(popularidade, energy, danceability) {
+            const canvas = document.getElementById('artistChart');
+
+            if (!canvas) return;
+
+            const ctx = canvas.getContext('2d');
+
+            if (meuchart) {
+                meuchart.destroy();
+            }
+
+            meuchart = new Chart(ctx, {
+                type: 'bar',
+
+                data: {
+                    labels: [
+                        'Popularidade',
+                        'Energy',
+                        'Danceability'
+                    ],
+
+                    datasets: [{
+                        label: 'Índice (%)',
+
+                        data: [
+                            Number(popularidade) || 0,
+                            (Number(energy) || 0) * 100,
+                            (Number(danceability) || 0) * 100
+                        ],
+
+                        backgroundColor: [
+                            '#222222',
+                            '#555555',
+                            '#888888'
+                        ],
+
+                        borderColor: [
+                            '#111111',
+                            '#333333',
+                            '#666666'
+                        ],
+
+                        borderWidth: 1,
+                        borderRadius: 6
+                    }]
+                },
+
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            max: 100,
+
+                            ticks: {
+                                callback: function (valor) {
+                                    return valor + '%';
+                                }
+                            }
+                        }
+                    },
+
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+
+                        tooltip: {
+                            callbacks: {
+                                label: function (context) {
+                                    return context.parsed.y.toFixed(1) + '%';
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        async function buscarArtista(silenciosa = false) {
+            const inputPesquisa = document.getElementById('input-pesquisa');
+
+            if (!inputPesquisa) return;
+
+            const nome = inputPesquisa.value.trim();
+
+            if (!nome) {
+                if (!silenciosa) {
+                    alert('Digite o nome de um artista para pesquisar!');
+                    inputPesquisa.focus();
+                }
+
+                return;
+            }
+
+            // Identifica cada pesquisa para ignorar respostas antigas
+            const pesquisaAtual = ++ultimaPesquisa;
+
+            try {
+                const resposta = await fetch(
+                    `/artista/pesquisar?nome=${encodeURIComponent(nome)}`
+                );
+
+                // Ignora resultados de pesquisas anteriores
+                if (pesquisaAtual !== ultimaPesquisa) return;
+
+                // Se a pessoa continuou digitando, descarta esta resposta
+                if (inputPesquisa.value.trim() !== nome) return;
+
+                if (!resposta.ok) {
+                    if (!silenciosa) {
+                        if (resposta.status === 404) {
+                            alert('Artista não encontrado!');
+                        } else {
+                            alert(
+                                'Não foi possível pesquisar o artista. Tente novamente.'
+                            );
+                        }
+                    }
+
                     return;
                 }
 
-                // Espera a pessoa parar de digitar
-                temporizadorPesquisa = setTimeout(function () {
-                    buscarArtista(true);
-                }, 400);
-            });
+                const dados = await resposta.json();
 
-            // Também permite pesquisar pressionando Enter
-            inputPesquisa.addEventListener('keydown', function (event) {
-                if (event.key === 'Enter') {
-                    event.preventDefault();
+                // Confere novamente antes de atualizar a dashboard
+                if (pesquisaAtual !== ultimaPesquisa) return;
+                if (inputPesquisa.value.trim() !== nome) return;
 
-                    clearTimeout(temporizadorPesquisa);
-                    buscarArtista();
-                }
-            });
-        }
-    };
-
-    function atualizarGrafico(popularidade, energy, danceability) {
-        const canvas = document.getElementById('artistChart');
-
-        if (!canvas) return;
-
-        const ctx = canvas.getContext('2d');
-
-        if (meuchart) {
-            meuchart.destroy();
-        }
-
-        meuchart = new Chart(ctx, {
-            type: 'bar',
-
-            data: {
-                labels: [
-                    'Popularidade',
-                    'Energy',
-                    'Danceability'
-                ],
-
-                datasets: [{
-                    label: 'Índice (%)',
-
-                    data: [
-                        Number(popularidade) || 0,
-                        (Number(energy) || 0) * 100,
-                        (Number(danceability) || 0) * 100
-                    ],
-
-                    backgroundColor: [
-                        '#222222',
-                        '#555555',
-                        '#888888'
-                    ],
-
-                    borderColor: [
-                        '#111111',
-                        '#333333',
-                        '#666666'
-                    ],
-
-                    borderWidth: 1,
-                    borderRadius: 6
-                }]
-            },
-
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-
-                scales: {
-                    y: {
-                        beginAtZero: true,
-                        max: 100,
-
-                        ticks: {
-                            callback: function (valor) {
-                                return valor + '%';
-                            }
-                        }
-                    }
-                },
-
-                plugins: {
-                    legend: {
-                        display: false
-                    },
-
-                    tooltip: {
-                        callbacks: {
-                            label: function (context) {
-                                return context.parsed.y.toFixed(1) + '%';
-                            }
-                        }
-                    }
-                }
-            }
-        });
-    }
-
-    async function buscarArtista(silenciosa = false) {
-        const inputPesquisa = document.getElementById('input-pesquisa');
-
-        if (!inputPesquisa) return;
-
-        const nome = inputPesquisa.value.trim();
-
-        if (!nome) {
-            if (!silenciosa) {
-                alert('Digite o nome de um artista para pesquisar!');
-                inputPesquisa.focus();
-            }
-
-            return;
-        }
-
-        // Identifica cada pesquisa para ignorar respostas antigas
-        const pesquisaAtual = ++ultimaPesquisa;
-
-        try {
-            const resposta = await fetch(
-                `/artista/pesquisar?nome=${encodeURIComponent(nome)}`
-            );
-
-            // Ignora resultados de pesquisas anteriores
-            if (pesquisaAtual !== ultimaPesquisa) return;
-
-            // Se a pessoa continuou digitando, descarta esta resposta
-            if (inputPesquisa.value.trim() !== nome) return;
-
-            if (!resposta.ok) {
-                if (!silenciosa) {
-                    if (resposta.status === 404) {
-                        alert('Artista não encontrado!');
-                    } else {
+                if (!dados || !dados.id_artista) {
+                    if (!silenciosa) {
                         alert(
-                            'Não foi possível pesquisar o artista. Tente novamente.'
+                            'Não foram encontrados dados válidos para esse artista.'
                         );
                     }
+
+                    return;
                 }
 
-                return;
-            }
+                idArtistaAtual = dados.id_artista;
 
-            const dados = await resposta.json();
+                // Atualizar cabeçalho
+                const nomeArtista = document.getElementById('nome-artista');
+                const generoArtista = document.getElementById('genero-artista');
 
-            // Confere novamente antes de atualizar a dashboard
-            if (pesquisaAtual !== ultimaPesquisa) return;
-            if (inputPesquisa.value.trim() !== nome) return;
+                if (nomeArtista) {
+                    // Evita acumular ícones em pesquisas sucessivas
+                    nomeArtista.textContent = dados.nome || 'Artista sem nome';
 
-            if (!dados || !dados.id_artista) {
+                    const iconeVerificado = document.createElement('i');
+                    iconeVerificado.className =
+                        'fa-solid fa-circle-check verified';
+
+                    iconeVerificado.title = 'Artista verificado';
+
+                    nomeArtista.appendChild(document.createTextNode(' '));
+                    nomeArtista.appendChild(iconeVerificado);
+                }
+
+                if (generoArtista) {
+                    generoArtista.textContent =
+                        dados.genero || 'Gênero não informado';
+                }
+
+                // Atualizar KPIs
+                const popularidade = Number(dados.popularidade) || 0;
+                const energy = Number(dados.energy) || 0;
+                const danceability = Number(dados.danceability) || 0;
+                const bpm = Number(dados.bpm) || 0;
+
+                const kpiPopularidade =
+                    document.getElementById('kpi-popularidade');
+
+                const kpiEnergy =
+                    document.getElementById('kpi-energy');
+
+                const kpiDanceability =
+                    document.getElementById('kpi-danceability');
+
+                const kpiBpm =
+                    document.getElementById('kpi-bpm');
+
+                if (kpiPopularidade) {
+                    kpiPopularidade.textContent = `${popularidade}/100`;
+                }
+
+                if (kpiEnergy) {
+                    kpiEnergy.textContent = `${(energy * 100).toFixed(0)}%`;
+                }
+
+                if (kpiDanceability) {
+                    kpiDanceability.textContent =
+                        `${(danceability * 100).toFixed(0)}%`;
+                }
+
+                if (kpiBpm) {
+                    kpiBpm.textContent = bpm;
+                }
+
+                // Atualizar interpretação
+                const interpretacao =
+                    document.getElementById('texto-interpretacao');
+
+                if (interpretacao) {
+                    interpretacao.textContent =
+                        `${dados.nome || 'O artista'} destaca-se com uma média de ${bpm} BPM e energia de ${(energy * 100).toFixed(0)}%, com forte aceitação em faixas do gênero ${dados.genero || 'não informado'}.`;
+                }
+
+                // Atualizar Top 3 faixas
+                const listaFaixas =
+                    document.getElementById('lista-faixas');
+
+                if (listaFaixas) {
+                    listaFaixas.innerHTML = '';
+
+                    if (dados.topFaixas && dados.topFaixas.length > 0) {
+                        dados.topFaixas.forEach((faixa, idx) => {
+                            const streams = Number(faixa.total_streams) || 0;
+
+                            const streamsFormatado =
+                                streams.toLocaleString('pt-BR');
+
+                            const item = document.createElement('li');
+
+                            const trackInfo = document.createElement('div');
+                            trackInfo.className = 'track-info';
+
+                            const rank = document.createElement('span');
+                            rank.className = 'rank';
+                            rank.textContent = idx + 1;
+
+                            const detalhes = document.createElement('div');
+
+                            const titulo = document.createElement('strong');
+                            titulo.textContent =
+                                faixa.titulo || 'Faixa sem título';
+
+                            const album = document.createElement('small');
+                            album.textContent = faixa.album || 'Single';
+
+                            detalhes.appendChild(titulo);
+                            detalhes.appendChild(album);
+
+                            trackInfo.appendChild(rank);
+                            trackInfo.appendChild(detalhes);
+
+                            const estatisticas = document.createElement('span');
+                            estatisticas.className = 'track-stats';
+                            estatisticas.textContent =
+                                `${streamsFormatado} streams`;
+
+                            item.appendChild(trackInfo);
+                            item.appendChild(estatisticas);
+
+                            listaFaixas.appendChild(item);
+                        });
+                    } else {
+                        listaFaixas.innerHTML =
+                            '<li><span>Nenhuma faixa cadastrada.</span></li>';
+                    }
+                }
+
+                // Atualizar gráfico
+                atualizarGrafico(
+                    popularidade,
+                    energy,
+                    danceability
+                );
+
+            } catch (erro) {
+                console.error('Erro na busca:', erro);
+
                 if (!silenciosa) {
                     alert(
-                        'Não foram encontrados dados válidos para esse artista.'
+                        'Ocorreu um erro ao pesquisar o artista. Verifique sua conexão e tente novamente.'
                     );
                 }
-
-                return;
             }
+        }
 
-            idArtistaAtual = dados.id_artista;
+        function irParaAnalise() {
+            if (idArtistaAtual) {
+                const idEmpresa = sessionStorage.ID_EMPRESA || 1;
 
-            // Atualizar cabeçalho
-            const nomeArtista = document.getElementById('nome-artista');
-            const generoArtista = document.getElementById('genero-artista');
-
-            if (nomeArtista) {
-                // Evita acumular ícones em pesquisas sucessivas
-                nomeArtista.textContent = dados.nome || 'Artista sem nome';
-
-                const iconeVerificado = document.createElement('i');
-                iconeVerificado.className =
-                    'fa-solid fa-circle-check verified';
-
-                iconeVerificado.title = 'Artista verificado';
-
-                nomeArtista.appendChild(document.createTextNode(' '));
-                nomeArtista.appendChild(iconeVerificado);
-            }
-
-            if (generoArtista) {
-                generoArtista.textContent =
-                    dados.genero || 'Gênero não informado';
-            }
-
-            // Atualizar KPIs
-            const popularidade = Number(dados.popularidade) || 0;
-            const energy = Number(dados.energy) || 0;
-            const danceability = Number(dados.danceability) || 0;
-            const bpm = Number(dados.bpm) || 0;
-
-            const kpiPopularidade =
-                document.getElementById('kpi-popularidade');
-
-            const kpiEnergy =
-                document.getElementById('kpi-energy');
-
-            const kpiDanceability =
-                document.getElementById('kpi-danceability');
-
-            const kpiBpm =
-                document.getElementById('kpi-bpm');
-
-            if (kpiPopularidade) {
-                kpiPopularidade.textContent = `${popularidade}/100`;
-            }
-
-            if (kpiEnergy) {
-                kpiEnergy.textContent = `${(energy * 100).toFixed(0)}%`;
-            }
-
-            if (kpiDanceability) {
-                kpiDanceability.textContent =
-                    `${(danceability * 100).toFixed(0)}%`;
-            }
-
-            if (kpiBpm) {
-                kpiBpm.textContent = bpm;
-            }
-
-            // Atualizar interpretação
-            const interpretacao =
-                document.getElementById('texto-interpretacao');
-
-            if (interpretacao) {
-                interpretacao.textContent =
-                    `${dados.nome || 'O artista'} destaca-se com uma média de ${bpm} BPM e energia de ${(energy * 100).toFixed(0)}%, com forte aceitação em faixas do gênero ${dados.genero || 'não informado'}.`;
-            }
-
-            // Atualizar Top 3 faixas
-            const listaFaixas =
-                document.getElementById('lista-faixas');
-
-            if (listaFaixas) {
-                listaFaixas.innerHTML = '';
-
-                if (dados.topFaixas && dados.topFaixas.length > 0) {
-                    dados.topFaixas.forEach((faixa, idx) => {
-                        const streams = Number(faixa.total_streams) || 0;
-
-                        const streamsFormatado =
-                            streams.toLocaleString('pt-BR');
-
-                        const item = document.createElement('li');
-
-                        const trackInfo = document.createElement('div');
-                        trackInfo.className = 'track-info';
-
-                        const rank = document.createElement('span');
-                        rank.className = 'rank';
-                        rank.textContent = idx + 1;
-
-                        const detalhes = document.createElement('div');
-
-                        const titulo = document.createElement('strong');
-                        titulo.textContent =
-                            faixa.titulo || 'Faixa sem título';
-
-                        const album = document.createElement('small');
-                        album.textContent = faixa.album || 'Single';
-
-                        detalhes.appendChild(titulo);
-                        detalhes.appendChild(album);
-
-                        trackInfo.appendChild(rank);
-                        trackInfo.appendChild(detalhes);
-
-                        const estatisticas = document.createElement('span');
-                        estatisticas.className = 'track-stats';
-                        estatisticas.textContent =
-                            `${streamsFormatado} streams`;
-
-                        item.appendChild(trackInfo);
-                        item.appendChild(estatisticas);
-
-                        listaFaixas.appendChild(item);
-                    });
-                } else {
-                    listaFaixas.innerHTML =
-                        '<li><span>Nenhuma faixa cadastrada.</span></li>';
-                }
-            }
-
-            // Atualizar gráfico
-            atualizarGrafico(
-                popularidade,
-                energy,
-                danceability
-            );
-
-        } catch (erro) {
-            console.error('Erro na busca:', erro);
-
-            if (!silenciosa) {
+                window.location.href =
+                    `analise.html?idArtista=${encodeURIComponent(idArtistaAtual)}&idEmpresa=${encodeURIComponent(idEmpresa)}`;
+            } else {
                 alert(
-                    'Ocorreu um erro ao pesquisar o artista. Verifique sua conexão e tente novamente.'
+                    'Busque um artista primeiro para visualizar a análise completa!'
                 );
             }
         }
-    }
+    </script>
 
-    function irParaAnalise() {
-        if (idArtistaAtual) {
-            const idEmpresa = sessionStorage.ID_EMPRESA || 1;
-
-            window.location.href =
-                `analise.html?idArtista=${encodeURIComponent(idArtistaAtual)}&idEmpresa=${encodeURIComponent(idEmpresa)}`;
-        } else {
-            alert(
-                'Busque um artista primeiro para visualizar a análise completa!'
-            );
-        }
-    }
-</script>
 </body>
 
 </html>

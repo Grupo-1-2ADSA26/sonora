@@ -1,7 +1,3 @@
-/* ==============================
-   CONFIGURAÇÕES GERAIS
-============================== */
-
 * {
     margin: 0;
     padding: 0;
@@ -10,7 +6,7 @@
 }
 
 body {
-    background-color: #d8d8d8;
+    background: #f4f4f4;
     display: flex;
     min-height: 100vh;
     color: #222;
@@ -48,24 +44,58 @@ select:focus-visible {
     flex: 1;
 }
 
+/* ==============================
+   CABEÇALHO
+============================== */
+
 .cabecalho-pagina {
     display: flex;
-    justify-content: space-between;
     align-items: center;
-    gap: 20px;
-    margin-bottom: 25px;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 22px;
+    margin-bottom: 30px;
+}
+
+.cabecalho-info {
+    flex: 1 1 320px;
+    min-width: 0;
+}
+
+.sobretitulo {
+    display: block;
+    margin-bottom: 8px;
+    color: #858585;
+    font-size: 10px;
+    font-weight: 750;
+    letter-spacing: 2px;
 }
 
 .cabecalho-pagina h1 {
-    font-size: 24px;
-    line-height: 1.3;
-    color: #222;
+    color: #242424;
+    font-size: clamp(26px, 3vw, 34px);
+    font-weight: 800;
+    letter-spacing: -1px;
+    line-height: 1.2;
+    overflow-wrap: break-word;
 }
 
 .cabecalho-pagina p {
+    margin-top: 7px;
+    color: #858585;
     font-size: 13px;
-    color: #666;
-    margin-top: 6px;
+    line-height: 1.6;
+}
+
+.botao-cabecalho {
+    flex-shrink: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 13px 22px;
+    border-radius: 14px;
+    white-space: nowrap;
 }
 
 /* ==============================
@@ -128,6 +158,7 @@ select:focus-visible {
     background-color: #e2e2e2;
     padding: 24px;
     border-radius: 24px;
+    min-width: 0;
 }
 
 .barra-titulo {
@@ -316,7 +347,7 @@ select:focus-visible {
     pointer-events: none;
 
     transition: opacity 0.25s, visibility 0.25s;
-    z-index: 999;
+    z-index: 2000;
 }
 
 .modal-overlay.ativo {
@@ -416,6 +447,7 @@ select:focus-visible {
     border-radius: 7px;
     padding: 10px;
     width: 100%;
+    min-width: 0;
     font-size: 14px;
     color: #111;
     outline: none;
@@ -437,7 +469,6 @@ select:focus-visible {
     color: #b71c1c;
     margin-top: 5px;
     font-size: 11px;
-    min-height: 0;
 }
 
 .field-group small:empty {
@@ -456,6 +487,7 @@ select:focus-visible {
 
 .modal-body p {
     margin-bottom: 8px;
+    overflow-wrap: anywhere;
 }
 
 .modal-body small {
@@ -512,47 +544,42 @@ select:focus-visible {
 }
 
 /* ==============================
-   RESPONSIVIDADE
+   TABLETS
 ============================== */
 
-@media (max-width: 900px) {
+@media (max-width: 1100px) {
     .conteudo-principal {
-        padding: 22px;
-    }
-
-    .cabecalho-pagina h1 {
-        font-size: 20px;
+        padding: 24px;
     }
 
     .section-panel {
-        padding: 18px;
+        padding: 20px;
     }
 }
 
-@media (max-width: 600px) {
+/* ==============================
+   TABLET PEQUENO E CELULAR
+============================== */
+
+@media (max-width: 768px) {
+    body {
+        flex-direction: column;
+    }
+
     .conteudo-principal {
         margin-left: 0;
         width: 100%;
-        padding: 16px;
+        padding: 20px 16px;
     }
 
     .cabecalho-pagina {
-        flex-direction: column;
-        align-items: stretch;
-        gap: 15px;
+        margin-bottom: 22px;
+        gap: 16px;
     }
 
-    .cabecalho-pagina h1 {
-        font-size: 19px;
-    }
-
-    .cabecalho-pagina p {
-        font-size: 12px;
-        line-height: 1.5;
-    }
-
-    .cabecalho-pagina .btn-primary {
+    .botao-cabecalho {
         width: 100%;
+        flex-shrink: 1;
     }
 
     .section-panel {
@@ -562,6 +589,7 @@ select:focus-visible {
 
     .barra-titulo {
         align-items: flex-start;
+        margin-bottom: 16px;
     }
 
     .barra-titulo h3 {
@@ -569,31 +597,12 @@ select:focus-visible {
     }
 
     .events-grid {
-        grid-template-columns: 1fr;
+        grid-template-columns: minmax(0, 1fr);
+        gap: 16px;
     }
 
-    .modal-overlay {
-        padding: 12px;
-    }
-
-    .modal-box {
-        padding: 18px;
-        max-height: calc(100vh - 24px);
-    }
-
-    .modal-header h3 {
-        font-size: 16px;
-    }
-
-    .modal-actions {
-        flex-direction: column;
-    }
-
-    .modal-actions .btn-primary,
-    .modal-actions .btn-secondary,
-    .modal-actions .btn-danger {
-        width: 100%;
-        flex: auto;
+    .conteudo-evento {
+        padding: 16px;
     }
 
     #toast {
@@ -601,78 +610,28 @@ select:focus-visible {
         right: 12px;
         max-width: calc(100vw - 24px);
     }
-}
-
-@media (max-width: 768px) {
-
-    body {
-        display: flex;
-        flex-direction: column;
-        width: 100%;
-        min-width: 0;
-        overflow-x: hidden;
-    }
-
-    .box-menu {
-        position: relative;
-        width: 100%;
-        min-width: 0;
-        height: auto;
-        min-height: 0;
-        flex: 0 0 auto;
-    }
-
-    .conteudo-principal {
-        display: block;
-        position: relative;
-        margin: 0;
-        width: 100%;
-        max-width: 100%;
-        min-width: 0;
-        flex: 1 1 auto;
-        padding: 20px 16px;
-    }
-
-    .cabecalho-pagina,
-    .section-panel {
-        width: 100%;
-        min-width: 0;
-    }
-
-    .cabecalho-pagina h1 {
-        word-break: normal;
-        overflow-wrap: break-word;
-    }
-
-    .events-grid {
-        width: 100%;
-        min-width: 0;
-        grid-template-columns: minmax(0, 1fr);
-    }
-
-    .card-evento {
-        min-width: 0;
-        width: 100%;
-    }
-
 
     /* Modal no celular */
     .modal-overlay {
-        padding: 16px;
-        align-items: center;
-        justify-content: center;
+        padding: 12px;
     }
 
     .modal-box {
-        width: 100%;
-        max-width: 380px;
-        max-height: 82dvh;
-        overflow-y: auto;
+        max-width: 420px;
+        max-height: calc(100vh - 24px);
+        max-height: calc(100dvh - 24px);
         padding: 16px;
         border-radius: 16px;
     }
 
-    /* Compactar os campos */
+    .modal-header {
+        margin-bottom: 12px;
+    }
+
+    .modal-header h3 {
+        font-size: 16px;
+    }
+
     #formulario-evento {
         gap: 9px;
     }
@@ -685,23 +644,46 @@ select:focus-visible {
         margin-bottom: 4px;
     }
 
+    /* 16px evita o zoom automático no iPhone */
     .field-group input,
-    .field-group select {
+    .field-group select,
+    .field-group textarea {
         padding: 8px;
+        font-size: 16px;
     }
 
     .field-group textarea {
         min-height: 65px;
-        padding: 8px;
-    }
-
-    .modal-header {
-        margin-bottom: 12px;
     }
 
     .modal-actions {
+        flex-direction: column;
         margin-top: 10px;
         gap: 8px;
     }
 
+    .modal-actions .btn-primary,
+    .modal-actions .btn-secondary,
+    .modal-actions .btn-danger {
+        width: 100%;
+        flex: none;
+    }
+}
+
+/* ==============================
+   CELULARES PEQUENOS
+============================== */
+
+@media (max-width: 400px) {
+    .conteudo-principal {
+        padding: 16px 12px;
+    }
+
+    .section-panel {
+        padding: 12px;
+    }
+
+    .modal-box {
+        padding: 14px;
+    }
 }

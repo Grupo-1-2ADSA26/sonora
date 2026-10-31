@@ -6,7 +6,7 @@
 }
 
 body {
-    background-color: #d8d8d8;
+    background: #f4f4f4;
     display: flex;
     min-height: 100vh;
 }
@@ -15,28 +15,57 @@ body {
     margin-left: 210px;
     padding: 30px;
     width: calc(100% - 210px);
+    min-width: 0;
 }
 
-.page-header {
+
+.cabecalho-pagina {
     margin-bottom: 25px;
 }
 
-.page-header h1 {
-    font-size: 24px;
-    color: #333;
-    font-weight: 800;
+.cabecalho-info {
+    min-width: 0;
 }
 
-.page-header p {
-    margin-top: 5px;
-    color: #777;
+.sobretitulo {
+    display: block;
+    margin-bottom: 8px;
+    color: #858585;
+    font-size: 10px;
+    font-weight: 750;
+    letter-spacing: 2px;
+}
+
+.cabecalho-pagina h1 {
+    color: #242424;
+    font-size: clamp(26px, 3vw, 34px);
+    font-weight: 800;
+    letter-spacing: -1px;
+    line-height: 1.2;
+    overflow-wrap: break-word;
+}
+
+.cabecalho-pagina p {
+    margin-top: 7px;
+    color: #858585;
     font-size: 13px;
+    line-height: 1.6;
 }
 
 .approved-list {
     display: flex;
     flex-direction: column;
     gap: 15px;
+}
+
+.mensagem-vazia {
+    padding: 30px 20px;
+    text-align: center;
+    color: #777;
+    font-size: 13px;
+    background-color: #fff;
+    border-radius: 18px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
 }
 
 .approved-card {
@@ -48,6 +77,7 @@ body {
     display: flex;
     align-items: center;
     gap: 20px;
+    min-width: 0;
     transition: transform 0.2s, box-shadow 0.2s;
 }
 
@@ -71,6 +101,7 @@ body {
 
 .approved-info {
     width: 180px;
+    min-width: 0;
     flex-shrink: 0;
 }
 
@@ -79,8 +110,10 @@ body {
     color: #222;
     display: flex;
     align-items: center;
+    flex-wrap: wrap;
     gap: 5px;
     margin-bottom: 5px;
+    overflow-wrap: anywhere;
 }
 
 .approved-info h2 i {
@@ -89,14 +122,18 @@ body {
 }
 
 .approved-info span {
+    display: block;
     color: #777;
     font-size: 11px;
+    line-height: 1.5;
+    overflow-wrap: anywhere;
 }
 
 .approved-metrics {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(4, minmax(0, 1fr));
     flex: 1;
+    min-width: 0;
     gap: 10px;
 }
 
@@ -105,6 +142,7 @@ body {
     padding: 10px 12px;
     border-radius: 10px;
     text-align: center;
+    min-width: 0;
 }
 
 .approved-metric small {
@@ -126,6 +164,7 @@ body {
     color: #555;
     font-size: 11px;
     font-weight: 600;
+    white-space: nowrap;
 }
 
 .approved-status i {
@@ -143,7 +182,9 @@ body {
     cursor: pointer;
     display: flex;
     align-items: center;
+    justify-content: center;
     gap: 7px;
+    white-space: nowrap;
     transition: background-color 0.2s;
 }
 
@@ -151,39 +192,103 @@ body {
     background-color: #000;
 }
 
+/* ==========================
+   TABLETS
+========================== */
+
 @media (max-width: 1100px) {
     .approved-card {
-        flex-wrap: wrap;
-    }
-
-    .approved-metrics {
-        width: 100%;
-        flex: none;
-    }
-}
-
-@media (max-width: 700px) {
-    .main-content {
-        margin-left: 0;
-        width: 100%;
-        padding: 20px;
-    }
-
-    .approved-card {
-        align-items: flex-start;
-        flex-wrap: wrap;
+        display: grid;
+        grid-template-columns: auto minmax(0, 1fr) auto auto;
+        gap: 16px;
     }
 
     .approved-info {
-        flex: 1;
+        width: auto;
     }
 
     .approved-metrics {
-        grid-template-columns: repeat(2, 1fr);
+        grid-column: 1 / -1;
+        grid-row: 2;
+    }
+}
+
+/* ==========================
+   TABLET PEQUENO E CELULAR
+========================== */
+
+@media (max-width: 768px) {
+    body {
+        flex-direction: column;
+    }
+
+    .main-content {
+        margin-left: 0;
         width: 100%;
+        padding: 20px 16px;
+    }
+
+    .page-header {
+        margin-bottom: 20px;
+    }
+
+    .page-header h1 {
+        font-size: 20px;
+    }
+
+    .approved-card {
+        grid-template-columns: auto minmax(0, 1fr);
+        padding: 16px;
+        border-radius: 15px;
+        gap: 14px;
+    }
+
+    .approved-avatar {
+        width: 54px;
+        height: 54px;
+        font-size: 19px;
+    }
+
+    .approved-info h2 {
+        font-size: 16px;
+    }
+
+    .approved-metrics {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
     }
 
     .approved-status {
-        margin-left: 85px;
+        grid-column: 1 / -1;
+        grid-row: auto;
+    }
+
+    .approved-button {
+        grid-column: 1 / -1;
+        width: 100%;
+        padding: 13px;
+    }
+}
+
+/* ==========================
+   CELULARES PEQUENOS
+========================== */
+
+@media (max-width: 380px) {
+    .main-content {
+        padding: 16px 12px;
+    }
+
+    .approved-card {
+        padding: 14px;
+    }
+
+    .approved-avatar {
+        width: 46px;
+        height: 46px;
+        font-size: 17px;
+    }
+
+    .approved-metric strong {
+        font-size: 14px;
     }
 }

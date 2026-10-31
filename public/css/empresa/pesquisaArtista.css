@@ -621,6 +621,134 @@ body {
 }
 
 /* ==========================
+   SELECT DE EVENTOS
+========================== */
+
+.event-select-container {
+    width: 100%;
+    margin: 22px 0;
+}
+
+.event-select-container label {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+
+    color: #333;
+    font-size: 14px;
+    font-weight: 750;
+
+    margin-bottom: 10px;
+}
+
+.event-select-container label i {
+    color: #555;
+    font-size: 15px;
+}
+
+.event-select-wrapper {
+    position: relative;
+    width: 100%;
+}
+
+.event-select-wrapper select {
+    appearance: none;
+    -webkit-appearance: none;
+
+    width: 100%;
+    min-height: 54px;
+
+    padding: 0 48px 0 17px;
+
+    background-color: #f8f8f8;
+    border: 1px solid #e5e5e5;
+    border-radius: 13px;
+
+    color: #333;
+    font-size: 15px;
+    font-weight: 600;
+
+    cursor: pointer;
+    outline: none;
+
+    transition:
+        border-color 0.2s ease,
+        background-color 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+.event-select-wrapper select:hover {
+    background-color: #f2f2f2;
+    border-color: #ccc;
+}
+
+.event-select-wrapper select:focus {
+    background-color: #fff;
+    border-color: #555;
+    box-shadow: 0 0 0 4px rgba(0, 0, 0, 0.06);
+}
+
+.event-select-wrapper select:disabled {
+    background-color: #eeeeee;
+    color: #999;
+    border-color: #e5e5e5;
+    cursor: not-allowed;
+    opacity: 0.8;
+}
+
+.event-select-wrapper select option {
+    background-color: #fff;
+    color: #333;
+    padding: 12px;
+}
+
+.select-arrow {
+    position: absolute;
+    top: 50%;
+    right: 18px;
+
+    transform: translateY(-50%);
+
+    color: #666;
+    font-size: 13px;
+
+    pointer-events: none;
+    transition: transform 0.2s ease;
+}
+
+.event-select-wrapper:focus-within .select-arrow {
+    color: #222;
+    transform: translateY(-50%) rotate(180deg);
+}
+
+.select-description {
+    display: block;
+    margin-top: 9px;
+
+    color: #999;
+    font-size: 12px;
+    line-height: 1.6;
+}
+
+/* ==========================
+   BOTÃO DE ENVIAR PARA APROVAÇÃO (JÁ ENVIADO)
+========================== */
+
+.btn-primary.ja-enviado {
+    background-color: #e8f3ec;
+    color: #39845a;
+    border: 1px solid #c8e3d1;
+    opacity: 1;
+    cursor: not-allowed;
+    box-shadow: none;
+}
+
+.btn-primary.ja-enviado:hover {
+    background-color: #e8f3ec;
+    box-shadow: none;
+}
+
+/* ==========================
    ACESSIBILIDADE
 ========================== */
 

@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -37,17 +38,10 @@
             <form id="form-pesquisa" class="search-bar-form">
                 <div class="search-input">
                     <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
-                    <input
-                        type="search"
-                        id="input-pesquisa"
-                        placeholder="Digite o nome do artista (ex.: Anitta, Alok)..."
-                        maxlength="120"
-                        aria-label="Nome do artista"
-                    >
+                    <input type="search" id="input-pesquisa" placeholder="Digite o nome do artista (ex.: Anitta, Alok)..." maxlength="120" aria-label="Nome do artista">
                 </div>
-
                 <button class="btn-primary" id="btn-pesquisar" type="submit">
-                    <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
+                    <i class="fa-solid fa-magnifying-glass"></i>
                     Pesquisar
                 </button>
             </form>
@@ -78,7 +72,6 @@
                 </div>
                 <span class="data-badge"><i class="fa-solid fa-database"></i> Dados disponíveis</span>
             </div>
-
             <div class="artist-analysis-grid">
                 <div class="analysis-card">
                     <div class="analysis-icon"><i class="fa-solid fa-fire"></i></div>
@@ -88,7 +81,6 @@
                         <span class="analysis-description">Índice de popularidade</span>
                     </div>
                 </div>
-
                 <div class="analysis-card">
                     <div class="analysis-icon"><i class="fa-solid fa-play"></i></div>
                     <div>
@@ -97,7 +89,6 @@
                         <span class="analysis-description">Reproduções registradas</span>
                     </div>
                 </div>
-
                 <div class="analysis-card">
                     <div class="analysis-icon"><i class="fa-solid fa-heart"></i></div>
                     <div>
@@ -132,11 +123,27 @@
                             <small>Encaminhe o artista para o processo de avaliação da empresa.</small>
                         </div>
                     </div>
-
                     <p class="curation-text">
                         Após consultar os indicadores e as faixas em destaque, você pode encaminhar este artista para análise de aprovação.
                     </p>
-
+                    <p class="curation-text">
+                        Selecione um evento no qual queira enviar o artista para análise:
+                    </p>
+                    <div class="event-select-container">
+                        <label for="select-evento">
+                            <i class="fa-solid fa-calendar-days"></i>
+                            Evento de destino
+                        </label>
+                        <div class="event-select-wrapper">
+                            <select name="evento" id="select-evento" required>
+                                <option value="">Carregando eventos...</option>
+                            </select>
+                            <i class="fa-solid fa-chevron-down select-arrow"></i>
+                        </div>
+                        <small class="select-description">
+                            Escolha o evento para o qual deseja encaminhar este artista.
+                        </small>
+                    </div>
                     <button class="btn-primary full-width" id="btn-aprovacao" type="button" disabled>
                         <i class="fa-solid fa-arrow-right-to-bracket"></i>
                         Enviar para análise de aprovação
@@ -154,21 +161,31 @@
     </main>
 
     <script>
-        let idArtistaAtual = null;
-        let ultimaPesquisa = 0;
 
+        // Elementos da página
         const formPesquisa = document.getElementById('form-pesquisa');
         const inputPesquisa = document.getElementById('input-pesquisa');
         const botaoPesquisar = document.getElementById('btn-pesquisar');
         const botaoAprovacao = document.getElementById('btn-aprovacao');
+        const selectEvento = document.getElementById('select-evento');
         const feedback = document.getElementById('search-feedback');
 
-        formPesquisa.addEventListener('submit', function (event) {
-            event.preventDefault();
-            buscarArtista();
-        });
+        let idArtistaAtual = null;
+        let artistaJaEnviado = false;
+        let pesquisaAtual = 0;
+        let enviando = false;
 
-        botaoAprovacao.addEventListener('click', irParaAnalise);
+        function iniciarTela() {
+            formPesquisa.addEventListener('submit', function(event) {
+                event.preventDefault();
+                buscarArtista();
+            });
+
+            botaoAprovacao.addEventListener('click', enviarParaAnalise);
+            selectEvento.addEventListener('change', atualizarBotaoAprovacao);
+
+            listarEventos();
+        }
 
         function mostrarFeedback(mensagem, tipo = 'normal') {
             feedback.textContent = mensagem;
@@ -183,13 +200,33 @@
 
         function limparResultado() {
             idArtistaAtual = null;
+            artistaJaEnviado = false;
+
             document.getElementById('artist-header').hidden = true;
             document.getElementById('indicadores-section').hidden = true;
             document.getElementById('details-grid').hidden = true;
             document.getElementById('empty-state').hidden = false;
-            botaoAprovacao.disabled = true;
-            document.getElementById('approval-hint').textContent =
-                'Pesquise um artista para habilitar esta opção.';
+
+            atualizarBotaoAprovacao();
+        }
+
+        function atualizarBotaoAprovacao() {
+            botaoAprovacao.classList.toggle('ja-enviado', artistaJaEnviado);
+
+            if (artistaJaEnviado) {
+                botaoAprovacao.disabled = true;
+                botaoAprovacao.innerHTML = '<i class="fa-solid fa-circle-check"></i> Artista já enviado';
+                document.getElementById('approval-hint').textContent =
+                    'Este artista já foi enviado para aprovação pela sua empresa.';
+                return;
+            }
+
+            botaoAprovacao.innerHTML = '<i class="fa-solid fa-arrow-right-to-bracket"></i> Enviar para análise de aprovação';
+            botaoAprovacao.disabled = enviando || !idArtistaAtual || !selectEvento.value;
+
+            document.getElementById('approval-hint').textContent = idArtistaAtual
+                ? 'O artista está pronto para ser encaminhado.'
+                : 'Pesquise um artista para habilitar esta opção.';
         }
 
         function exibirFaixas(faixas) {
@@ -198,22 +235,19 @@
 
             if (!Array.isArray(faixas) || faixas.length === 0) {
                 const item = document.createElement('li');
-                const texto = document.createElement('span');
-                texto.textContent = 'Nenhuma faixa disponível para este artista.';
-                item.appendChild(texto);
+                item.innerHTML = '<span>Nenhuma faixa disponível para este artista.</span>';
                 lista.appendChild(item);
                 return;
             }
 
             faixas.forEach((faixa, indice) => {
                 const item = document.createElement('li');
+                const informacoes = document.createElement('div');
+                informacoes.className = 'track-info';
 
-                const trackInfo = document.createElement('div');
-                trackInfo.className = 'track-info';
-
-                const rank = document.createElement('span');
-                rank.className = 'rank';
-                rank.textContent = String(indice + 1);
+                const posicao = document.createElement('span');
+                posicao.className = 'rank';
+                posicao.textContent = indice + 1;
 
                 const detalhes = document.createElement('div');
                 const titulo = document.createElement('strong');
@@ -223,17 +257,17 @@
                 album.textContent = faixa.album || 'Single';
 
                 detalhes.append(titulo, album);
-                trackInfo.append(rank, detalhes);
+                informacoes.append(posicao, detalhes);
 
-                const estatisticas = document.createElement('span');
-                estatisticas.className = 'track-stats';
+                const streams = document.createElement('span');
+                streams.className = 'track-stats';
 
-                const streams = Number(faixa.total_streams);
-                estatisticas.textContent = Number.isFinite(streams)
-                    ? `${formatarNumero(streams)} streams`
+                const totalStreams = Number(faixa.total_streams);
+                streams.textContent = Number.isFinite(totalStreams)
+                    ? `${formatarNumero(totalStreams)} streams`
                     : '--';
 
-                item.append(trackInfo, estatisticas);
+                item.append(informacoes, streams);
                 lista.appendChild(item);
             });
         }
@@ -247,18 +281,18 @@
                 return;
             }
 
-            const pesquisaAtual = ++ultimaPesquisa;
+            const pesquisa = ++pesquisaAtual;
+
             botaoPesquisar.disabled = true;
             botaoPesquisar.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Pesquisando';
-            mostrarFeedback(`Buscando informações de ${nome}...`);
+
             limparResultado();
+            mostrarFeedback(`Buscando informações de ${nome}...`);
 
             try {
-                const resposta = await fetch(
-                    `/artista/pesquisar?nome=${encodeURIComponent(nome)}`
-                );
+                const resposta = await fetch(`/artista/pesquisar?nome=${encodeURIComponent(nome)}`);
 
-                if (pesquisaAtual !== ultimaPesquisa) return;
+                if (pesquisa !== pesquisaAtual) return;
 
                 if (resposta.status === 404) {
                     mostrarFeedback('Artista não encontrado. Confira o nome e tente novamente.', 'error');
@@ -266,12 +300,10 @@
                 }
 
                 if (!resposta.ok) {
-                    throw new Error(`Erro HTTP ${resposta.status}`);
+                    throw new Error('Erro ao pesquisar artista.');
                 }
 
                 const dados = await resposta.json();
-
-                if (pesquisaAtual !== ultimaPesquisa) return;
 
                 if (!dados || !dados.id_artista) {
                     mostrarFeedback('A pesquisa não retornou dados válidos para esse artista.', 'error');
@@ -284,13 +316,15 @@
                 document.getElementById('genero-artista').textContent = dados.genero || 'Gênero não informado';
 
                 const popularidade = Number(dados.popularidade);
-                const totalStreams = Number(dados.total_streams);
+                const streams = Number(dados.total_streams);
                 const engajamento = Number(dados.engajamento);
 
                 document.getElementById('kpi-popularidade').textContent =
                     Number.isFinite(popularidade) ? `${popularidade}/100` : '--';
+
                 document.getElementById('kpi-streams').textContent =
-                    Number.isFinite(totalStreams) ? formatarNumero(totalStreams) : '--';
+                    Number.isFinite(streams) ? formatarNumero(streams) : '--';
+
                 document.getElementById('kpi-engajamento').textContent =
                     Number.isFinite(engajamento) ? `${engajamento.toFixed(1)}%` : '--';
 
@@ -301,41 +335,137 @@
                 document.getElementById('details-grid').hidden = false;
                 document.getElementById('empty-state').hidden = true;
 
-                botaoAprovacao.disabled = false;
-                document.getElementById('approval-hint').textContent =
-                    'O artista está pronto para ser encaminhado.';
+                const respostaVerificacao = await fetch(
+                    `/aprovados/verificar/${idEmpresa}/${idArtistaAtual}`
+                );
+
+                if (!respostaVerificacao.ok) {
+                    throw new Error('Não foi possível verificar o envio do artista.');
+                }
+
+                const verificacao = await respostaVerificacao.json();
+
+                if (pesquisa !== pesquisaAtual) return;
+
+                artistaJaEnviado = verificacao.jaEnviado === true;
+                atualizarBotaoAprovacao();
+
                 mostrarFeedback(`Resultado encontrado: ${dados.nome || nome}.`, 'success');
 
             } catch (erro) {
                 console.error('Erro ao pesquisar artista:', erro);
-                if (pesquisaAtual === ultimaPesquisa) {
+
+                if (pesquisa === pesquisaAtual) {
                     mostrarFeedback('Não foi possível realizar a pesquisa. Tente novamente.', 'error');
                 }
             } finally {
-                if (pesquisaAtual === ultimaPesquisa) {
+                if (pesquisa === pesquisaAtual) {
                     botaoPesquisar.disabled = false;
-                    botaoPesquisar.innerHTML =
-                        '<i class="fa-solid fa-magnifying-glass"></i> Pesquisar';
+                    botaoPesquisar.innerHTML = '<i class="fa-solid fa-magnifying-glass"></i> Pesquisar';
                 }
             }
         }
 
-        function irParaAnalise() {
-            if (!idArtistaAtual) {
-                mostrarFeedback('Pesquise um artista antes de continuar.', 'error');
-                return;
+        async function listarEventos() {
+            try {
+                const resposta = await fetch(`/evento/listar/${idEmpresa}`);
+
+                if (!resposta.ok && resposta.status !== 204) {
+                    throw new Error('Erro ao carregar eventos.');
+                }
+
+                const eventos = resposta.status === 204 ? [] : await resposta.json();
+
+                selectEvento.replaceChildren();
+
+                const opcaoInicial = document.createElement('option');
+                opcaoInicial.value = '';
+                opcaoInicial.textContent = eventos.length ? 'Selecione um evento' : 'Nenhum evento cadastrado';
+                selectEvento.appendChild(opcaoInicial);
+
+                if (!Array.isArray(eventos) || eventos.length === 0) {
+                    selectEvento.disabled = true;
+                    atualizarBotaoAprovacao();
+                    return;
+                }
+
+                eventos.forEach(evento => {
+                    const opcao = document.createElement('option');
+                    opcao.value = evento.id_evento;
+                    opcao.textContent = evento.nome;
+                    selectEvento.appendChild(opcao);
+                });
+
+                selectEvento.disabled = false;
+                atualizarBotaoAprovacao();
+
+            } catch (erro) {
+                console.error('Erro ao listar eventos:', erro);
+                selectEvento.innerHTML = '<option value="">Erro ao carregar eventos</option>';
+                selectEvento.disabled = true;
+                atualizarBotaoAprovacao();
             }
-
-            const idEmpresa = sessionStorage.getItem('ID_EMPRESA');
-
-            if (!idEmpresa) {
-                alert('Sua sessão não foi identificada. Faça login novamente.');
-                window.location.href = '../login.html';
-                return;
-            }
-
-            window.location.href = `aprovados.html`;
         }
+
+        async function enviarParaAnalise() {
+            if (!idArtistaAtual || artistaJaEnviado || enviando) return;
+
+            if (!selectEvento.value) {
+                alert('Selecione um evento para enviar o artista para análise.');
+                return;
+            }
+
+            enviando = true;
+            atualizarBotaoAprovacao();
+
+            try {
+                const resposta = await fetch('/aprovados/enviar', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        idEmpresa,
+                        idArtista: idArtistaAtual,
+                        idUsuario,
+                        idEvento: selectEvento.value
+                    })
+                });
+
+                const dados = await resposta.json();
+
+                if (resposta.status === 409) {
+                    artistaJaEnviado = true;
+                    alert(dados.mensagem || 'Este artista já foi enviado.');
+                    return;
+                }
+
+                if (!resposta.ok) {
+                    throw new Error(dados.mensagem || 'Erro ao enviar artista.');
+                }
+
+                alert(dados.mensagem || 'Artista enviado para aprovação com sucesso!');
+                window.location.href = 'aprovados.html';
+
+            } catch (erro) {
+                console.error('Erro ao enviar artista:', erro);
+                alert(erro.message || 'Não foi possível enviar o artista. Tente novamente.');
+            } finally {
+                enviando = false;
+                atualizarBotaoAprovacao();
+            }
+        }
+
+        const idEmpresa = sessionStorage.getItem('ID_EMPRESA');
+        const idUsuario = sessionStorage.getItem('ID_USUARIO');
+
+        if (!idEmpresa || !idUsuario) {
+            alert('Sua sessão expirou ou não foi identificada. Faça login novamente.');
+            window.location.replace('../login.html');
+        } else {
+            iniciarTela();
+        }
+        
     </script>
 </body>
 </html>

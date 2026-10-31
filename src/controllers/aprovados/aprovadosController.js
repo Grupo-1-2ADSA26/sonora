@@ -36,7 +36,24 @@ function enviarParaAprovados(req, res) {
         });
 }
 
+function verificarArtistaEnviado(req, res) {
+    var idEmpresa = req.params.idEmpresa;
+    var idArtista = req.params.idArtista;
+
+    aprovadosModel.verificarArtistaEnviado(idEmpresa, idArtista)
+        .then(function (resultado) {
+            res.status(200).json({
+                jaEnviado: resultado.length > 0
+            });
+        })
+        .catch(function (erro) {
+            console.error("Erro ao verificar artista:", erro);
+            res.status(500).json(erro);
+        });
+}
+
 module.exports = {
     listarAprovados,
-    enviarParaAprovados
+    enviarParaAprovados,
+    verificarArtistaEnviado
 };

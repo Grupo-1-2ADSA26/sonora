@@ -6,4 +6,8 @@ router.get("/pesquisar", function (req, res) {
     artistaController.pesquisarArtista(req, res);
 });
 
+router.get("/pesquisarPorId/:idArtista", function (req, res) {
+    artistaController.pesquisarArtistaPorId(req, res);
+});
+
 module.exports = router;

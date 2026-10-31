@@ -1,9 +1,9 @@
 var aprovadosModel = require("../../models/aprovados/aprovadosModel");
 
-function listarAprovados(req, res) {
+function listarTodosParaFuncionario(req, res) {
     var idEmpresa = req.params.idEmpresa;
 
-    aprovadosModel.listarAprovadosPorEmpresa(idEmpresa)
+    aprovadosModel.listarTodosParaFuncionario(idEmpresa)
         .then(function (resultado) {
             if (resultado.length > 0) {
                 res.status(200).json(resultado);
@@ -52,8 +52,26 @@ function verificarArtistaEnviado(req, res) {
         });
 }
 
+function listarTodosParaAdministrador(req, res) {
+    var idEmpresa = req.params.idEmpresa;
+
+    aprovadosModel.listarTodosParaAdministrador(idEmpresa)
+        .then(function (resultado) {
+            if (resultado.length > 0) {
+                res.status(200).json(resultado);
+            } else {
+                res.status(204).send("Nenhum resultado encontrado!");
+            }
+        })
+        .catch(function (erro) {
+            console.error("Erro ao buscar artistas:", erro);
+            res.status(500).json(erro);
+        });
+}
+
 module.exports = {
-    listarAprovados,
+    listarTodosParaFuncionario,
     enviarParaAprovados,
-    verificarArtistaEnviado
+    verificarArtistaEnviado,
+    listarTodosParaAdministrador
 };

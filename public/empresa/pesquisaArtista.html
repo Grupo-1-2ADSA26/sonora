@@ -272,10 +272,11 @@
             });
         }
 
-        async function buscarArtista() {
+        async function buscarArtista(idArtista = null) {
             const nome = inputPesquisa.value.trim();
 
-            if (nome.length < 2) {
+            // Quando não vier ID pela URL, exige pesquisa por nome
+            if (!idArtista && nome.length < 2) {
                 mostrarFeedback('Digite pelo menos 2 caracteres para pesquisar.', 'error');
                 inputPesquisa.focus();
                 return;
@@ -284,18 +285,29 @@
             const pesquisa = ++pesquisaAtual;
 
             botaoPesquisar.disabled = true;
-            botaoPesquisar.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Pesquisando';
+            botaoPesquisar.innerHTML =
+                '<i class="fa-solid fa-spinner fa-spin"></i> Pesquisando';
 
             limparResultado();
-            mostrarFeedback(`Buscando informações de ${nome}...`);
+
+            mostrarFeedback(
+                idArtista
+                    ? 'Carregando perfil do artista...'
+                    : `Buscando informações de ${nome}...`
+            );
 
             try {
-                const resposta = await fetch(`/artista/pesquisar?nome=${encodeURIComponent(nome)}`);
+                // Escolhe a rota de acordo com a origem da pesquisa
+                const url = idArtista
+                    ? `/artista/pesquisarPorId/${encodeURIComponent(idArtista)}`
+                    : `/artista/pesquisar?nome=${encodeURIComponent(nome)}`;
+
+                const resposta = await fetch(url);
 
                 if (pesquisa !== pesquisaAtual) return;
 
                 if (resposta.status === 404) {
-                    mostrarFeedback('Artista não encontrado. Confira o nome e tente novamente.', 'error');
+                    mostrarFeedback('Artista não encontrado.', 'error');
                     return;
                 }
 
@@ -306,18 +318,28 @@
                 const dados = await resposta.json();
 
                 if (!dados || !dados.id_artista) {
-                    mostrarFeedback('A pesquisa não retornou dados válidos para esse artista.', 'error');
+                    mostrarFeedback(
+                        'A pesquisa não retornou dados válidos para esse artista.',
+                        'error'
+                    );
                     return;
                 }
 
                 idArtistaAtual = dados.id_artista;
 
-                document.getElementById('nome-artista').textContent = dados.nome || 'Artista sem nome';
-                document.getElementById('genero-artista').textContent = dados.genero || 'Gênero não informado';
+                // Preenche o campo de pesquisa com o nome encontrado
+                inputPesquisa.value = dados.nome || '';
 
+                // Preenche o perfil
+                document.getElementById('nome-artista').textContent =
+                    dados.nome || 'Artista sem nome';
+
+                document.getElementById('genero-artista').textContent =
+                    dados.genero || 'Gênero não informado';
+
+                // Indicadores
                 const popularidade = Number(dados.popularidade);
                 const streams = Number(dados.total_streams);
-                const engajamento = Number(dados.engajamento);
 
                 document.getElementById('kpi-popularidade').textContent =
                     Number.isFinite(popularidade) ? `${popularidade}/100` : '--';
@@ -325,16 +347,19 @@
                 document.getElementById('kpi-streams').textContent =
                     Number.isFinite(streams) ? formatarNumero(streams) : '--';
 
-                document.getElementById('kpi-engajamento').textContent =
-                    Number.isFinite(engajamento) ? `${engajamento.toFixed(1)}%` : '--';
+                // Não existe uma métrica de engajamento definida no backend ainda
+                document.getElementById('kpi-engajamento').textContent = '--';
 
+                // Faixas em destaque
                 exibirFaixas(dados.topFaixas);
 
+                // Mostra as seções do perfil
                 document.getElementById('artist-header').hidden = false;
                 document.getElementById('indicadores-section').hidden = false;
                 document.getElementById('details-grid').hidden = false;
                 document.getElementById('empty-state').hidden = true;
 
+                // Verifica se o artista já foi enviado pela empresa
                 const respostaVerificacao = await fetch(
                     `/aprovados/verificar/${idEmpresa}/${idArtistaAtual}`
                 );
@@ -348,21 +373,45 @@
                 if (pesquisa !== pesquisaAtual) return;
 
                 artistaJaEnviado = verificacao.jaEnviado === true;
+
                 atualizarBotaoAprovacao();
 
-                mostrarFeedback(`Resultado encontrado: ${dados.nome || nome}.`, 'success');
+                mostrarFeedback(
+                    `Resultado encontrado: ${dados.nome}.`,
+                    'success'
+                );
 
             } catch (erro) {
                 console.error('Erro ao pesquisar artista:', erro);
 
                 if (pesquisa === pesquisaAtual) {
-                    mostrarFeedback('Não foi possível realizar a pesquisa. Tente novamente.', 'error');
+                    limparResultado();
+                    mostrarFeedback(
+                        'Não foi possível carregar o perfil. Tente novamente.',
+                        'error'
+                    );
                 }
+
             } finally {
                 if (pesquisa === pesquisaAtual) {
                     botaoPesquisar.disabled = false;
-                    botaoPesquisar.innerHTML = '<i class="fa-solid fa-magnifying-glass"></i> Pesquisar';
+                    botaoPesquisar.innerHTML =
+                        '<i class="fa-solid fa-magnifying-glass"></i> Pesquisar';
                 }
+            }
+        }
+
+        function carregarArtistaPelaUrl() {
+            const parametros = new URLSearchParams(window.location.search);
+            const idArtista = parametros.get('id');
+
+            if (idArtista) {
+                if (!/^\d+$/.test(idArtista) || Number(idArtista) <= 0) {
+                    mostrarFeedback('ID de artista inválido.', 'error');
+                    return;
+                }
+
+                buscarArtista(idArtista);
             }
         }
 
@@ -464,6 +513,7 @@
             window.location.replace('../login.html');
         } else {
             iniciarTela();
+            carregarArtistaPelaUrl();
         }
         
     </script>

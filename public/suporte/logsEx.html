@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Empresa | Sonora</title>
+    <script src="https://kit.fontawesome.com/d840916580.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <link rel="stylesheet" href="../css/menu.css">
+    <link rel="stylesheet" href="../css/suporte/dashboard.css">
+</head>
+
+<body>
+
+    <aside class="box-menu">
+        <p class="logo">sonora.</p>
+        <ul class="lista">
+            <li><a href="logs.html"><i class="fa-solid fa-users"></i>Logs</a></li>
+            <li><a href="perfil.html"><i class="fa-solid fa-user"></i>Perfil</a></li>
+        </ul>
+        <div class="box-sair">
+            <a class="botao-sair" href="../index.html"><i class="fa-solid fa-right-from-bracket"></i> Sair</a>
+        </div>
+    </aside>
+
+    <main class="main-content">
+        <header class="dashboard-header">
+            <div>
+                <h1>Suporte</h1>
+                <p>Monitore falhas, atrasos e ocorrências do sistema</p>
+            </div>
+        </header>
+
+        <div class="dashboard-grid">
+
+            <!-- KPIs -->
+            <section class="secao-kpis">
+
+                <div class="card-kpi">
+
+                    <div class="caixa" style="background-color: #ed7878; ">
+                        <span class="fa fa-exclamation-triangle" style="
+                            color: #ab0808; 
+                            font-size: 50px;"></span>
+
+                    </div>
+                    <div class="caixa">
+                        <h2>5</h2>
+                        <p>falhas críticas</p>
+                    </div>
+                    <div class="caixa" style="justify-content: center;
+                        text-align: center;
+                    ">
+                        <span class='fa fa-arrow-up' style="
+                                color: #ab0808; 
+                                font-size: 25px;"></span>
+
+                        <p style="
+                            color: #ab0808; 
+                            font-size: 20px;">+2
+                        </p>
+
+                    </div>
+                </div>
+
+
+                <div class="card-kpi">
+
+                    <div class="caixa" style="background-color: #f4ce90; ">
+                        <span class='fa fa-clock-o' style="
+                            color: #eaa111; 
+                            font-size: 50px;"></span>
+
+                    </div>
+                    <div class="caixa">
+                        <h2>8</h2>
+                        <p>ATRASOS DETECTADOS</p>
+                    </div>
+                    <div class="caixa" style="justify-content: center;
+                        text-align: center;
+                    ">
+                        <span class='fa fa-arrow-up' style="
+                                color: #ab0808; 
+                                font-size: 25px;"></span>
+
+                        <p style="
+                            color: #ab0808; 
+                            font-size: 20px;">+1
+                        </p>
+
+                    </div>
+                </div>
+
+
+                <div class="card-kpi">
+
+                    <div class="caixa" style="background-color: #8eb9ff; ">
+                        <span class='fa fa-list' style="
+                            color: #0c39ce; 
+                            font-size: 50px;"></span>
+
+                    </div>
+                    <div class="caixa">
+                        <h2>39</h2>
+                        <p>OCORRENCIAS HOJE</p>
+                    </div>
+                    <div class="caixa" style="justify-content: center;
+                        text-align: center;
+                    ">
+                        <span class='fa fa-arrow-down' style="
+                                color: #52e666; 
+                                font-size: 25px;"></span>
+
+                        <p style="
+                            color: #52e666; 
+                            font-size: 20px;">+2
+                        </p>
+
+                    </div>
+                </div>
+
+                <div class="card-kpi">
+
+                    <div class="caixa" style="background-color: #5beea0; ">
+                        <span class='fa fa-building' style="
+                            color: #04a451; 
+                            font-size: 50px;"></span>
+
+                    </div>
+                    <div class="caixa">
+                        <h2>5</h2>
+                        <p>EMPRESAS MONITORADAS</p>
+                    </div>
+
+                </div>
+            </section>
+
+
+
+            <div class="card filtros-card">
+
+                <h3>Filtros</h3>
+
+                <div class="filtros-container">
+
+                    <div class="campo-filtro cliente">
+                        <label>Cliente</label>
+                        <select id="filtroCliente" onchange="filtrar()">
+                            <option value="">Todos os clientes</option>
+                            <option value="Nova Som Ltda">Nova Som Ltda</option>
+                            <option value="Beat Produções">Beat Produções</option>
+                            <option value="Som Livre Eventos">Som Livre Eventos</option>
+                            <option value="Alpha Music">Alpha Music</option>
+                            <option value="Vibe Records">Vibe Records</option>
+                        </select>
+                    </div>
+
+                    <div class="campo-filtro">
+                        <label>Tipo</label>
+                        <select id="filtroTipo" onchange="filtrar()">
+                            <option value="">Todos</option>
+                            <option value="Falha">Falha</option>
+                            <option value="Atraso">Atraso</option>
+                            <option value="Sistema">Sistema</option>
+                            <option value="Integração">Integração</option>
+                        </select>
+                    </div>
+
+                    <div class="campo-filtro">
+                        <label>Status</label>
+                        <select id="filtroStatus" onchange="filtrar()">
+                            <option value="">Todos</option>
+                            <option value="Crítico">Crítico</option>
+                            <option value="Atenção">Atenção</option>
+                            <option value="Informação">Informação</option>
+                            <option value="Resolvido">Resolvido</option>
+                            <option value="Em análise">Em análise</option>
+                        </select>
+                    </div>
+
+
+
+                    <div class="acoes-filtro">
+
+                        <button class="btn-limpar" id="limparFiltro" onclick="limparFilro()">
+                            Limpar filtros
+                        </button>
+                    </div>
+
+                </div>
+            </div>
+
+
+
+            <!-- log -->
+            <section class="secao-shows">
+                <div class="card">
+                    <div class="card-header">
+                        <h3>
+                            <i class='fa fa-list'></i>
+                            Ocorrencias
+                        </h3>
+                    </div>
+
+                    <table class="shows-table card">
+                        <thead>
+                            <tr>
+                                <th>Data/Hora</th>
+                                <th>Cliente</th>
+                                <th>Tipo</th>
+                                <th>Mensagem</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tabela">
+
+
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+
+        </div>
+
+    </main>
+
+    <script>
+
+
+
+        const ocorrencias = [
+            {
+                dataHora: "17/10/2026 09:14",
+                cliente: "Nova Som Ltda",
+                tipo: "Falha",
+                mensagem: "Erro ao buscar métricas do Spotify",
+                status: "Crítico"
+            },
+            {
+                dataHora: "17/10/2026 08:55",
+                cliente: "Beat Produções",
+                tipo: "Atraso",
+                mensagem: "Processamento de dados acima do tempo esperado",
+                status: "Atenção"
+            },
+            {
+                dataHora: "17/10/2026 08:30",
+                cliente: "Som Livre Eventos",
+                tipo: "Falha",
+                mensagem: "Falha na integração com o YouTube",
+                status: "Crítico"
+            },
+            {
+                dataHora: "17/10/2026 07:12",
+                cliente: "Alpha Music",
+                tipo: "Sistema",
+                mensagem: "Rotina de importação finalizada com sucesso",
+                status: "Informação"
+            },
+            {
+                dataHora: "17/10/2026 06:48",
+                cliente: "Vibe Records",
+                tipo: "Atraso",
+                mensagem: "Atualização de métricas atrasada",
+                status: "Atenção"
+            },
+            {
+                dataHora: "16/10/2026 23:32",
+                cliente: "Nova Som Ltda",
+                tipo: "Integração",
+                mensagem: "Tempo limite excedido na API do Spotify",
+                status: "Resolvido"
+            },
+            {
+                dataHora: "16/10/2026 21:40",
+                cliente: "Beat Produções",
+                tipo: "Falha",
+                mensagem: "Erro ao processar dados de streams",
+                status: "Crítico"
+            },
+            {
+                dataHora: "16/10/2026 20:15",
+                cliente: "Som Livre Eventos",
+                tipo: "Integração",
+                mensagem: "Falha na sincronização de artistas",
+                status: "Em análise"
+            },
+            {
+                dataHora: "16/10/2026 18:05",
+                cliente: "Alpha Music",
+                tipo: "Sistema",
+                mensagem: "Backup dos dados concluído",
+                status: "Resolvido"
+            },
+            {
+                dataHora: "16/10/2026 16:32",
+                cliente: "Vibe Records",
+                tipo: "Falha",
+                mensagem: "Erro ao importar catálogo musical",
+                status: "Crítico"
+            }
+        ];
+        filtrar()
+
+        function limparFilro() {
+            filtroCliente.value = ""
+            filtroTipo.value = ""
+            filtroStatus.value = ""
+
+            filtrar()
+        }
+
+        function filtrar() {
+
+            tabela.innerHTML = "";
+
+            for (let i = 0; i < ocorrencias.length; i++) {
+
+
+                if (
+                    (filtroCliente.value == "" || ocorrencias[i].cliente == filtroCliente.value) &&
+                    (filtroTipo.value == "" || ocorrencias[i].tipo == filtroTipo.value) &&
+                    (filtroStatus.value == "" || ocorrencias[i].status == filtroStatus.value)
+                ) {
+
+                    let classeStatus = "";
+
+                    if (ocorrencias[i].status == "Crítico" || ocorrencias[i].status == "Falha") {
+                        classeStatus = "status-error";
+
+                    } else if (ocorrencias[i].status == "Atenção" || ocorrencias[i].status == "Em análise") {
+                        classeStatus = "status-pending";
+
+                    } else if (ocorrencias[i].status == "Informação" || ocorrencias[i].status == "Resolvido") {
+                        classeStatus = "status-ok";
+                    }
+
+                    tabela.innerHTML += `
+                <tr>
+                    <td>${ocorrencias[i].dataHora}</td>
+                    <td><strong>${ocorrencias[i].cliente}</strong></td>
+                    <td>${ocorrencias[i].tipo}</td>
+                    <td>${ocorrencias[i].mensagem}</td>
+                    <td>
+                        <span class="status ${classeStatus}">
+                            ${ocorrencias[i].status}
+                        </span>
+                    </td>
+                </tr>
+            `;
+                }
+            }
+
+
+
+        }
+
+
+
+    </script>
+</body>
+
+</html>

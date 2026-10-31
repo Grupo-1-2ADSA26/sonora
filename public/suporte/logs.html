@@ -17,7 +17,7 @@
     <aside class="box-menu">
         <p class="logo">sonora.</p>
         <ul class="lista">
-            <li><a href="cadastroFuncionario.html"><i class="fa-solid fa-users"></i>Funcionários</a></li>
+            <li><a href="logsEx.html"><i class="fa-solid fa-users"></i>Logs</a></li>
             <li><a href="perfil.html"><i class="fa-solid fa-user"></i>Perfil</a></li>
         </ul>
         <div class="box-sair">
@@ -50,7 +50,7 @@
                         <h2>5</h2>
                         <p>falhas críticas</p>
                     </div>
-                    <div class="caixa" style="justify-content: center;
+                    <div class="caixa texto" style="justify-content: center;
                         text-align: center;
                     ">
                         <span class='fa fa-arrow-up' style="
@@ -60,6 +60,10 @@
                         <p style="
                             color: #ab0808; 
                             font-size: 20px;">+2
+                        </p>
+                        <p style="
+                            color: #ab0808; 
+                            font-size: 10px;"> ontem
                         </p>
 
                     </div>
@@ -74,13 +78,15 @@
                             font-size: 50px;"></span>
 
                     </div>
+
                     <div class="caixa">
                         <h2>8</h2>
                         <p>ATRASOS DETECTADOS</p>
                     </div>
-                    <div class="caixa" style="justify-content: center;
-                        text-align: center;
-                    ">
+
+                    <div class="caixa texto" style="justify-content: center;
+                    text-align: center;">
+
                         <span class='fa fa-arrow-up' style="
                                 color: #ab0808; 
                                 font-size: 25px;"></span>
@@ -89,8 +95,13 @@
                             color: #ab0808; 
                             font-size: 20px;">+1
                         </p>
+                        <p style="
+                            color: #ab0808; 
+                            font-size: 10px;"> ontem
+                        </p>
 
                     </div>
+
                 </div>
 
 
@@ -106,7 +117,7 @@
                         <h2>39</h2>
                         <p>OCORRENCIAS HOJE</p>
                     </div>
-                    <div class="caixa" style="justify-content: center;
+                    <div class="caixa texto" style="justify-content: center;
                         text-align: center;
                     ">
                         <span class='fa fa-arrow-down' style="
@@ -115,8 +126,12 @@
 
                         <p style="
                             color: #52e666; 
-                            font-size: 20px;">+2
-                        </p>
+                            font-size: 20px;"
+                        > +2 </p>
+                        <p style="
+                            color: #52e666; 
+                            font-size: 10px;"
+                        > ontem </p>
 
                     </div>
                 </div>
@@ -126,7 +141,8 @@
                     <div class="caixa" style="background-color: #5beea0; ">
                         <span class='fa fa-building' style="
                             color: #04a451; 
-                            font-size: 50px;"></span>
+                            font-size: 50px;">
+                        </span>
 
                     </div>
                     <div class="caixa">
@@ -149,7 +165,7 @@
                 </div>
                 <div class="card grafico-maior">
                     <div class="card-header">
-                        <h3>Tipo de ocorrências de <B>OUTUBRO</B</h3>
+                        <h3>Tipo de ocorrências de <B>OUTUBRO</B< /h3>
                     </div>
                     <div class="chart-container">
                         <canvas id="chartOcorrenciasTipo"></canvas>
@@ -161,10 +177,9 @@
             <section class="secao-shows">
                 <div class="card">
                     <div class="card-header">
-                        <h3>
-                            <i class='fa fa-list'></i>
-                            Ocorrencias
-                        </h3>
+
+                        <button onclick="window.location.href='logsEx.html'" id="btnOco"><i class='fa fa-list'></i>
+                            Ocorrencias </button>
                     </div>
 
                     <table class="shows-table">
@@ -177,89 +192,37 @@
                                 <th>Status</th>
                             </tr>
                         </thead>
-                        <tbody>
-                            <tr>
-                                <td>17/10/2026 09:14</td>
-                                <td><strong>Nova Som Ltda</strong></td>
-                                <td><i class="fa fa-exclamation-triangle" style="color:#e42121"></i> Falha</td>
-                                <td>Erro ao buscar métricas do Spotify</td>
-                                <td><span class="status status-error">Crítico</span></td>
-                                
-                            </tr>
-                            <tr>
-                                <td>17/10/2026 08:55</td>
-                                <td><strong>Beat Produções</strong></td>
-                                <td><i class="fa fa-clock-o" style="color:#f59e0b"></i> Atraso</td>
-                                <td>Processamento de dados acima do tempo esperado</td>
-                                <td><span class="status status-pending">Atenção</span></td>
-                                
-                            </tr>
-                            <tr>
-                                <td>17/10/2026 08:30</td>
-                                <td><strong>Som Livre Eventos</strong></td>
-                                <td><i class="fa fa-exclamation-triangle" style="color:#e42121"></i> Falha</td>
-                                <td>Falha na integração com o YouTube</td>
-                                <td><span class="status status-error">Crítico</span></td>
-                                
-                            </tr>
-                            <tr>
-                                <td>17/10/2026 07:12</td>
-                                <td><strong>Alpha Music</strong></td>
-                                <td><i class="fa fa-info-circle" style="color:#2563eb"></i> Sistema</td>
-                                <td>Rotina de importação finalizada com sucesso</td>
-                                <td><span class="status status-ok">Informação</span></td>
-                                
-                            </tr>
-                            <tr>
-                                <td>17/10/2026 06:48</td>
-                                <td><strong>Vibe Records</strong></td>
-                                <td><i class="fa fa-clock-o" style="color:#f59e0b"></i> Atraso</td>
-                                <td>Atualização de métricas atrasada</td>
-                                <td><span class="status status-pending">Atenção</span></td>
-                                
-                            </tr>
-                            <tr>
-                                <td>16/10/2026 23:22</td>
-                                <td><strong>Nova Som Ltda</strong></td>
-                                <td><i class="fa fa-cogs" style="color:#64748b"></i> Integração</td>
-                                <td>Tempo limite excedido na API do Spotify</td>
-                                <td><span class="status status-ok">Resolvido</span></td>
-                                
-                            </tr>
-                            <tr>
-                                <td>16/10/2026 21:40</td>
-                                <td><strong>Beat Produções</strong></td>
-                                <td><i class="fa fa-exclamation-triangle" style="color:#e42121"></i> Falha</td>
-                                <td>Erro ao processar dados de streams</td>
-                                <td><span class="status status-error">Crítico</span></td>
-                                
-                            </tr>
-                            <tr>
-                                <td>16/10/2026 20:15</td>
-                                <td><strong>Som Livre Eventos</strong></td>
-                                <td><i class="fa fa-cogs" style="color:#64748b"></i> Integração</td>
-                                <td>Falha na sincronização de artistas</td>
-                                <td><span class="status status-pending">Em análise</span></td>
-                                
-                            </tr>
-                            <tr>
-                                <td>16/10/2026 18:05</td>
-                                <td><strong>Alpha Music</strong></td>
-                                <td><i class="fa fa-info-circle" style="color:#2563eb"></i> Sistema</td>
-                                <td>Backup dos dados concluído</td>
-                                <td><span class="status status-ok">Resolvido</span></td>
-                                
-                            </tr>
-                            <tr>
-                                <td>16/10/2026 16:32</td>
-                                <td><strong>Vibe Records</strong></td>
-                                <td><i class="fa fa-exclamation-triangle" style="color:#e42121"></i> Falha</td>
-                                <td>Erro ao importar catálogo musical</td>
-                                <td><span class="status status-error">Crítico</span></td>
-                                
-                            </tr>
+                        <tbody id="tabela">
+
+
                         </tbody>
                     </table>
+
+
+                </div>
+            </section>
+            <br>
+
+            <section class="secao-shows">
+                <div class="card">
+
+
+                    <table class="shows-table">
+                        <thead>
+                            <tr>
+                                <th>Data/Hora</th>
+                                <th>Cliente</th>
+                                <th>Tipo</th>
+                                <th>Mensagem</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tabela1">
+
+                        </tbody>
+                    </table>
+
+
                 </div>
             </section>
         </div>
@@ -269,132 +232,260 @@
     <script>
 
 
-const cores = {
-    falha: '#f04450',
-    atraso: '#f8bd43',
-    sistema: '#6489e8',
-    integracao: '#a5afc2'
-};
-
-const ctxTempo = document
-    .getElementById('chartOcorrenciasTempo')
-    .getContext('2d');
-
-new Chart(ctxTempo, {
-    type: 'bar',
-
-    data: {
-        labels: [
-            '10/10', '11/10', '12/10', '13/10',
-            '14/10', '15/10', '16/10'
-        ],
-
-        datasets: [
+        const ocorrencias = [
             {
-                label: 'Falha',
-                data: [5, 6, 4, 7, 5, 6, 15],
-                backgroundColor: '#f04450',
-                borderRadius: 4,
-                maxBarThickness: 22
+                dataHora: "17/10/2026 09:14",
+                cliente: "Nova Som Ltda",
+                tipo: "Falha",
+                mensagem: "Erro ao buscar métricas do Spotify",
+                status: "Crítico"
             },
             {
-                label: 'Atraso',
-                data: [4, 3, 4, 3, 4, 3, 12],
-                backgroundColor: '#f8bd43',
-                borderRadius: 4,
-                maxBarThickness: 22
+                dataHora: "17/10/2026 08:55",
+                cliente: "Beat Produções",
+                tipo: "Atraso",
+                mensagem: "Processamento de dados acima do tempo esperado",
+                status: "Atenção"
             },
             {
-                label: 'Outros',
-                data: [3, 4, 3, 4, 4, 5, 12],
-                backgroundColor: '#6489e8',
-                borderRadius: 4,
-                maxBarThickness: 22
-            }
-        ]
-    },
-
-    options: {
-        responsive: true,
-        maintainAspectRatio: false,
-
-        interaction: {
-            intersect: false,
-            mode: 'index'
-        },
-
-        plugins: {
-            legend: {
-                display: true,
-                position: 'top',
-                align: 'end',
-
-                labels: {
-                    usePointStyle: true,
-                    pointStyle: 'circle',
-                    boxWidth: 17,
-                    padding: 10,
-                    color: '#647084',
-                    font: {
-                        size: 10
-                    }
-                }
+                dataHora: "17/10/2026 08:30",
+                cliente: "Som Livre Eventos",
+                tipo: "Falha",
+                mensagem: "Falha na integração com o YouTube",
+                status: "Crítico"
             },
-
-            tooltip: {
-                callbacks: {
-                    footer: function (items) {
-                        const total = items.reduce(
-                            (soma, item) => soma + item.parsed.y,
-                            0
-                        );
-
-                        return 'Total: ' + total + ' ocorrências';
-                    }
-                }
-            }
-        },
-
-        scales: {
-            x: {
-                stacked: false,
-                grid: {
-                    display: false
-                },
-                border: {
-                    display: false
-                },
-                ticks: {
-                    color: '#647084',
-                    font: {
-                        size: 10
-                    }
-                }
+            {
+                dataHora: "17/10/2026 07:12",
+                cliente: "Alpha Music",
+                tipo: "Sistema",
+                mensagem: "Rotina de importação finalizada com sucesso",
+                status: "Informação"
             },
-
-            y: {
-                beginAtZero: true,
-                max: 20,
-
-                ticks: {
-                    stepSize: 10,
-                    color: '#647084',
-                    font: {
-                        size: 10
-                    }
-                },
-
-                grid: {
-                    color: '#edf0f5'
-                },
-
-                border: {
-                    display: false
-                }
+            {
+                dataHora: "17/10/2026 06:48",
+                cliente: "Vibe Records",
+                tipo: "Atraso",
+                mensagem: "Atualização de métricas atrasada",
+                status: "Atenção"
+            },
+            {
+                dataHora: "16/10/2026 23:32",
+                cliente: "Nova Som Ltda",
+                tipo: "Integração",
+                mensagem: "Tempo limite excedido na API do Spotify",
+                status: "Resolvido"
+            },
+            {
+                dataHora: "16/10/2026 21:40",
+                cliente: "Beat Produções",
+                tipo: "Falha",
+                mensagem: "Erro ao processar dados de streams",
+                status: "Crítico"
+            },
+            {
+                dataHora: "16/10/2026 20:15",
+                cliente: "Som Livre Eventos",
+                tipo: "Integração",
+                mensagem: "Falha na sincronização de artistas",
+                status: "Em análise"
+            },
+            {
+                dataHora: "16/10/2026 18:05",
+                cliente: "Alpha Music",
+                tipo: "Sistema",
+                mensagem: "Backup dos dados concluído",
+                status: "Resolvido"
+            },
+            {
+                dataHora: "16/10/2026 16:32",
+                cliente: "Vibe Records",
+                tipo: "Falha",
+                mensagem: "Erro ao importar catálogo musical",
+                status: "Crítico"
             }
+        ];
+
+        // primeira tabela
+        for (let i = 0; i < ocorrencias.length; i++) {
+
+            if (ocorrencias[i].status == "Crítico" ) {
+
+                tabela.innerHTML += `
+                    <tr>
+                        <td>${ocorrencias[i].dataHora}</td>
+                        <td><strong>${ocorrencias[i].cliente}</strong></td>
+                        <td>${ocorrencias[i].tipo}</td>
+                        <td>${ocorrencias[i].mensagem}</td>
+                        <td>
+                            <span class="status status-error">
+                                ${ocorrencias[i].status}
+                            </span>
+                        </td>
+                    </tr>
+                `;
+
+            }
+
         }
-    }
-});
+
+
+        for (let i = 0; i <= 3; i++) {
+            let classeStatus = "";
+
+            if (ocorrencias[i].status == "Crítico" || ocorrencias[i].status == "Falha") {
+                classeStatus = "status-error";
+
+            } else if (ocorrencias[i].status == "Atenção" || ocorrencias[i].status == "Em análise") {
+                classeStatus = "status-pending";
+
+            } else if (ocorrencias[i].status == "Informação" || ocorrencias[i].status == "Resolvido") {
+                classeStatus = "status-ok";
+            }
+
+            tabela1.innerHTML += `
+                <tr>
+                    <td>${ocorrencias[i].dataHora}</td>
+                    <td><strong>${ocorrencias[i].cliente}</strong></td>
+                    <td>${ocorrencias[i].tipo}</td>
+                    <td>${ocorrencias[i].mensagem}</td>
+                    <td>
+                        <span class="status ${classeStatus}">
+                            ${ocorrencias[i].status}
+                        </span>
+                    </td>
+                </tr>
+            `;
+        }
+
+
+
+
+        const cores = {
+            falha: '#f04450',
+            atraso: '#f8bd43',
+            sistema: '#6489e8',
+            integracao: '#a5afc2'
+        };
+
+        const ctxTempo = document
+            .getElementById('chartOcorrenciasTempo')
+            .getContext('2d');
+
+        new Chart(ctxTempo, {
+            type: 'bar',
+
+            data: {
+                labels: [
+                    '10/10', '11/10', '12/10', '13/10',
+                    '14/10', '15/10', '16/10'
+                ],
+
+                datasets: [
+                    {
+                        label: 'Falha',
+                        data: [5, 6, 4, 7, 5, 6, 15],
+                        backgroundColor: '#f04450',
+                        borderRadius: 4,
+                        maxBarThickness: 22
+                    },
+                    {
+                        label: 'Atraso',
+                        data: [4, 3, 4, 3, 4, 3, 12],
+                        backgroundColor: '#f8bd43',
+                        borderRadius: 4,
+                        maxBarThickness: 22
+                    },
+                    {
+                        label: 'Outros',
+                        data: [3, 4, 3, 4, 4, 5, 12],
+                        backgroundColor: '#6489e8',
+                        borderRadius: 4,
+                        maxBarThickness: 22
+                    }
+                ]
+            },
+
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+
+                interaction: {
+                    intersect: false,
+                    mode: 'index'
+                },
+
+                plugins: {
+                    legend: {
+                        display: true,
+                        position: 'top',
+                        align: 'end',
+
+                        labels: {
+                            usePointStyle: true,
+                            pointStyle: 'circle',
+                            boxWidth: 17,
+                            padding: 10,
+                            color: '#647084',
+                            font: {
+                                size: 10
+                            }
+                        }
+                    },
+
+                    tooltip: {
+                        callbacks: {
+                            footer: function (items) {
+                                const total = items.reduce(
+                                    (soma, item) => soma + item.parsed.y,
+                                    0
+                                );
+
+                                return 'Total: ' + total + ' ocorrências';
+                            }
+                        }
+                    }
+                },
+
+                scales: {
+                    x: {
+                        stacked: false,
+                        grid: {
+                            display: false
+                        },
+                        border: {
+                            display: false
+                        },
+                        ticks: {
+                            color: '#647084',
+                            font: {
+                                size: 10
+                            }
+                        }
+                    },
+
+                    y: {
+                        beginAtZero: true,
+                        max: 20,
+
+                        ticks: {
+                            stepSize: 10,
+                            color: '#647084',
+                            font: {
+                                size: 10
+                            }
+                        },
+
+                        grid: {
+                            color: '#edf0f5'
+                        },
+
+                        border: {
+                            display: false
+                        }
+                    }
+                }
+            }
+        });
 
 
 

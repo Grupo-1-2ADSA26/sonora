@@ -317,6 +317,11 @@ body {
     color: #328052;
 }
 
+.status-aprovacao.analise {
+    color: #d69b28;
+}
+
+
 .status-aprovacao.reprovado {
     color: #C44545;
 }

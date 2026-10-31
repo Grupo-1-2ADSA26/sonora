@@ -3,7 +3,7 @@ var router = express.Router();
 var aprovadosController = require("../../controllers/aprovados/aprovadosController");
 
 router.get("/aprovados/:idEmpresa", function (req, res) {
-    aprovadosController.listarAprovados(req, res);
+    aprovadosController.listarTodosParaFuncionario(req, res);
 });
 
 router.post("/enviar", function (req, res) {
@@ -12,6 +12,10 @@ router.post("/enviar", function (req, res) {
 
 router.get("/verificar/:idEmpresa/:idArtista", function (req, res) {
     aprovadosController.verificarArtistaEnviado(req, res);
+});
+
+router.get("/listarTodos/:idEmpresa", function (req, res) {
+    aprovadosController.listarTodosParaAdministrador(req, res);
 });
 
 module.exports = router;

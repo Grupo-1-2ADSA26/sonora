@@ -249,9 +249,19 @@ body {
     color: #2e7d32;
 }
 
-.status-pending {
+.status-pendente {
     background: #fff3e0;
     color: #ef6c00;
+}
+
+.status-cancelado {
+    background-color: #fde8e8;
+    color: #b42318;
+}
+
+.status-finalizado {
+    background-color: #e8e8e8;
+    color: #555;
 }
 
 /* ==========================

@@ -494,6 +494,29 @@ select:focus-visible {
     color: #666;
 }
 
+.aviso-exclusao {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 14px;
+    margin: 18px 0;
+    background-color: #fff3e0;
+    border: 1px solid #ffcc80;
+    border-radius: 10px;
+    color: #8a4b08;
+}
+
+.aviso-exclusao i {
+    font-size: 18px;
+    margin-top: 2px;
+}
+
+.aviso-exclusao p {
+    font-size: 13px;
+    line-height: 1.6;
+    margin: 0;
+}
+
 /* ==============================
    AÇÕES DOS MODAIS
 ============================== */

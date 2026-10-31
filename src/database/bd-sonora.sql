@@ -169,3 +169,13 @@ INSERT INTO cargo_acesso (id_cargo, id_acesso) VALUES
 INSERT INTO plataforma (id_plataforma, nome) VALUES 
 (1, 'Spotify'),
 (2, 'YouTube');
+
+USE sonora;
+
+-- 1. Cadastrar a Empresa Sonora
+INSERT INTO empresa (razao_social, email_responsavel, cnpj, tipo_estabelecimento, codigo_ativacao, status_codigo) 
+VALUES ('Sonora Entretenimento Ltda', 'contato@sonora.com', '12345678000199', 'Casa de Shows', 'SONORA2026', 'ATIVA');
+
+-- 2. Cadastrar o Usuário de Suporte vinculado à Empresa Sonora (id_empresa = 1) e ao Cargo Suporte (id_cargo = 3)
+INSERT INTO usuario (nome, email, senha, id_empresa, id_cargo) 
+VALUES ('Analista de Suporte', 'suporte@sonora.com', 'senha_segura_hash', 1, 3);

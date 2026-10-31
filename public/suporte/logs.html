@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard Empresa | Sonora</title>
+    <title>Suporte | Sonora</title>
     <script src="https://kit.fontawesome.com/d840916580.js" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
@@ -15,350 +15,224 @@
 <body>
 
     <aside class="box-menu">
-        <p class="logo">sonora.</p>
-        <ul class="lista">
-            <li><a href="logsEx.html"><i class="fa-solid fa-users"></i>Logs</a></li>
-            <li><a href="perfil.html"><i class="fa-solid fa-user"></i>Perfil</a></li>
-        </ul>
-        <div class="box-sair">
-            <a class="botao-sair" href="../index.html"><i class="fa-solid fa-right-from-bracket"></i> Sair</a>
+        <input type="checkbox" id="menu-toggle" class="menu-toggle">
+
+        <div class="menu-top">
+            <label for="menu-toggle" class="btn-hamburguer">
+                <i class="fa-solid fa-bars"></i>
+            </label>
+            <p class="logo">sonora.</p>
         </div>
+
+        <ul class="lista">
+            <li class="ativo"><a href="logs.html"><i class="fa-solid fa-house"></i>Início</a></li>
+            <li><a href="logsEx.html"><i class="fa-solid fa-clipboard-list"></i>Logs</a></li>
+            <li><a href="perfil.html"><i class="fa-solid fa-user"></i>Perfil</a></li>
+
+            <li class="box-sair">
+                <a class="botao-sair" href="../index.html"><i class="fa-solid fa-right-from-bracket"></i> Sair</a>
+            </li>
+        </ul>
     </aside>
 
-    <main class="main-content">
-        <header class="dashboard-header">
-            <div>
+    <main class="conteudo-principal">
+
+        <header class="cabecalho-pagina">
+            <div class="cabecalho-info">
+                <span class="sobretitulo">SONORA / SUPORTE</span>
+
                 <h1>Suporte</h1>
-                <p>Monitore falhas, atrasos e ocorrências do sistema</p>
+
+                <p>
+                    Monitore falhas, atrasos e ocorrências do sistema.
+                </p>
             </div>
         </header>
 
-        <div class="dashboard-grid">
+        <div class="grade-painel">
 
-            <!-- KPIs -->
             <section class="secao-kpis">
 
-                <div class="card-kpi">
-
-                    <div class="caixa" style="background-color: #ed7878; ">
-                        <span class="fa fa-exclamation-triangle" style="
-                            color: #ab0808; 
-                            font-size: 50px;"></span>
-
+                <div class="cartao-kpi kpi-critico">
+                    <div class="kpi-icone">
+                        <i class="fa-solid fa-triangle-exclamation"></i>
                     </div>
-                    <div class="caixa">
+                    <div class="kpi-info">
                         <h2>5</h2>
-                        <p>falhas críticas</p>
-                    </div>
-                    <div class="caixa texto" style="justify-content: center;
-                        text-align: center;
-                    ">
-                        <span class='fa fa-arrow-up' style="
-                                color: #ab0808; 
-                                font-size: 25px;"></span>
-
-                        <p style="
-                            color: #ab0808; 
-                            font-size: 20px;">+2
-                        </p>
-                        <p style="
-                            color: #ab0808; 
-                            font-size: 10px;"> ontem
-                        </p>
-
-                    </div>
-                </div>
-
-
-                <div class="card-kpi">
-
-                    <div class="caixa" style="background-color: #f4ce90; ">
-                        <span class='fa fa-clock-o' style="
-                            color: #eaa111; 
-                            font-size: 50px;"></span>
-
-                    </div>
-
-                    <div class="caixa">
-                        <h2>8</h2>
-                        <p>ATRASOS DETECTADOS</p>
-                    </div>
-
-                    <div class="caixa texto" style="justify-content: center;
-                    text-align: center;">
-
-                        <span class='fa fa-arrow-up' style="
-                                color: #ab0808; 
-                                font-size: 25px;"></span>
-
-                        <p style="
-                            color: #ab0808; 
-                            font-size: 20px;">+1
-                        </p>
-                        <p style="
-                            color: #ab0808; 
-                            font-size: 10px;"> ontem
-                        </p>
-
-                    </div>
-
-                </div>
-
-
-                <div class="card-kpi">
-
-                    <div class="caixa" style="background-color: #8eb9ff; ">
-                        <span class='fa fa-list' style="
-                            color: #0c39ce; 
-                            font-size: 50px;"></span>
-
-                    </div>
-                    <div class="caixa">
-                        <h2>39</h2>
-                        <p>OCORRENCIAS HOJE</p>
-                    </div>
-                    <div class="caixa texto" style="justify-content: center;
-                        text-align: center;
-                    ">
-                        <span class='fa fa-arrow-down' style="
-                                color: #52e666; 
-                                font-size: 25px;"></span>
-
-                        <p style="
-                            color: #52e666; 
-                            font-size: 20px;"
-                        > +2 </p>
-                        <p style="
-                            color: #52e666; 
-                            font-size: 10px;"
-                        > ontem </p>
-
-                    </div>
-                </div>
-
-                <div class="card-kpi">
-
-                    <div class="caixa" style="background-color: #5beea0; ">
-                        <span class='fa fa-building' style="
-                            color: #04a451; 
-                            font-size: 50px;">
+                        <span class="kpi-rotulo">Falhas críticas</span>
+                        <span class="kpi-tendencia tendencia-ruim">
+                            <i class="fa-solid fa-arrow-up"></i> +2 ontem
                         </span>
-
                     </div>
-                    <div class="caixa">
-                        <h2>5</h2>
-                        <p>EMPRESAS MONITORADAS</p>
-                    </div>
-
                 </div>
+
+                <div class="cartao-kpi kpi-atraso">
+                    <div class="kpi-icone">
+                        <i class="fa-regular fa-clock"></i>
+                    </div>
+                    <div class="kpi-info">
+                        <h2>8</h2>
+                        <span class="kpi-rotulo">Atrasos detectados</span>
+                        <span class="kpi-tendencia tendencia-ruim">
+                            <i class="fa-solid fa-arrow-up"></i> +1 ontem
+                        </span>
+                    </div>
+                </div>
+
+                <div class="cartao-kpi kpi-ocorrencia">
+                    <div class="kpi-icone">
+                        <i class="fa-solid fa-list"></i>
+                    </div>
+                    <div class="kpi-info">
+                        <h2>39</h2>
+                        <span class="kpi-rotulo">Ocorrências hoje</span>
+                        <span class="kpi-tendencia tendencia-boa">
+                            <i class="fa-solid fa-arrow-down"></i> -2 ontem
+                        </span>
+                    </div>
+                </div>
+
+                <div class="cartao-kpi kpi-empresa">
+                    <div class="kpi-icone">
+                        <i class="fa-solid fa-building"></i>
+                    </div>
+                    <div class="kpi-info">
+                        <h2>5</h2>
+                        <span class="kpi-rotulo">Empresas monitoradas</span>
+                    </div>
+                </div>
+
             </section>
 
-            <!-- Gráficos -->
             <section class="secao-graficos">
-                <div class="card grafico-menor">
-                    <div class="card-header">
-                        <h3>Ocorrencias do mes de <B>OUTUBRO</B></h3>
+                <div class="cartao">
+                    <div class="cartao-cabecalho">
+                        <h3>Ocorrências do mês de <strong>outubro</strong></h3>
                     </div>
-                    <div class="chart-container">
+                    <div class="area-grafico">
                         <canvas id="chartOcorrenciasTempo"></canvas>
                     </div>
                 </div>
-                <div class="card grafico-maior">
-                    <div class="card-header">
-                        <h3>Tipo de ocorrências de <B>OUTUBRO</B< /h3>
+
+                <div class="cartao">
+                    <div class="cartao-cabecalho">
+                        <h3>Tipos de ocorrência de <strong>outubro</strong></h3>
                     </div>
-                    <div class="chart-container">
+                    <div class="area-grafico">
                         <canvas id="chartOcorrenciasTipo"></canvas>
                     </div>
                 </div>
             </section>
 
-            <!-- Shows -->
-            <section class="secao-shows">
-                <div class="card">
-                    <div class="card-header">
-
-                        <button onclick="window.location.href='logsEx.html'" id="btnOco"><i class='fa fa-list'></i>
-                            Ocorrencias </button>
+            <section class="secao-tabela">
+                <div class="cartao">
+                    <div class="cartao-cabecalho">
+                        <h3><i class="fa-solid fa-triangle-exclamation"></i> Falhas críticas</h3>
                     </div>
 
-                    <table class="shows-table">
-                        <thead>
-                            <tr>
-                                <th>Data/Hora</th>
-                                <th>Cliente</th>
-                                <th>Tipo</th>
-                                <th>Mensagem</th>
-                                <th>Status</th>
-                            </tr>
-                        </thead>
-                        <tbody id="tabela">
-
-
-                        </tbody>
-                    </table>
-
-
+                    <div class="tabela-rolagem">
+                        <table class="tabela-ocorrencias">
+                            <thead>
+                                <tr>
+                                    <th>Data/Hora</th>
+                                    <th>Cliente</th>
+                                    <th>Tipo</th>
+                                    <th>Mensagem</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tabela"></tbody>
+                        </table>
+                    </div>
                 </div>
             </section>
-            <br>
 
-            <section class="secao-shows">
-                <div class="card">
+            <section class="secao-tabela">
+                <div class="cartao">
+                    <div class="cartao-cabecalho">
+                        <h3><i class="fa-solid fa-list"></i> Últimas ocorrências</h3>
+                        <a href="logsEx.html" class="link-ver-todas">Ver todas</a>
+                    </div>
 
-
-                    <table class="shows-table">
-                        <thead>
-                            <tr>
-                                <th>Data/Hora</th>
-                                <th>Cliente</th>
-                                <th>Tipo</th>
-                                <th>Mensagem</th>
-                                <th>Status</th>
-                            </tr>
-                        </thead>
-                        <tbody id="tabela1">
-
-                        </tbody>
-                    </table>
-
-
+                    <div class="tabela-rolagem">
+                        <table class="tabela-ocorrencias">
+                            <thead>
+                                <tr>
+                                    <th>Data/Hora</th>
+                                    <th>Cliente</th>
+                                    <th>Tipo</th>
+                                    <th>Mensagem</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tabela1"></tbody>
+                        </table>
+                    </div>
                 </div>
             </section>
+
         </div>
 
     </main>
 
     <script>
-
-
         const ocorrencias = [
-            {
-                dataHora: "17/10/2026 09:14",
-                cliente: "Nova Som Ltda",
-                tipo: "Falha",
-                mensagem: "Erro ao buscar métricas do Spotify",
-                status: "Crítico"
-            },
-            {
-                dataHora: "17/10/2026 08:55",
-                cliente: "Beat Produções",
-                tipo: "Atraso",
-                mensagem: "Processamento de dados acima do tempo esperado",
-                status: "Atenção"
-            },
-            {
-                dataHora: "17/10/2026 08:30",
-                cliente: "Som Livre Eventos",
-                tipo: "Falha",
-                mensagem: "Falha na integração com o YouTube",
-                status: "Crítico"
-            },
-            {
-                dataHora: "17/10/2026 07:12",
-                cliente: "Alpha Music",
-                tipo: "Sistema",
-                mensagem: "Rotina de importação finalizada com sucesso",
-                status: "Informação"
-            },
-            {
-                dataHora: "17/10/2026 06:48",
-                cliente: "Vibe Records",
-                tipo: "Atraso",
-                mensagem: "Atualização de métricas atrasada",
-                status: "Atenção"
-            },
-            {
-                dataHora: "16/10/2026 23:32",
-                cliente: "Nova Som Ltda",
-                tipo: "Integração",
-                mensagem: "Tempo limite excedido na API do Spotify",
-                status: "Resolvido"
-            },
-            {
-                dataHora: "16/10/2026 21:40",
-                cliente: "Beat Produções",
-                tipo: "Falha",
-                mensagem: "Erro ao processar dados de streams",
-                status: "Crítico"
-            },
-            {
-                dataHora: "16/10/2026 20:15",
-                cliente: "Som Livre Eventos",
-                tipo: "Integração",
-                mensagem: "Falha na sincronização de artistas",
-                status: "Em análise"
-            },
-            {
-                dataHora: "16/10/2026 18:05",
-                cliente: "Alpha Music",
-                tipo: "Sistema",
-                mensagem: "Backup dos dados concluído",
-                status: "Resolvido"
-            },
-            {
-                dataHora: "16/10/2026 16:32",
-                cliente: "Vibe Records",
-                tipo: "Falha",
-                mensagem: "Erro ao importar catálogo musical",
-                status: "Crítico"
-            }
+            { dataHora: "17/10/2026 09:14", cliente: "Nova Som Ltda", tipo: "Falha", mensagem: "Erro ao buscar métricas do Spotify", status: "Crítico" },
+            { dataHora: "17/10/2026 08:55", cliente: "Beat Produções", tipo: "Atraso", mensagem: "Processamento de dados acima do tempo esperado", status: "Atenção" },
+            { dataHora: "17/10/2026 08:30", cliente: "Som Livre Eventos", tipo: "Falha", mensagem: "Falha na integração com o YouTube", status: "Crítico" },
+            { dataHora: "17/10/2026 07:12", cliente: "Alpha Music", tipo: "Sistema", mensagem: "Rotina de importação finalizada com sucesso", status: "Informação" },
+            { dataHora: "17/10/2026 06:48", cliente: "Vibe Records", tipo: "Atraso", mensagem: "Atualização de métricas atrasada", status: "Atenção" },
+            { dataHora: "16/10/2026 23:32", cliente: "Nova Som Ltda", tipo: "Integração", mensagem: "Tempo limite excedido na API do Spotify", status: "Resolvido" },
+            { dataHora: "16/10/2026 21:40", cliente: "Beat Produções", tipo: "Falha", mensagem: "Erro ao processar dados de streams", status: "Crítico" },
+            { dataHora: "16/10/2026 20:15", cliente: "Som Livre Eventos", tipo: "Integração", mensagem: "Falha na sincronização de artistas", status: "Em análise" },
+            { dataHora: "16/10/2026 18:05", cliente: "Alpha Music", tipo: "Sistema", mensagem: "Backup dos dados concluído", status: "Resolvido" },
+            { dataHora: "16/10/2026 16:32", cliente: "Vibe Records", tipo: "Falha", mensagem: "Erro ao importar catálogo musical", status: "Crítico" }
         ];
 
-        // primeira tabela
-        for (let i = 0; i < ocorrencias.length; i++) {
+        function classeStatus(status) {
+            if (status === "Crítico" || status === "Falha") {
+                return "status-critico";
+            }
 
-            if (ocorrencias[i].status == "Crítico" ) {
+            if (status === "Atenção" || status === "Em análise") {
+                return "status-atencao";
+            }
 
-                tabela.innerHTML += `
+            return "status-resolvido";
+        }
+
+        function preencherTabela(idTabela, lista) {
+            const corpo = document.getElementById(idTabela);
+
+            corpo.innerHTML = "";
+
+            lista.forEach(function (item) {
+                corpo.innerHTML += `
                     <tr>
-                        <td>${ocorrencias[i].dataHora}</td>
-                        <td><strong>${ocorrencias[i].cliente}</strong></td>
-                        <td>${ocorrencias[i].tipo}</td>
-                        <td>${ocorrencias[i].mensagem}</td>
+                        <td>${item.dataHora}</td>
+                        <td><strong>${item.cliente}</strong></td>
+                        <td>${item.tipo}</td>
+                        <td>${item.mensagem}</td>
                         <td>
-                            <span class="status status-error">
-                                ${ocorrencias[i].status}
+                            <span class="selo-status ${classeStatus(item.status)}">
+                                ${item.status}
                             </span>
                         </td>
                     </tr>
                 `;
-
-            }
-
+            });
         }
 
+        // Primeira tabela: só as falhas críticas
+        preencherTabela(
+            "tabela",
+            ocorrencias.filter(function (item) {
+                return item.status === "Crítico";
+            })
+        );
 
-        for (let i = 0; i <= 3; i++) {
-            let classeStatus = "";
-
-            if (ocorrencias[i].status == "Crítico" || ocorrencias[i].status == "Falha") {
-                classeStatus = "status-error";
-
-            } else if (ocorrencias[i].status == "Atenção" || ocorrencias[i].status == "Em análise") {
-                classeStatus = "status-pending";
-
-            } else if (ocorrencias[i].status == "Informação" || ocorrencias[i].status == "Resolvido") {
-                classeStatus = "status-ok";
-            }
-
-            tabela1.innerHTML += `
-                <tr>
-                    <td>${ocorrencias[i].dataHora}</td>
-                    <td><strong>${ocorrencias[i].cliente}</strong></td>
-                    <td>${ocorrencias[i].tipo}</td>
-                    <td>${ocorrencias[i].mensagem}</td>
-                    <td>
-                        <span class="status ${classeStatus}">
-                            ${ocorrencias[i].status}
-                        </span>
-                    </td>
-                </tr>
-            `;
-        }
-
-
-
+        // Segunda tabela: as 4 ocorrências mais recentes
+        preencherTabela("tabela1", ocorrencias.slice(0, 4));
 
         const cores = {
             falha: '#f04450',
@@ -367,38 +241,32 @@
             integracao: '#a5afc2'
         };
 
-        const ctxTempo = document
-            .getElementById('chartOcorrenciasTempo')
-            .getContext('2d');
-
-        new Chart(ctxTempo, {
+        // Gráfico 1: ocorrências por dia
+        new Chart(document.getElementById('chartOcorrenciasTempo').getContext('2d'), {
             type: 'bar',
 
             data: {
-                labels: [
-                    '10/10', '11/10', '12/10', '13/10',
-                    '14/10', '15/10', '16/10'
-                ],
+                labels: ['10/10', '11/10', '12/10', '13/10', '14/10', '15/10', '16/10'],
 
                 datasets: [
                     {
                         label: 'Falha',
                         data: [5, 6, 4, 7, 5, 6, 15],
-                        backgroundColor: '#f04450',
+                        backgroundColor: cores.falha,
                         borderRadius: 4,
                         maxBarThickness: 22
                     },
                     {
                         label: 'Atraso',
                         data: [4, 3, 4, 3, 4, 3, 12],
-                        backgroundColor: '#f8bd43',
+                        backgroundColor: cores.atraso,
                         borderRadius: 4,
                         maxBarThickness: 22
                     },
                     {
                         label: 'Outros',
                         data: [3, 4, 3, 4, 4, 5, 12],
-                        backgroundColor: '#6489e8',
+                        backgroundColor: cores.sistema,
                         borderRadius: 4,
                         maxBarThickness: 22
                     }
@@ -426,17 +294,17 @@
                             boxWidth: 17,
                             padding: 10,
                             color: '#647084',
-                            font: {
-                                size: 10
-                            }
+                            font: { size: 10 }
                         }
                     },
 
                     tooltip: {
                         callbacks: {
-                            footer: function (items) {
-                                const total = items.reduce(
-                                    (soma, item) => soma + item.parsed.y,
+                            footer: function (itens) {
+                                const total = itens.reduce(
+                                    function (soma, item) {
+                                        return soma + item.parsed.y;
+                                    },
                                     0
                                 );
 
@@ -448,18 +316,11 @@
 
                 scales: {
                     x: {
-                        stacked: false,
-                        grid: {
-                            display: false
-                        },
-                        border: {
-                            display: false
-                        },
+                        grid: { display: false },
+                        border: { display: false },
                         ticks: {
                             color: '#647084',
-                            font: {
-                                size: 10
-                            }
+                            font: { size: 10 }
                         }
                     },
 
@@ -470,43 +331,30 @@
                         ticks: {
                             stepSize: 10,
                             color: '#647084',
-                            font: {
-                                size: 10
-                            }
+                            font: { size: 10 }
                         },
 
-                        grid: {
-                            color: '#edf0f5'
-                        },
-
-                        border: {
-                            display: false
-                        }
+                        grid: { color: '#edf0f5' },
+                        border: { display: false }
                     }
                 }
             }
         });
 
+        // Gráfico 2: ocorrências por tipo
+        const dadosTipo = [48, 33, 20, 15];
+        const totalTipo = dadosTipo.reduce(function (soma, valor) {
+            return soma + valor;
+        }, 0);
 
-
-        // GRÁFICO 2 — Ocorrências por tipo
-        const ctxTipo = document
-            .getElementById('chartOcorrenciasTipo')
-            .getContext('2d');
-
-        new Chart(ctxTipo, {
+        new Chart(document.getElementById('chartOcorrenciasTipo').getContext('2d'), {
             type: 'doughnut',
 
             data: {
-                labels: [
-                    'Falha',
-                    'Atraso',
-                    'Sistema',
-                    'Integração'
-                ],
+                labels: ['Falha', 'Atraso', 'Sistema', 'Integração'],
 
                 datasets: [{
-                    data: [48, 33, 20, 15],
+                    data: dadosTipo,
 
                     backgroundColor: [
                         cores.falha,
@@ -529,7 +377,8 @@
                 plugins: {
                     legend: {
                         display: true,
-                        position: 'right',
+                        // Em tela pequena a legenda vai para baixo
+                        position: window.innerWidth <= 600 ? 'bottom' : 'right',
 
                         labels: {
                             usePointStyle: true,
@@ -537,23 +386,17 @@
                             boxWidth: 7,
                             padding: 12,
                             color: '#374151',
-                            font: {
-                                size: 11
-                            }
+                            font: { size: 11 }
                         }
                     },
 
                     tooltip: {
                         callbacks: {
-                            label: function (context) {
-                                const total = context.dataset.data
-                                    .reduce((soma, valor) => soma + valor, 0);
+                            label: function (contexto) {
+                                const quantidade = contexto.raw;
+                                const percentual = ((quantidade / totalTipo) * 100).toFixed(1);
 
-                                const quantidade = context.raw;
-                                const percentual = ((quantidade / total) * 100)
-                                    .toFixed(1);
-
-                                return ` ${context.label}: ${quantidade} (${percentual}%)`;
+                                return ` ${contexto.label}: ${quantidade} (${percentual}%)`;
                             }
                         }
                     }
@@ -563,8 +406,8 @@
             plugins: [{
                 id: 'textoCentro',
 
-                afterDraw(chart) {
-                    const { ctx, chartArea } = chart;
+                afterDraw(grafico) {
+                    const { ctx, chartArea } = grafico;
 
                     if (!chartArea) return;
 
@@ -576,11 +419,11 @@
                     ctx.textBaseline = 'middle';
 
                     ctx.fillStyle = '#20283a';
-                    ctx.font = 'bold 22px Arial';
-                    ctx.fillText('116', x, y - 8);
+                    ctx.font = 'bold 22px system-ui, sans-serif';
+                    ctx.fillText(totalTipo, x, y - 8);
 
                     ctx.fillStyle = '#647084';
-                    ctx.font = '11px Arial';
+                    ctx.font = '11px system-ui, sans-serif';
                     ctx.fillText('Total', x, y + 12);
 
                     ctx.restore();

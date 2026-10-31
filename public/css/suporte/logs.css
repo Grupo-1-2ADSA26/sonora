@@ -1,0 +1,375 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: system-ui, -apple-system, sans-serif;
+}
+
+body {
+    background: #f4f4f4;
+    display: flex;
+    min-height: 100vh;
+    color: #292929;
+}
+
+[hidden] {
+    display: none !important;
+}
+
+.conteudo-principal {
+    margin-left: 210px;
+    padding: 38px;
+    width: calc(100% - 210px);
+    min-width: 0;
+}
+
+/* ==========================
+   CABEÇALHO
+========================== */
+
+.cabecalho-pagina {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 22px;
+    margin-bottom: 30px;
+}
+
+.cabecalho-info {
+    flex: 1 1 320px;
+    min-width: 0;
+}
+
+.sobretitulo {
+    display: block;
+    margin-bottom: 8px;
+    color: #858585;
+    font-size: 10px;
+    font-weight: 750;
+    letter-spacing: 2px;
+}
+
+.cabecalho-pagina h1 {
+    color: #242424;
+    font-size: clamp(26px, 3vw, 34px);
+    font-weight: 800;
+    letter-spacing: -1px;
+    line-height: 1.2;
+    overflow-wrap: break-word;
+}
+
+.cabecalho-pagina p {
+    margin-top: 7px;
+    color: #858585;
+    font-size: 13px;
+    line-height: 1.6;
+}
+
+/* ==========================
+   FILTROS
+========================== */
+
+.cartao-filtros {
+    margin-bottom: 20px;
+    padding: 24px;
+    background: #fff;
+    border: 1px solid #eaeaea;
+    border-radius: 20px;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.025);
+}
+
+.cartao-filtros h3 {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    margin-bottom: 18px;
+    color: #292929;
+    font-size: 15px;
+    font-weight: 750;
+}
+
+.cartao-filtros h3 i {
+    color: #555;
+}
+
+.grade-filtros {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr auto;
+    gap: 16px;
+    align-items: end;
+}
+
+.campo-filtro {
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+    min-width: 0;
+}
+
+.campo-filtro label {
+    color: #858585;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+}
+
+.campo-filtro select {
+    width: 100%;
+    height: 42px;
+    padding: 0 12px;
+    background: #fff;
+    border: 1px solid #e0e0e0;
+    border-radius: 12px;
+    color: #374151;
+    font-size: 13px;
+    outline: none;
+    cursor: pointer;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.campo-filtro select:focus {
+    border-color: #888;
+    box-shadow: 0 0 0 4px rgba(0, 0, 0, 0.04);
+}
+
+.acoes-filtro {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.botao-limpar {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    height: 42px;
+    padding: 0 18px;
+    background: #f2f2f2;
+    border: none;
+    border-radius: 12px;
+    color: #555;
+    font-size: 13px;
+    font-weight: 700;
+    white-space: nowrap;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.botao-limpar:hover {
+    background: #e6e6e6;
+}
+
+/* ==========================
+   CARTÃO E TABELA
+========================== */
+
+.cartao {
+    width: 100%;
+    min-width: 0;
+    padding: 24px;
+    background: #fff;
+    border: 1px solid #eaeaea;
+    border-radius: 20px;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.025);
+}
+
+.cartao-cabecalho {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 14px;
+    margin-bottom: 20px;
+}
+
+.cartao-cabecalho h3 {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    color: #292929;
+    font-size: 15px;
+    font-weight: 750;
+}
+
+.cartao-cabecalho h3 i {
+    color: #555;
+}
+
+.contador-registros {
+    flex-shrink: 0;
+    padding: 7px 11px;
+    background: #f2f2f2;
+    border-radius: 10px;
+    color: #666;
+    font-size: 11px;
+    font-weight: 650;
+    white-space: nowrap;
+}
+
+.tabela-rolagem {
+    width: 100%;
+    overflow-x: auto;
+}
+
+.tabela-ocorrencias {
+    width: 100%;
+    min-width: 680px;
+    border-collapse: collapse;
+}
+
+.tabela-ocorrencias th {
+    padding: 12px;
+    text-align: left;
+    background: #f7f7f7;
+    border-bottom: 1px solid #eaeaea;
+    color: #858585;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+}
+
+.tabela-ocorrencias td {
+    padding: 15px 12px;
+    border-bottom: 1px solid #f0f0f0;
+    color: #333;
+    font-size: 13px;
+    line-height: 1.5;
+}
+
+.tabela-ocorrencias tbody tr:last-child td {
+    border-bottom: none;
+}
+
+.tabela-ocorrencias tbody tr:hover {
+    background: #fafafa;
+}
+
+.mensagem-vazia {
+    padding: 30px 10px 10px;
+    text-align: center;
+    color: #858585;
+    font-size: 13px;
+}
+
+/* ==========================
+   STATUS
+========================== */
+
+.selo-status {
+    display: inline-block;
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.status-resolvido {
+    background: #e8f5e9;
+    color: #2e7d32;
+}
+
+.status-atencao {
+    background: #fff3e0;
+    color: #ef6c00;
+}
+
+.status-critico {
+    background: #fee2e2;
+    color: #dc2626;
+}
+
+/* ==========================
+   TABLETS
+========================== */
+
+@media (max-width: 1100px) {
+    .conteudo-principal {
+        padding: 28px;
+    }
+
+    .grade-filtros {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .acoes-filtro {
+        justify-content: flex-start;
+    }
+}
+
+/* ==========================
+   TABLET PEQUENO E CELULAR
+========================== */
+
+@media (max-width: 768px) {
+    body {
+        flex-direction: column;
+    }
+
+    .conteudo-principal {
+        margin-left: 0;
+        width: 100%;
+        padding: 20px 16px;
+    }
+
+    .cabecalho-pagina {
+        margin-bottom: 22px;
+        gap: 16px;
+    }
+
+    .cartao-filtros,
+    .cartao {
+        padding: 18px;
+        border-radius: 17px;
+    }
+
+    .cartao-cabecalho {
+        margin-bottom: 16px;
+    }
+
+    .cartao-cabecalho h3 {
+        font-size: 14px;
+    }
+}
+
+/* ==========================
+   CELULARES
+========================== */
+
+@media (max-width: 600px) {
+    .grade-filtros {
+        grid-template-columns: 1fr;
+        gap: 14px;
+    }
+
+    /* 16px evita o zoom automático no iPhone */
+    .campo-filtro select {
+        font-size: 16px;
+    }
+
+    .acoes-filtro {
+        width: 100%;
+    }
+
+    .botao-limpar {
+        width: 100%;
+    }
+}
+
+/* ==========================
+   CELULARES PEQUENOS
+========================== */
+
+@media (max-width: 400px) {
+    .conteudo-principal {
+        padding: 16px 12px;
+    }
+
+    .cartao-filtros,
+    .cartao {
+        padding: 14px;
+    }
+}

@@ -173,6 +173,18 @@
                     Tem certeza que deseja excluir o evento
                     <strong id="nome-evento-exclusao"></strong>?
                 </p>
+
+                <div class="aviso-exclusao">
+                    <i class="fa-solid fa-triangle-exclamation"></i>
+                    <p>
+                        <strong>Atenção!</strong>
+                        Para excluir este evento, é necessário remover primeiro
+                        todos os artistas relacionados a ele na seção de aprovados.
+                        Enquanto houver artistas vinculados ao evento, a exclusão
+                        não poderá ser realizada.
+                    </p>
+                </div>
+
                 <small>Esta ação não poderá ser desfeita.</small>
             </div>
 
@@ -417,7 +429,7 @@
                 })
                 .catch(erro => {
                     console.error(erro);
-                    mostrarToast("Erro ao excluir evento", true);
+                    mostrarToast("Erro ao excluir evento, verifique se todos artistas foram descorrelacionado ao evento", true);
                 });
         }
 

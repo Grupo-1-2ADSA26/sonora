@@ -6,4 +6,8 @@ router.get("/aprovados/:idEmpresa", function (req, res) {
     aprovadosController.listarAprovados(req, res);
 });
 
+router.post("/aprovados/enviar", function (req, res) {
+    aprovadosController.enviarParaAprovados(req, res);
+}) 
+
 module.exports = router;

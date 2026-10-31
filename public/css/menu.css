@@ -1,15 +1,13 @@
-.logo {
-    font-size: 28px;
-    font-weight: bold;
-    letter-spacing: -1px;
-    margin: 0;
-    color: #333;
-    align-self: center;
+/* ==========================================
+   MENU BASE (DESKTOP)
+   ========================================== */
+.menu-toggle {
+    display: none;
 }
 
 .box-menu {
     background-color: #ebebeb;
-    width: 180px;
+    width: 210px;
     height: 100vh;
     display: flex;
     flex-direction: column;
@@ -20,7 +18,30 @@
     border-top-right-radius: 30px;
     border-bottom-right-radius: 30px;
     box-sizing: border-box;
-    box-shadow: 15px 0 0 #bdbdbd;
+    box-shadow: 4px 0 15px rgba(0, 0, 0, 0.08);
+    z-index: 1000;
+}
+
+/* Oculta o botão hambúrguer no desktop */
+.btn-hamburguer {
+    display: none;
+}
+
+/* Alinhamento do topo no desktop */
+.menu-top {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+}
+
+.logo {
+    font-size: 28px;
+    font-weight: bold;
+    letter-spacing: -1px;
+    margin: 0;
+    color: #333;
+    text-align: center;
 }
 
 .lista {
@@ -28,8 +49,9 @@
     display: flex;
     flex-direction: column;
     gap: 22px;
-    margin: 60px 0 0;
+    margin: 40px 0 0;
     padding: 0;
+    width: 100%;
 }
 
 .lista li a {
@@ -40,6 +62,7 @@
     color: #000;
     font-size: 14px;
     font-weight: 500;
+    transition: opacity 0.2s ease;
 }
 
 .lista li a i {
@@ -52,19 +75,117 @@
     opacity: 0.6;
 }
 
+/* Envia o Sair para o fundo da sidebar no desktop */
 .box-sair {
     margin-top: auto;
     text-align: center;
+    width: 100%;
+    padding-top: 15px;
 }
 
 .botao-sair {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
     text-decoration: none;
     color: #46454a;
-    font-size: 17px;
+    font-size: 16px;
     font-weight: bold;
-    align-self: center;
+    transition: color 0.2s ease;
 }
 
 .botao-sair:hover {
     color: #000;
+}
+
+
+/* ==========================================
+   RESPONSIVO (TABLET E CELULAR: max-width 768px)
+   ========================================== */
+@media only screen and (max-width: 768px) {
+
+    .box-menu {
+        position: relative;
+        width: 100%;
+        height: auto;
+        padding: 12px 18px;
+        border-radius: 0 0 16px 16px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+    }
+
+    /* Ajusta a barra superior para mobile (Hambúrguer | Logo | Sair) */
+    .menu-top {
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+    .btn-hamburguer {
+        display: block;
+        font-size: 22px;
+        cursor: pointer;
+        color: #333;
+        transition: transform 0.2s ease;
+    }
+
+    .menu-toggle:checked ~ .menu-top .btn-hamburguer {
+        transform: rotate(90deg);
+    }
+
+    .logo {
+        font-size: 22px;
+        margin: 0;
+    }
+
+    /* No mobile, o Sair sobe para o cabeçalho alinhado à direita */
+    .box-sair {
+        margin-top: 0;
+        width: auto;
+        padding-top: 0;
+    }
+
+    .botao-sair {
+        font-size: 14px;
+    }
+
+    /* Lista flutuante e animada no mobile */
+    .lista {
+        position: absolute;
+        top: 100%;
+        left: 0;
+        width: 100%;
+        background-color: #ebebeb;
+        flex-direction: column;
+        margin: 0;
+        padding: 0 20px;
+        gap: 12px;
+        border-radius: 0 0 16px 16px;
+        box-shadow: 0 10px 15px rgba(0, 0, 0, 0.12);
+        z-index: 999;
+
+        /* Estado fechado */
+        max-height: 0;
+        opacity: 0;
+        overflow: hidden;
+        pointer-events: none;
+        transition: max-height 0.35s cubic-bezier(0, 1, 0, 1), 
+                    opacity 0.25s ease-in-out, 
+                    padding 0.3s ease;
+    }
+
+    /* Estado aberto */
+    .menu-toggle:checked ~ .lista {
+        max-height: 500px;
+        opacity: 1;
+        padding: 15px 20px;
+        pointer-events: auto;
+    }
+
+    .lista li a {
+        font-size: 14px;
+        padding: 10px 12px;
+        background: #fff;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.03);
+    }
 }

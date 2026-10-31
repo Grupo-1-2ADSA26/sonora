@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pesquisa de Artista | Sonora</title>
+    <script src="https://kit.fontawesome.com/d840916580.js" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="../css/menu.css">
+    <link rel="stylesheet" href="../css/empresa/pesquisaArtista.css">
+</head>
+<body>
+    <aside class="box-menu">
+        <input type="checkbox" id="menu-toggle" class="menu-toggle">
+        <div class="menu-top">
+            <label for="menu-toggle" class="btn-hamburguer" aria-label="Abrir ou fechar menu">
+                <i class="fa-solid fa-bars"></i>
+            </label>
+            <p class="logo">sonora.</p>
+        </div>
+        <ul class="lista">
+            <li><a href="dashboard.html"><i class="fa-solid fa-house"></i>Início</a></li>
+            <li class="ativo"><a href="pesquisaArtista.html"><i class="fa-solid fa-magnifying-glass"></i>Artistas</a></li>
+            <li><a href="cadastroFuncionario.html"><i class="fa-solid fa-users"></i>Funcionários</a></li>
+            <li><a href="aprovados.html"><i class="fa-solid fa-user-pen"></i>Aprovados</a></li>
+            <li><a href="gerenciamentoEventos.html"><i class="fa-solid fa-music"></i>Eventos</a></li>
+            <li><a href="notificacoes.html"><i class="fa-solid fa-bell"></i>Notificações</a></li>
+            <li><a href="perfilEmpresa.html"><i class="fa-solid fa-building"></i>Perfil Empresa</a></li>
+            <li><a href="perfil.html"><i class="fa-solid fa-user"></i>Perfil</a></li>
+            <li class="box-sair">
+                <a class="botao-sair" href="../index.html"><i class="fa-solid fa-right-from-bracket"></i>Sair</a>
+            </li>
+        </ul>
+    </aside>
+
+    <main class="main-content">
+        <header class="search-bar">
+            <form id="form-pesquisa" class="search-bar-form">
+                <div class="search-input">
+                    <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
+                    <input
+                        type="search"
+                        id="input-pesquisa"
+                        placeholder="Digite o nome do artista (ex.: Anitta, Alok)..."
+                        maxlength="120"
+                        aria-label="Nome do artista"
+                    >
+                </div>
+
+                <button class="btn-primary" id="btn-pesquisar" type="submit">
+                    <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
+                    Pesquisar
+                </button>
+            </form>
+        </header>
+
+        <p class="search-feedback" id="search-feedback" role="status" aria-live="polite">
+            Pesquise um artista para visualizar os indicadores disponíveis.
+        </p>
+
+        <section class="card artist-header" id="artist-header" hidden>
+            <div class="profile-header">
+                <div class="avatar-lg">
+                    <i class="fa-solid fa-microphone-lines"></i>
+                </div>
+                <div class="profile-meta">
+                    <h2 id="nome-artista">Nenhum artista pesquisado</h2>
+                    <p class="genre-tag" id="genero-artista">Gênero não informado</p>
+                    <small>Informações consolidadas a partir dos dados disponíveis nas plataformas integradas.</small>
+                </div>
+            </div>
+        </section>
+
+        <section class="card" id="indicadores-section" hidden>
+            <div class="card-header">
+                <div>
+                    <h3><i class="fa-solid fa-chart-line"></i> Visão geral do artista</h3>
+                    <small>Indicadores de desempenho digital disponíveis para este artista.</small>
+                </div>
+                <span class="data-badge"><i class="fa-solid fa-database"></i> Dados disponíveis</span>
+            </div>
+
+            <div class="artist-analysis-grid">
+                <div class="analysis-card">
+                    <div class="analysis-icon"><i class="fa-solid fa-fire"></i></div>
+                    <div>
+                        <small>Popularidade</small>
+                        <strong id="kpi-popularidade">--</strong>
+                        <span class="analysis-description">Índice de popularidade</span>
+                    </div>
+                </div>
+
+                <div class="analysis-card">
+                    <div class="analysis-icon"><i class="fa-solid fa-play"></i></div>
+                    <div>
+                        <small>Total de streams</small>
+                        <strong id="kpi-streams">--</strong>
+                        <span class="analysis-description">Reproduções registradas</span>
+                    </div>
+                </div>
+
+                <div class="analysis-card">
+                    <div class="analysis-icon"><i class="fa-solid fa-heart"></i></div>
+                    <div>
+                        <small>Engajamento</small>
+                        <strong id="kpi-engajamento">--</strong>
+                        <span class="analysis-description">Interação do público</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <div class="dashboard-grid" id="details-grid" hidden>
+            <section class="section-panel">
+                <div class="card">
+                    <div class="card-header">
+                        <div>
+                            <h3><i class="fa-solid fa-compact-disc"></i> Faixas em destaque</h3>
+                            <small>Músicas com maior número de streams retornadas pela pesquisa.</small>
+                        </div>
+                    </div>
+                    <ul class="track-list" id="lista-faixas">
+                        <li><span>Nenhuma faixa disponível.</span></li>
+                    </ul>
+                </div>
+            </section>
+
+            <section class="section-panel">
+                <div class="card">
+                    <div class="card-header">
+                        <div>
+                            <h3><i class="fa-solid fa-clipboard-check"></i> Próxima etapa</h3>
+                            <small>Encaminhe o artista para o processo de avaliação da empresa.</small>
+                        </div>
+                    </div>
+
+                    <p class="curation-text">
+                        Após consultar os indicadores e as faixas em destaque, você pode encaminhar este artista para análise de aprovação.
+                    </p>
+
+                    <button class="btn-primary full-width" id="btn-aprovacao" type="button" disabled>
+                        <i class="fa-solid fa-arrow-right-to-bracket"></i>
+                        Enviar para análise de aprovação
+                    </button>
+                    <small class="approval-hint" id="approval-hint">Pesquise um artista para habilitar esta opção.</small>
+                </div>
+            </section>
+        </div>
+
+        <section class="card empty-state" id="empty-state">
+            <div class="empty-state-icon"><i class="fa-solid fa-music"></i></div>
+            <h3>Comece pesquisando um artista</h3>
+            <p>Os dados do artista e as opções de análise aparecerão aqui depois de uma pesquisa bem-sucedida.</p>
+        </section>
+    </main>
+
+    <script>
+        let idArtistaAtual = null;
+        let ultimaPesquisa = 0;
+
+        const formPesquisa = document.getElementById('form-pesquisa');
+        const inputPesquisa = document.getElementById('input-pesquisa');
+        const botaoPesquisar = document.getElementById('btn-pesquisar');
+        const botaoAprovacao = document.getElementById('btn-aprovacao');
+        const feedback = document.getElementById('search-feedback');
+
+        formPesquisa.addEventListener('submit', function (event) {
+            event.preventDefault();
+            buscarArtista();
+        });
+
+        botaoAprovacao.addEventListener('click', irParaAnalise);
+
+        function mostrarFeedback(mensagem, tipo = 'normal') {
+            feedback.textContent = mensagem;
+            feedback.dataset.type = tipo;
+        }
+
+        function formatarNumero(valor) {
+            return Number(valor).toLocaleString('pt-BR', {
+                maximumFractionDigits: 0
+            });
+        }
+
+        function limparResultado() {
+            idArtistaAtual = null;
+            document.getElementById('artist-header').hidden = true;
+            document.getElementById('indicadores-section').hidden = true;
+            document.getElementById('details-grid').hidden = true;
+            document.getElementById('empty-state').hidden = false;
+            botaoAprovacao.disabled = true;
+            document.getElementById('approval-hint').textContent =
+                'Pesquise um artista para habilitar esta opção.';
+        }
+
+        function exibirFaixas(faixas) {
+            const lista = document.getElementById('lista-faixas');
+            lista.replaceChildren();
+
+            if (!Array.isArray(faixas) || faixas.length === 0) {
+                const item = document.createElement('li');
+                const texto = document.createElement('span');
+                texto.textContent = 'Nenhuma faixa disponível para este artista.';
+                item.appendChild(texto);
+                lista.appendChild(item);
+                return;
+            }
+
+            faixas.forEach((faixa, indice) => {
+                const item = document.createElement('li');
+
+                const trackInfo = document.createElement('div');
+                trackInfo.className = 'track-info';
+
+                const rank = document.createElement('span');
+                rank.className = 'rank';
+                rank.textContent = String(indice + 1);
+
+                const detalhes = document.createElement('div');
+                const titulo = document.createElement('strong');
+                titulo.textContent = faixa.titulo || 'Faixa sem título';
+
+                const album = document.createElement('small');
+                album.textContent = faixa.album || 'Single';
+
+                detalhes.append(titulo, album);
+                trackInfo.append(rank, detalhes);
+
+                const estatisticas = document.createElement('span');
+                estatisticas.className = 'track-stats';
+
+                const streams = Number(faixa.total_streams);
+                estatisticas.textContent = Number.isFinite(streams)
+                    ? `${formatarNumero(streams)} streams`
+                    : '--';
+
+                item.append(trackInfo, estatisticas);
+                lista.appendChild(item);
+            });
+        }
+
+        async function buscarArtista() {
+            const nome = inputPesquisa.value.trim();
+
+            if (nome.length < 2) {
+                mostrarFeedback('Digite pelo menos 2 caracteres para pesquisar.', 'error');
+                inputPesquisa.focus();
+                return;
+            }
+
+            const pesquisaAtual = ++ultimaPesquisa;
+            botaoPesquisar.disabled = true;
+            botaoPesquisar.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Pesquisando';
+            mostrarFeedback(`Buscando informações de ${nome}...`);
+            limparResultado();
+
+            try {
+                const resposta = await fetch(
+                    `/artista/pesquisar?nome=${encodeURIComponent(nome)}`
+                );
+
+                if (pesquisaAtual !== ultimaPesquisa) return;
+
+                if (resposta.status === 404) {
+                    mostrarFeedback('Artista não encontrado. Confira o nome e tente novamente.', 'error');
+                    return;
+                }
+
+                if (!resposta.ok) {
+                    throw new Error(`Erro HTTP ${resposta.status}`);
+                }
+
+                const dados = await resposta.json();
+
+                if (pesquisaAtual !== ultimaPesquisa) return;
+
+                if (!dados || !dados.id_artista) {
+                    mostrarFeedback('A pesquisa não retornou dados válidos para esse artista.', 'error');
+                    return;
+                }
+
+                idArtistaAtual = dados.id_artista;
+
+                document.getElementById('nome-artista').textContent = dados.nome || 'Artista sem nome';
+                document.getElementById('genero-artista').textContent = dados.genero || 'Gênero não informado';
+
+                const popularidade = Number(dados.popularidade);
+                const totalStreams = Number(dados.total_streams);
+                const engajamento = Number(dados.engajamento);
+
+                document.getElementById('kpi-popularidade').textContent =
+                    Number.isFinite(popularidade) ? `${popularidade}/100` : '--';
+                document.getElementById('kpi-streams').textContent =
+                    Number.isFinite(totalStreams) ? formatarNumero(totalStreams) : '--';
+                document.getElementById('kpi-engajamento').textContent =
+                    Number.isFinite(engajamento) ? `${engajamento.toFixed(1)}%` : '--';
+
+                exibirFaixas(dados.topFaixas);
+
+                document.getElementById('artist-header').hidden = false;
+                document.getElementById('indicadores-section').hidden = false;
+                document.getElementById('details-grid').hidden = false;
+                document.getElementById('empty-state').hidden = true;
+
+                botaoAprovacao.disabled = false;
+                document.getElementById('approval-hint').textContent =
+                    'O artista está pronto para ser encaminhado.';
+                mostrarFeedback(`Resultado encontrado: ${dados.nome || nome}.`, 'success');
+
+            } catch (erro) {
+                console.error('Erro ao pesquisar artista:', erro);
+                if (pesquisaAtual === ultimaPesquisa) {
+                    mostrarFeedback('Não foi possível realizar a pesquisa. Tente novamente.', 'error');
+                }
+            } finally {
+                if (pesquisaAtual === ultimaPesquisa) {
+                    botaoPesquisar.disabled = false;
+                    botaoPesquisar.innerHTML =
+                        '<i class="fa-solid fa-magnifying-glass"></i> Pesquisar';
+                }
+            }
+        }
+
+        function irParaAnalise() {
+            if (!idArtistaAtual) {
+                mostrarFeedback('Pesquise um artista antes de continuar.', 'error');
+                return;
+            }
+
+            const idEmpresa = sessionStorage.getItem('ID_EMPRESA');
+
+            if (!idEmpresa) {
+                alert('Sua sessão não foi identificada. Faça login novamente.');
+                window.location.href = '../login.html';
+                return;
+            }
+
+            window.location.href = `aprovados.html`;
+        }
+    </script>
+</body>
+</html>

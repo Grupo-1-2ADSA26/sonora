@@ -6,7 +6,7 @@ function listarTodosParaFuncionario(idEmpresa) {
             u.nome AS criador,
             a.id_artista,
             a.nome AS nome_artista,
-            MAX(m.genero) AS genero,
+            a.genero AS genero,
             ROUND(AVG(ms.energy), 2) AS energy,
             ROUND(AVG(ms.danceability), 2) AS danceability,
             ROUND(AVG(ms.tempo)) AS bpm,
@@ -16,8 +16,13 @@ function listarTodosParaFuncionario(idEmpresa) {
         JOIN artista a ON aa.id_artista = a.id_artista
         LEFT JOIN musica m ON a.id_artista = m.id_artista
         LEFT JOIN metrica_streaming ms ON m.id_musica = ms.id_musica
-        WHERE aa.id_empresa = ${idEmpresa} 
-        GROUP BY u.id_usuario, u.nome, a.id_artista, a.nome;
+        WHERE aa.id_empresa = ${idEmpresa}
+        GROUP BY
+            u.id_usuario,
+            u.nome,
+            a.id_artista,
+            a.nome,
+            a.genero;
     `;
     return database.executar(instrucaoSql);
 }
@@ -56,7 +61,7 @@ function listarTodosParaAdministrador(idEmpresa) {
             u.nome AS criador,
             a.id_artista,
             a.nome AS nome_artista,
-            MAX(m.genero) AS genero,
+            a.genero AS genero,
             aa.status_aprovacao,
             aa.status_visualizacao,
             aa.data_atualizacao,
@@ -68,13 +73,12 @@ function listarTodosParaAdministrador(idEmpresa) {
             ON aa.id_artista = a.id_artista
         JOIN evento e
             ON aa.id_evento = e.id_evento
-        LEFT JOIN musica m
-            ON a.id_artista = m.id_artista
         WHERE aa.id_empresa = ${idEmpresa}
         GROUP BY
             u.nome,
             a.id_artista,
             a.nome,
+            a.genero,
             aa.status_aprovacao,
             aa.status_visualizacao,
             aa.data_atualizacao,
@@ -90,4 +94,4 @@ module.exports = {
     enviarParaAprovados,
     verificarArtistaEnviado,
     listarTodosParaAdministrador
-}
+};

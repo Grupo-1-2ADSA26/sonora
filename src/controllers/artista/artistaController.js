@@ -1,3 +1,4 @@
+
 var artistaModel = require("../../models/artista/artistaModel");
 
 function pesquisarArtista(req, res) {
@@ -9,7 +10,7 @@ function pesquisarArtista(req, res) {
         });
     }
 
-    artistaModel.buscarPorNome(termo)
+    artistaModel.buscarPorNome(termo.trim())
         .then(function (resultadoArtista) {
             if (resultadoArtista.length === 0) {
                 return res.status(404).json({
@@ -22,7 +23,7 @@ function pesquisarArtista(req, res) {
         .catch(function (erro) {
             console.error("Erro ao buscar artista:", erro);
 
-            res.status(500).json({
+            return res.status(500).json({
                 mensagem: "Erro ao buscar artista."
             });
         });
@@ -50,7 +51,7 @@ function pesquisarArtistaPorId(req, res) {
         .catch(function (erro) {
             console.error("Erro ao buscar artista por ID:", erro);
 
-            res.status(500).json({
+            return res.status(500).json({
                 mensagem: "Erro ao buscar artista."
             });
         });
@@ -67,37 +68,88 @@ function montarDadosArtista(artista, res) {
             var dadosMetricas = resultados[0][0] || {};
             var resultadoFaixas = resultados[1] || [];
 
-            var popCalculada = Math.min(
-                Math.round((dadosMetricas.popularidade || 0) / 500000),
-                100
-            );
-
-            if (popCalculada === 0) {
-                popCalculada = 75;
-            }
-
             res.status(200).json({
                 id_artista: idArtista,
-                nome: artista.nome || artista.nome_artista,
-                genero: dadosMetricas.genero_principal || "Gênero Geral",
-                popularidade: popCalculada,
-                total_streams: Number(dadosMetricas.total_streams || 0),
-                energy: Number(dadosMetricas.media_energy || 0.75).toFixed(2),
-                danceability: Number(dadosMetricas.media_danceability || 0.80).toFixed(2),
-                bpm: Math.round(dadosMetricas.media_bpm || 120),
-                topFaixas: resultadoFaixas
+                nome: artista.nome,
+                genero: dadosMetricas.genero_principal || "Não informado",
+
+                popularidade: null,
+
+                total_streams: Number(
+                    dadosMetricas.total_streams || 0
+                ),
+
+                energy: dadosMetricas.media_energy !== null
+                    ? Number(dadosMetricas.media_energy).toFixed(2)
+                    : null,
+
+                danceability: dadosMetricas.media_danceability !== null
+                    ? Number(dadosMetricas.media_danceability).toFixed(2)
+                    : null,
+
+                bpm: dadosMetricas.media_bpm !== null
+                    ? Math.round(Number(dadosMetricas.media_bpm))
+                    : null,
+
+                topFaixas: resultadoFaixas.map(function (faixa) {
+                    return {
+                        id_musica: faixa.id_musica,
+                        titulo: faixa.titulo,
+                        album: faixa.album,
+                        total_streams: Number(faixa.total_streams || 0)
+                    };
+                })
             });
         })
         .catch(function (erro) {
             console.error("Erro ao buscar métricas ou faixas:", erro);
 
-            res.status(500).json({
+            return res.status(500).json({
                 mensagem: "Erro ao buscar dados do artista."
+            });
+        });
+}
+
+function pesquisarKpisArtista(req, res) {
+    var idArtista = Number(req.params.idArtista);
+
+    if (!Number.isInteger(idArtista) || idArtista <= 0) {
+        return res.status(400).json({
+            mensagem: "ID do artista inválido."
+        });
+    }
+
+    artistaModel.buscarKpisArtista(idArtista)
+        .then(function (resultado) {
+            if (resultado.length === 0) {
+                return res.status(404).json({
+                    mensagem: "Artista não encontrado."
+                });
+            }
+
+            res.status(200).json({
+                popularidade: Number(resultado[0].popularidade || 0),
+
+                total_streams: Number(
+                    resultado[0].total_streams || 0
+                ),
+
+                engajamento: resultado[0].engajamento !== null
+                    ? Number(resultado[0].engajamento)
+                    : null
+            });
+        })
+        .catch(function (erro) {
+            console.error("Erro ao buscar KPIs do artista:", erro);
+
+            res.status(500).json({
+                mensagem: "Erro ao buscar indicadores do artista."
             });
         });
 }
 
 module.exports = {
     pesquisarArtista,
-    pesquisarArtistaPorId
+    pesquisarArtistaPorId,
+    pesquisarKpisArtista
 };

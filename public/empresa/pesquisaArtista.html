@@ -198,6 +198,42 @@
             });
         }
 
+        async function carregarKpisArtista(idArtista, totalStreamsOriginal) {
+            // Valores iniciais
+            document.getElementById('kpi-popularidade').textContent = '--';
+            document.getElementById('kpi-streams').textContent = formatarNumero(totalStreamsOriginal || 0);
+            document.getElementById('kpi-engajamento').textContent = '--';
+
+            try {
+                const resposta = await fetch(`/artista/kpis/${idArtista}`);
+
+                if (!resposta.ok) {
+                    throw new Error('Erro ao buscar KPIs.');
+                }
+
+                const dados = await resposta.json();
+
+                // Popularidade não possui métrica própria no banco
+                document.getElementById('kpi-popularidade').textContent =
+                    dados.popularidade !== null && dados.popularidade !== undefined
+                        ? `${dados.popularidade}/100`
+                        : '--';
+
+                // Total de streams
+                document.getElementById('kpi-streams').textContent =
+                    formatarNumero(dados.total_streams || 0);
+
+                // Engajamento em porcentagem
+                document.getElementById('kpi-engajamento').textContent =
+                    dados.engajamento !== null && dados.engajamento !== undefined
+                        ? `${Number(dados.engajamento).toFixed(2).replace('.', ',')}%`
+                        : '--';
+
+            } catch (erro) {
+                console.error('Erro ao carregar KPIs:', erro);
+            }
+        }
+
         function limparResultado() {
             idArtistaAtual = null;
             artistaJaEnviado = false;
@@ -338,17 +374,7 @@
                     dados.genero || 'Gênero não informado';
 
                 // Indicadores
-                const popularidade = Number(dados.popularidade);
-                const streams = Number(dados.total_streams);
-
-                document.getElementById('kpi-popularidade').textContent =
-                    Number.isFinite(popularidade) ? `${popularidade}/100` : '--';
-
-                document.getElementById('kpi-streams').textContent =
-                    Number.isFinite(streams) ? formatarNumero(streams) : '--';
-
-                // Não existe uma métrica de engajamento definida no backend ainda
-                document.getElementById('kpi-engajamento').textContent = '--';
+                await carregarKpisArtista(idArtistaAtual, dados.total_streams);
 
                 // Faixas em destaque
                 exibirFaixas(dados.topFaixas);

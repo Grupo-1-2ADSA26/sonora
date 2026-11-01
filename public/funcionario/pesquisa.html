@@ -186,7 +186,15 @@
         let idArtistaAtual = null;
 
         window.onload = function () {
-            // Página inixia toda limpa
+            const urlParams = new URLSearchParams(window.location.search);
+    const nomeArtistaUrl = urlParams.get('nome');
+
+    if (nomeArtistaUrl) {
+        document.getElementById('input-pesquisa').value = nomeArtistaUrl;
+        buscarArtista();
+    } else {
+        document.getElementById('input-pesquisa').value = '';
+    }
         };
 
         function atualizarGrafico(popularidade, energy, danceability) {

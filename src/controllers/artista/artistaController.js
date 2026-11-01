@@ -16,7 +16,7 @@ function pesquisarArtista(req, res) {
             var artista = resultadoArtista[0];
             var idArtista = artista.id_artista;
             
-            // Garante que o nome seja encontrado independentemente do formato da coluna
+            
             var nomeArtista = artista.nome || artista.nome_artista;
 
             Promise.all([

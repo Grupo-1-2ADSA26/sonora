@@ -27,7 +27,8 @@
 
         <ul class="lista">
             <li><a href="dashboard.html"><i class="fa-solid fa-house"></i><span>Início</span></a></li>
-            <li class="ativo"><a href="pesquisa.html"><i class="fa-solid fa-magnifying-glass"></i><span>Artistas</span></a></li>
+            <li class="ativo"><a href="pesquisa.html"><i
+                        class="fa-solid fa-magnifying-glass"></i><span>Artistas</span></a></li>
             <li><a href="recomendacoes.html"><i class="fa-solid fa-music"></i><span>Recomendações</span></a></li>
             <li><a href="aprovados.html"><i class="fa-solid fa-bell"></i><span>Aprovados</span></a></li>
             <li><a href="perfil.html"><i class="fa-solid fa-user"></i><span>Perfil</span></a></li>
@@ -191,6 +192,20 @@
                         <i class="fa-solid fa-arrow-right-to-bracket"></i>
                         Ver Análise Completa
                     </button>
+
+                    <div class="bloco-sugestao">
+                        <label for="select-evento">Evento de destino</label>
+                        <select id="select-evento">
+                            <option value="">Carregando eventos...</option>
+                        </select>
+
+                        <button class="btn-primary full-width" id="btn-sugerir" type="button"
+                            onclick="sugerirParaEmpresa()" disabled>
+                            <i class="fa-solid fa-paper-plane"></i> Sugerir para a empresa
+                        </button>
+
+                        <small id="dica-sugestao">Pesquise um artista para habilitar esta opção.</small>
+                    </div>
                 </div>
             </section>
 
@@ -198,6 +213,10 @@
     </main>
 
     <script>
+        const idEmpresa = sessionStorage.getItem('ID_EMPRESA');
+        const idUsuario = sessionStorage.getItem('ID_USUARIO');
+
+        let artistaJaSugerido = false;
         let meuchart = null;
         let idArtistaAtual = null;
         let temporizadorPesquisa = null;
@@ -235,6 +254,11 @@
                     }
                 });
             }
+
+            document.getElementById('select-evento')
+                .addEventListener('change', atualizarBotaoSugestao);
+
+            carregarEventos();
         };
 
         function atualizarGrafico(popularidade, energy, danceability) {
@@ -379,6 +403,7 @@
                 }
 
                 idArtistaAtual = dados.id_artista;
+                verificarSugestao();
 
                 // Atualizar cabeçalho
                 const nomeArtista = document.getElementById('nome-artista');
@@ -529,6 +554,122 @@
                 alert(
                     'Busque um artista primeiro para visualizar a análise completa!'
                 );
+            }
+        }
+
+        // ===== SUGESTÃO PARA A EMPRESA =====
+
+        async function carregarEventos() {
+            const select = document.getElementById('select-evento');
+
+            try {
+                const resposta = await fetch(`/evento/listar/${idEmpresa}`);
+
+                if (!resposta.ok && resposta.status !== 204) {
+                    throw new Error('Erro ao carregar eventos.');
+                }
+
+                const eventos = resposta.status === 204 ? [] : await resposta.json();
+
+                select.innerHTML = '';
+
+                const opcaoInicial = document.createElement('option');
+                opcaoInicial.value = '';
+                opcaoInicial.textContent = eventos.length
+                    ? 'Selecione um evento'
+                    : 'Nenhum evento cadastrado';
+                select.appendChild(opcaoInicial);
+
+                eventos.forEach(evento => {
+                    const opcao = document.createElement('option');
+                    opcao.value = evento.id_evento;
+                    opcao.textContent = evento.nome;
+                    select.appendChild(opcao);
+                });
+
+                select.disabled = eventos.length === 0;
+
+            } catch (erro) {
+                console.error('Erro ao listar eventos:', erro);
+                select.innerHTML = '<option value="">Erro ao carregar eventos</option>';
+                select.disabled = true;
+            }
+
+            atualizarBotaoSugestao();
+        }
+
+        function atualizarBotaoSugestao() {
+            const botao = document.getElementById('btn-sugerir');
+            const dica = document.getElementById('dica-sugestao');
+            const evento = document.getElementById('select-evento').value;
+
+            if (artistaJaSugerido) {
+                botao.disabled = true;
+                botao.innerHTML = '<i class="fa-solid fa-circle-check"></i> Artista já enviado';
+                botao.classList.add('botao-sugerido');
+                dica.textContent = 'Este artista já está no processo de aprovação da empresa.';
+                return;
+            }
+
+            botao.classList.remove('botao-sugerido');
+            botao.innerHTML = '<i class="fa-solid fa-paper-plane"></i> Sugerir para a empresa';
+            botao.disabled = !idArtistaAtual || !evento;
+
+            dica.textContent = idArtistaAtual
+                ? 'Escolha o evento e envie a sugestão.'
+                : 'Pesquise um artista para habilitar esta opção.';
+        }
+
+        async function verificarSugestao() {
+            const idConsultado = idArtistaAtual;
+            artistaJaSugerido = false;
+
+            try {
+                const resposta = await fetch(`/aprovados/verificar/${idEmpresa}/${idConsultado}`);
+                const dados = await resposta.json();
+
+                // Se a pesquisa mudou no meio do caminho, descarta esta resposta
+                if (idConsultado !== idArtistaAtual) return;
+
+                artistaJaSugerido = dados.jaEnviado === true;
+            } catch (erro) {
+                console.error('Erro ao verificar artista:', erro);
+            }
+
+            atualizarBotaoSugestao();
+        }
+
+        async function sugerirParaEmpresa() {
+            const idEvento = document.getElementById('select-evento').value;
+
+            if (!idArtistaAtual || !idEvento) return;
+
+            try {
+                const resposta = await fetch('/aprovados/sugerir', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        idEmpresa,
+                        idArtista: idArtistaAtual,
+                        idUsuario,
+                        idEvento
+                    })
+                });
+
+                // Se o servidor devolver uma página HTML (ex.: rota 404), não quebra no JSON
+                const dados = await resposta.json().catch(function () { return {}; });
+
+                if (!resposta.ok && resposta.status !== 409) {
+                    throw new Error(dados.mensagem || `Erro ao sugerir artista (status ${resposta.status}).`);
+                }
+
+                artistaJaSugerido = true;
+                alert(dados.mensagem || 'Artista sugerido para a empresa com sucesso!');
+                atualizarBotaoSugestao();
+
+            } catch (erro) {
+                console.error('Erro ao sugerir artista:', erro);
+                alert(erro.message || 'Não foi possível sugerir o artista.');
             }
         }
     </script>

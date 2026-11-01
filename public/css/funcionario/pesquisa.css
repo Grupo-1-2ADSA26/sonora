@@ -557,6 +557,33 @@ input:focus-visible {
     }
 }
 
+.bloco-sugestao {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-top: 16px;
+    padding-top: 16px;
+    border-top: 1px solid #e5e5e5;
+}
+
+.bloco-sugestao label {
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.bloco-sugestao select {
+    padding: 10px 12px;
+    border: 1px solid #d4d4d4;
+    border-radius: 8px;
+    background: #ffffff;
+    font-size: 14px;
+}
+
+.botao-sugerido {
+    background: #dcfce7;
+    color: #15803d;
+}
+
 /* ==========================
    TABLET PEQUENO E CELULAR
 ========================== */

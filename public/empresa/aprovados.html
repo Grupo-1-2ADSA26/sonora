@@ -118,185 +118,212 @@
         </section>
 
     </main>
-    <script>
-        const feedAprovados = document.getElementById("feed-aprovados");
 
-        const qtdAprovados = document.getElementById("qtd-aprovados");
-        const qtdAnalise = document.getElementById("qtd-analise");
-        const qtdReprovados = document.getElementById("qtd-reprovados");
+</body>
+<script>
+    const SITUACOES = {
+        PENDENTE: { classe: "analise", icone: "fa-clock", texto: "Em análise" },
+        ANALISE_CONCLUIDA: { classe: "aprovado", icone: "fa-circle-check", texto: "Análise concluída" },
+        SUGERIDO: { classe: "analise", icone: "fa-lightbulb", texto: "Sugerido pelo funcionário" },
+        APROVADO: { classe: "aprovado", icone: "fa-circle-check", texto: "Aprovado" },
+        REPROVADO: { classe: "reprovado", icone: "fa-circle-xmark", texto: "Reprovado" }
+    };
 
-        const contadorAprovados = document.getElementById("contador-aprovados");
+    const feedAprovados = document.getElementById("feed-aprovados");
 
-        const idEmpresa = sessionStorage.getItem('ID_EMPRESA');
+    const qtdAprovados = document.getElementById("qtd-aprovados");
+    const qtdAnalise = document.getElementById("qtd-analise");
+    const qtdReprovados = document.getElementById("qtd-reprovados");
 
-        async function listarTodos() {
-            try {
-                const resposta = await fetch(`/aprovados/listarTodos/${idEmpresa}`);
+    const contadorAprovados = document.getElementById("contador-aprovados");
 
-                if (resposta.status === 204) {
-                    feedAprovados.innerHTML = `
-                        <p class="mensagem-vazia">
-                            Nenhum artista encontrado.
-                        </p>
-                    `;
+    const idEmpresa = sessionStorage.getItem('ID_EMPRESA');
 
-                    atualizarEstatisticas([]);
-                    return;
-                }
+    async function listarTodos() {
+        try {
+            const resposta = await fetch(`/aprovados/listarTodos/${idEmpresa}`);
 
-                if (!resposta.ok) {
-                    throw new Error("Erro ao buscar artistas.");
-                }
-
-                const artistas = await resposta.json();
-
-                atualizarEstatisticas(artistas);
-                montarCards(artistas);
-
-            } catch (erro) {
-                console.error("Erro ao listar artistas:", erro);
-
+            if (resposta.status === 204) {
                 feedAprovados.innerHTML = `
                     <p class="mensagem-vazia">
-                        Não foi possível carregar os artistas.
+                        Nenhum artista encontrado.
                     </p>
                 `;
+
+                atualizarEstatisticas([]);
+                return;
             }
+
+            if (!resposta.ok) {
+                throw new Error("Erro ao buscar artistas.");
+            }
+
+            const artistas = await resposta.json();
+
+            atualizarEstatisticas(artistas);
+            montarCards(artistas);
+
+        } catch (erro) {
+            console.error("Erro ao listar artistas:", erro);
+
+            feedAprovados.innerHTML = `
+                <p class="mensagem-vazia">
+                    Não foi possível carregar os artistas.
+                </p>
+            `;
         }
+    }
 
-        // Atualiza os números das estatísticas
-        function atualizarEstatisticas(artistas) {
-            const aprovados = artistas.filter(
-                artista => artista.status_aprovacao === "APROVADO"
-            ).length;
+    // Atualiza os números das estatísticas
+    function atualizarEstatisticas(artistas) {
+        const aprovados = artistas.filter(artista =>
+            ["APROVADO", "ANALISE_CONCLUIDA"].includes(artista.status_aprovacao)
+        ).length;
 
-            const analise = artistas.filter(
-                artista => artista.status_aprovacao === "PENDENTE"
-            ).length;
+        const analise = artistas.filter(artista =>
+            ["PENDENTE", "SUGERIDO"].includes(artista.status_aprovacao)
+        ).length;
 
-            const reprovados = artistas.filter(
-                artista => artista.status_aprovacao === "REPROVADO"
-            ).length;
+        const reprovados = artistas.filter(artista =>
+            artista.status_aprovacao === "REPROVADO"
+        ).length;
 
-            qtdAprovados.textContent = aprovados;
-            qtdAnalise.textContent = analise;
-            qtdReprovados.textContent = reprovados;
+        qtdAprovados.textContent = aprovados;
+        qtdAnalise.textContent = analise;
+        qtdReprovados.textContent = reprovados;
 
-            contadorAprovados.textContent = `${artistas.length} registros`;
-        }
+        contadorAprovados.textContent = `${artistas.length} registros`;
+    }
 
-        // Monta os cards dos artistas
-        function montarCards(artistas) {
-            feedAprovados.innerHTML = "";
+    // Monta os cards dos artistas
+    function montarCards(artistas) {
+        feedAprovados.innerHTML = "";
 
-            artistas.forEach(artista => {
-                const status = artista.status_aprovacao;
+        artistas.forEach(artista => {
+            const situacao = SITUACOES[artista.status_aprovacao] || SITUACOES.PENDENTE;
 
-                let classeStatus = "";
-                let iconeStatus = "";
-                let textoStatus = "";
+            const visualizado = artista.status_visualizacao === "VISUALIZADO";
 
-                if (status === "APROVADO") {
-                    classeStatus = "aprovado";
-                    iconeStatus = "fa-circle-check";
-                    textoStatus = "Aprovado";
+            const iconeVisualizacao = visualizado ? "fa-eye" : "fa-eye-slash";
+            const textoVisualizacao = visualizado ? "Visualizado" : "Não visualizado";
 
-                } else if (status === "REPROVADO") {
-                    classeStatus = "reprovado";
-                    iconeStatus = "fa-circle-xmark";
-                    textoStatus = "Reprovado";
+            const data = new Date(artista.data_atualizacao);
+            const dataFormatada = data.toLocaleDateString("pt-BR");
 
-                } else {
-                    classeStatus = "analise";
-                    iconeStatus = "fa-clock";
-                    textoStatus = "Em análise";
-                }
+            // Botões de decisão aparecem só para artistas sugeridos pelo funcionário
+            const acoesDecisao = artista.status_aprovacao === "SUGERIDO" ? `
+                <div class="acoes-decisao">
+                    <button class="botao-aprovar" type="button"
+                        onclick="decidir(${artista.id_artista}, 'APROVADO')">
+                        Aprovar
+                    </button>
+                    <button class="botao-reprovar" type="button"
+                        onclick="decidir(${artista.id_artista}, 'REPROVADO')">
+                        Reprovar
+                    </button>
+                </div>
+            ` : "";
 
-                const visualizado = artista.status_visualizacao === "VISUALIZADO";
+            const card = document.createElement("article");
+            card.className = "cartao-artista";
 
-                const iconeVisualizacao = visualizado
-                    ? "fa-eye"
-                    : "fa-eye-slash";
+            card.innerHTML = `
+                <div class="artista-identificacao">
 
-                const textoVisualizacao = visualizado
-                    ? "Visualizado"
-                    : "Não visualizado";
-
-                const data = new Date(artista.data_atualizacao);
-
-                const dataFormatada = data.toLocaleDateString("pt-BR");
-
-                const card = document.createElement("article");
-                card.className = "cartao-artista";
-
-                card.innerHTML = `
-                    <div class="artista-identificacao">
-
-                        <div class="artista-avatar">
-                            <i class="fa-solid fa-microphone"></i>
-                        </div>
-
-                        <div class="artista-informacoes">
-                            <h3>${artista.nome_artista}</h3>
-                            <span>${artista.genero || "Gênero não informado"}</span>
-                        </div>
-
+                    <div class="artista-avatar">
+                        <i class="fa-solid fa-microphone"></i>
                     </div>
 
-                    <div class="informacao-evento">
-                        <span class="rotulo-informacao">
-                            <i class="fa-solid fa-calendar-days"></i>
-                            Evento
-                        </span>
-
-                        <strong>${artista.nome_evento}</strong>
+                    <div class="artista-informacoes">
+                        <h3>${artista.nome_artista}</h3>
+                        <span>${artista.genero || "Gênero não informado"}</span>
                     </div>
 
-                    <div class="informacao-data">
-                        <span class="rotulo-informacao">
-                            <i class="fa-regular fa-clock"></i>
-                            Data de atualização
-                        </span>
+                </div>
 
-                        <strong>${dataFormatada}</strong>
-                    </div>
+                <div class="informacao-evento">
+                    <span class="rotulo-informacao">
+                        <i class="fa-solid fa-calendar-days"></i>
+                        Evento
+                    </span>
 
-                    <div class="informacao-visualizacao">
-                        <span class="rotulo-informacao">
-                            <i class="fa-solid ${iconeVisualizacao}"></i>
-                            ${textoVisualizacao}
-                        </span>
-                    </div>
+                    <strong>${artista.nome_evento}</strong>
+                </div>
 
-                    <div class="status-aprovacao ${classeStatus}">
-                        <i class="fa-solid ${iconeStatus}"></i>
-                        ${textoStatus}
-                    </div>
+                <div class="informacao-data">
+                    <span class="rotulo-informacao">
+                        <i class="fa-regular fa-clock"></i>
+                        Data de atualização
+                    </span>
 
+                    <strong>${dataFormatada}</strong>
+                </div>
+
+                <div class="informacao-visualizacao">
+                    <span class="rotulo-informacao">
+                        <i class="fa-solid ${iconeVisualizacao}"></i>
+                        ${textoVisualizacao}
+                    </span>
+                </div>
+
+                <div class="status-aprovacao ${situacao.classe}">
+                    <i class="fa-solid ${situacao.icone}"></i>
+                    ${situacao.texto}
+                </div>
+
+                <div class="acoes-cartao">
                     <button class="botao-detalhes" type="button"
                         onclick="verPerfil(${artista.id_artista})">
                         Ver perfil
                         <i class="fa-solid fa-arrow-right"></i>
                     </button>
-                `;
 
-                feedAprovados.appendChild(card);
+                    ${acoesDecisao}
+                </div>
+            `;
+
+            feedAprovados.appendChild(card);
+        });
+    }
+
+    // Empresa aprova ou reprova artista sugerido pelo funcionário
+    async function decidir(idArtista, status) {
+        const acao = status === "APROVADO" ? "aprovar" : "reprovar";
+
+        if (!confirm(`Deseja ${acao} este artista?`)) return;
+
+        try {
+            const resposta = await fetch("/aprovados/atualizarStatus", {
+                method: "PUT",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ idEmpresa, idArtista, status })
             });
-        }
 
-        // Redireciona para o perfil do artista
-        function verPerfil(idArtista) {
-            window.location.href = `pesquisaArtista.html?id=${idArtista}`;
-        }
+            const dados = await resposta.json();
 
-        // Inicializa a listagem
-        if (idEmpresa) {
+            if (!resposta.ok) {
+                throw new Error(dados.mensagem || "Erro ao atualizar o status.");
+            }
+
             listarTodos();
-        } else {
-            console.error("ID da empresa não encontrado na sessão.");
-        }
 
-    </script>
-</body>
+        } catch (erro) {
+            console.error("Erro ao decidir:", erro);
+            alert(erro.message || "Não foi possível atualizar o status.");
+        }
+    }
+
+    // Redireciona para o perfil do artista
+    function verPerfil(idArtista) {
+        window.location.href = `pesquisaArtista.html?id=${idArtista}`;
+    }
+
+    // Inicializa a listagem
+    if (idEmpresa) {
+        listarTodos();
+    } else {
+        console.error("ID da empresa não encontrado na sessão.");
+    }
+</script>
 
 </html>

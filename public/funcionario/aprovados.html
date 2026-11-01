@@ -37,11 +37,8 @@
             <div class="cabecalho-info">
                 <span class="sobretitulo">SONORA / APROVADOS</span>
 
-                <h1>Artistas aprovados</h1>
-
-                <p>
-                    Confira os artistas aprovados para a sua empresa.
-                </p>
+                <h1>Artistas em análise</h1>
+                <p>Confira os artistas enviados pela empresa e as suas sugestões.</p>
             </div>
         </header>
 
@@ -51,99 +48,110 @@
         </section>
 
     </main>
-
-
-    <script>
-
-        window.onload = function () {
-            carregarArtistasAprovados();
-        };
-
-        function carregarArtistasAprovados() {
-
-            var idEmpresa = sessionStorage.ID_EMPRESA;
-
-            if (!idEmpresa) {
-                window.location.href = "login.html";
-                return;
-            }
-
-
-            fetch(`/aprovados/aprovados/${idEmpresa}`)
-                .then(function (resposta) {
-                    if (resposta.ok) {
-                        if (resposta.status == 204) {
-                            document.getElementById("feed-aprovados").innerHTML =
-                                '<p class="mensagem-vazia">Nenhum artista aprovado no momento.</p>';
-                            return;
-                        }
-
-                        resposta.json().then(function (artistas) {
-                            var feed = document.getElementById("feed-aprovados");
-                            feed.innerHTML = "";
-
-                            artistas.forEach(function (item) {
-                                feed.innerHTML += `
-                                    <article class="approved-card">
-                                        <div class="approved-avatar">
-                                            <i class="fa-solid fa-microphone"></i>
-                                        </div>
-
-                                        <div class="approved-info">
-                                            <h2>${item.nome_artista} <i class="fa-solid fa-circle-check"></i></h2>
-                                            <span>${item.genero || 'Gênero não informado'}</span>
-                                            <span>Sugerido por ${item.criador}</span>
-                                        </div>
-
-                                        <div class="approved-metrics">
-                                            <div class="approved-metric">
-                                                <small>Popularidade</small>
-                                                <strong>${item.popularidade || 0}</strong>
-                                            </div>
-
-                                            <div class="approved-metric">
-                                                <small>Energy</small>
-                                                <strong>${item.energy || '0.00'}</strong>
-                                            </div>
-
-                                            <div class="approved-metric">
-                                                <small>Danceability</small>
-                                                <strong>${item.danceability || '0.00'}</strong>
-                                            </div>
-
-                                            <div class="approved-metric">
-                                                <small>BPM</small>
-                                                <strong>${item.bpm || 0}</strong>
-                                            </div>
-                                        </div>
-
-                                        <div class="approved-status">
-                                            <i class="fa-solid fa-check"></i>
-                                            Aprovado
-                                        </div>
-
-                                        <button class="approved-button" onclick="verAnalise(${item.id_artista})">
-                                            Ver análise
-                                            <i class="fa-solid fa-arrow-right"></i>
-                                        </button>
-                                    </article>
-                                `;
-                            });
-                        });
-                    } else {
-                        console.error("Erro ao carregar os dados dos artistas aprovados.");
-                    }
-                })
-                .catch(function (erro) {
-                    console.error("Erro de conexão com o servidor: ", erro);
-                });
-        }
-
-        function verAnalise(idArtista) {
-            var idEmpresa = sessionStorage.ID_EMPRESA || 1;
-            window.location.href = `analise.html?idArtista=${idArtista}&idEmpresa=${idEmpresa}`;
-        }
-    </script>
 </body>
+
+<script>
+    var SITUACOES = {
+        PENDENTE: { classe: "situacao-analise", icone: "fa-clock", texto: "Em análise" },
+        ANALISE_CONCLUIDA: { classe: "situacao-concluida", icone: "fa-check", texto: "Análise concluída" },
+        SUGERIDO: { classe: "situacao-analise", icone: "fa-hourglass-half", texto: "Aguardando a empresa" },
+        APROVADO: { classe: "situacao-concluida", icone: "fa-check", texto: "Aprovado" },
+        REPROVADO: { classe: "situacao-reprovada", icone: "fa-xmark", texto: "Reprovado" }
+    };
+
+    window.onload = function () {
+        carregarArtistasAprovados();
+    };
+
+    function carregarArtistasAprovados() {
+
+        var idEmpresa = sessionStorage.ID_EMPRESA;
+
+        if (!idEmpresa) {
+            window.location.href = "login.html";
+            return;
+        }
+
+        fetch(`/aprovados/aprovados/${idEmpresa}`)
+            .then(function (resposta) {
+                if (resposta.ok) {
+                    if (resposta.status == 204) {
+                        document.getElementById("feed-aprovados").innerHTML =
+                            '<p class="mensagem-vazia">Nenhum artista encontrado no momento.</p>';
+                        return;
+                    }
+
+                    resposta.json().then(function (artistas) {
+                        var feed = document.getElementById("feed-aprovados");
+                        feed.innerHTML = "";
+
+                        artistas.forEach(function (item) {
+                            var situacao = SITUACOES[item.status_aprovacao] || SITUACOES.PENDENTE;
+
+                            var rotuloCriador = item.status_aprovacao === "SUGERIDO"
+                                ? "Sugerido por"
+                                : "Enviado por";
+
+                            feed.innerHTML += `
+                                <article class="approved-card">
+                                    <div class="approved-avatar">
+                                        <i class="fa-solid fa-microphone"></i>
+                                    </div>
+
+                                    <div class="approved-info">
+                                        <h2>${item.nome_artista}</h2>
+                                        <span>${item.genero || 'Gênero não informado'}</span>
+                                        <span>${rotuloCriador} ${item.criador}</span>
+                                    </div>
+
+                                    <div class="approved-metrics">
+                                        <div class="approved-metric">
+                                            <small>Popularidade</small>
+                                            <strong>${item.popularidade || 0}</strong>
+                                        </div>
+
+                                        <div class="approved-metric">
+                                            <small>Energy</small>
+                                            <strong>${item.energy || '0.00'}</strong>
+                                        </div>
+
+                                        <div class="approved-metric">
+                                            <small>Danceability</small>
+                                            <strong>${item.danceability || '0.00'}</strong>
+                                        </div>
+
+                                        <div class="approved-metric">
+                                            <small>BPM</small>
+                                            <strong>${item.bpm || 0}</strong>
+                                        </div>
+                                    </div>
+
+                                    <div class="approved-status ${situacao.classe}">
+                                        <i class="fa-solid ${situacao.icone}"></i>
+                                        ${situacao.texto}
+                                    </div>
+
+                                    <button class="approved-button" onclick="verAnalise(${item.id_artista})">
+                                        Ver análise
+                                        <i class="fa-solid fa-arrow-right"></i>
+                                    </button>
+                                </article>
+                            `;
+                        });
+                    });
+                } else {
+                    console.error("Erro ao carregar os dados dos artistas.");
+                }
+            })
+            .catch(function (erro) {
+                console.error("Erro de conexão com o servidor: ", erro);
+            });
+    }
+
+    function verAnalise(idArtista) {
+        var idEmpresa = sessionStorage.ID_EMPRESA || 1;
+        window.location.href = `analise.html?idArtista=${idArtista}&idEmpresa=${idEmpresa}`;
+    }
+</script>
 
 </html>

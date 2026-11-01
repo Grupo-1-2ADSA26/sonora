@@ -403,6 +403,30 @@ body {
     }
 }
 
+.acoes-cartao {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.acoes-decisao {
+    display: flex;
+    gap: 8px;
+}
+
+.botao-aprovar,
+.botao-reprovar {
+    flex: 1;
+    padding: 8px 12px;
+    border: none;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.botao-aprovar { background: #dcfce7; color: #15803d; }
+.botao-reprovar { background: #fee2e2; color: #b91c1c; }
+
 /* ==========================
    TABLET PEQUENO E CELULAR
 ========================== */

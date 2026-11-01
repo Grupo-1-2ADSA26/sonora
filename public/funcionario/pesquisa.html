@@ -217,7 +217,7 @@
                 inputPesquisa.value = '';
             }
 
-            // 2. Mantém a funcionalidade de pesquisar automaticamente enquanto digita ou pressiona Enter
+           
             if (inputPesquisa) {
                 inputPesquisa.addEventListener('input', function () {
                     clearTimeout(temporizadorPesquisa);
@@ -341,7 +341,7 @@
                     return;
                 }
 
-                // Identifica cada pesquisa para ignorar respostas antigas
+                
                 const pesquisaAtual = ++ultimaPesquisa;
 
                 try {
@@ -349,10 +349,10 @@
                         `/artista/pesquisar?nome=${encodeURIComponent(nome)}`
                     );
 
-                    // Ignora resultados de pesquisas anteriores
+                    
                     if (pesquisaAtual !== ultimaPesquisa) return;
 
-                    // Se a pessoa continuou digitando, descarta esta resposta
+                    
                     if (inputPesquisa.value.trim() !== nome) return;
 
                     if (!resposta.ok) {
@@ -371,7 +371,7 @@
 
                     const dados = await resposta.json();
 
-                    // Confere novamente antes de atualizar a dashboard
+                    
                     if (pesquisaAtual !== ultimaPesquisa) return;
                     if (inputPesquisa.value.trim() !== nome) return;
 
@@ -387,12 +387,12 @@
 
                     idArtistaAtual = dados.id_artista;
 
-                    // Atualizar cabeçalho
+                    
                     const nomeArtista = document.getElementById('nome-artista');
                     const generoArtista = document.getElementById('genero-artista');
 
                     if (nomeArtista) {
-                        // Evita acumular ícones em pesquisas sucessivas
+                        
                         nomeArtista.textContent = dados.nome || 'Artista sem nome';
 
                         const iconeVerificado = document.createElement('i');
@@ -410,7 +410,7 @@
                             dados.genero || 'Gênero não informado';
                     }
 
-                    // Atualizar KPIs
+                    
                     const popularidade = Number(dados.popularidade) || 0;
                     const energy = Number(dados.energy) || 0;
                     const danceability = Number(dados.danceability) || 0;
@@ -445,7 +445,7 @@
                         kpiBpm.textContent = bpm;
                     }
 
-                    // Atualizar interpretação
+                    
                     const interpretacao =
                         document.getElementById('texto-interpretacao');
 
@@ -508,7 +508,7 @@
                         }
                     }
 
-                    // Atualizar gráfico
+                    
                     atualizarGrafico(
                         popularidade,
                         energy,

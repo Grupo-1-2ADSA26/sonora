@@ -6,7 +6,7 @@
 }
 
 body {
-    background-color: #d8d8d8;
+    background: #f4f4f4;
     display: flex;
     min-height: 100vh;
 }
@@ -287,4 +287,230 @@ body {
     padding: 6px 12px;
     border-radius: 15px;
     font-weight: 600;
+}
+
+
+
+/* ==========================================
+   RESPONSIVIDADE - TABLET E CELULAR
+   ========================================== */
+
+@media screen and (max-width: 768px) {
+
+    /* Layout geral */
+    body {
+        flex-direction: column;
+        min-height: 100vh;
+    }
+
+    .main-content {
+        margin-left: 0;
+        width: 100%;
+        padding: 18px;
+    }
+
+    /* Barra de pesquisa */
+    .search-bar {
+        flex-direction: column;
+        gap: 12px;
+        margin-bottom: 20px;
+    }
+
+    .search-input {
+        width: 100%;
+        min-height: 45px;
+        padding: 0 15px;
+    }
+
+    .search-input input {
+        font-size: 14px;
+        min-width: 0;
+    }
+
+    .btn-primary {
+        width: 100%;
+        padding: 12px;
+    }
+
+    /* Painéis principais */
+    .dashboard-grid {
+        grid-template-columns: 1fr;
+        gap: 18px;
+        width: 100%;
+    }
+
+    .section-panel {
+        padding: 14px;
+        border-radius: 18px;
+        gap: 15px;
+        min-width: 0;
+    }
+
+    /* Cards */
+    .card {
+        padding: 16px;
+        border-radius: 15px;
+        min-width: 0;
+    }
+
+    .card h3 {
+        font-size: 14px;
+    }
+
+    /* Perfil do artista */
+    .profile-header {
+        gap: 12px;
+        align-items: center;
+    }
+
+    .avatar-lg {
+        width: 55px;
+        height: 55px;
+        min-width: 55px;
+        font-size: 22px;
+    }
+
+    .profile-meta h2 {
+        font-size: 18px;
+    }
+
+    .genre-tag {
+        font-size: 12px;
+    }
+
+    .badge-pop {
+        font-size: 10px;
+    }
+
+    /* Métricas */
+    .grid-2col {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 10px;
+    }
+
+    .metric-card {
+        padding: 12px 10px;
+        min-width: 0;
+    }
+
+    .metric-card small {
+        font-size: 11px;
+        flex-wrap: wrap;
+    }
+
+    .metric-card strong {
+        font-size: 15px;
+    }
+
+    /* Lista de músicas */
+    .track-list {
+        gap: 8px;
+    }
+
+    .track-list li {
+        gap: 8px;
+        align-items: flex-start;
+    }
+
+    .track-info {
+        gap: 8px;
+        min-width: 0;
+    }
+
+    .track-info strong {
+        font-size: 12px;
+        overflow-wrap: anywhere;
+    }
+
+    .track-info small {
+        font-size: 10px;
+    }
+
+    .track-stats {
+        font-size: 10px;
+        text-align: right;
+        flex-shrink: 0;
+    }
+
+    /* Gráfico Radar */
+    .chart-container-radar {
+        height: 220px;
+        width: 100%;
+        margin-bottom: 15px;
+    }
+
+    /* Atributos sonoros */
+    .grid-4col {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 10px;
+    }
+
+    .attribute-box {
+        padding: 10px;
+    }
+
+    .attribute-box small {
+        font-size: 11px;
+    }
+
+    .attribute-box strong {
+        font-size: 14px;
+    }
+
+    /* Recomendação */
+    .curation-text {
+        font-size: 12px;
+        line-height: 1.5;
+    }
+
+    .tag-cloud {
+        gap: 7px;
+    }
+
+    .tag-cloud span {
+        font-size: 10px;
+        padding: 6px 10px;
+    }
+
+    .full-width {
+        width: 100%;
+    }
+}
+
+
+/* ==========================================
+   AJUSTES PARA CELULARES PEQUENOS
+   ========================================== */
+
+@media screen and (max-width: 380px) {
+
+    .main-content {
+        padding: 12px;
+    }
+
+    .section-panel {
+        padding: 10px;
+    }
+
+    .card {
+        padding: 12px;
+    }
+
+    .profile-meta h2 {
+        font-size: 16px;
+    }
+
+    .avatar-lg {
+        width: 48px;
+        height: 48px;
+        min-width: 48px;
+    }
+
+    .track-stats {
+        font-size: 9px;
+    }
+
+    .chart-container-radar {
+        height: 190px;
+    }
 }

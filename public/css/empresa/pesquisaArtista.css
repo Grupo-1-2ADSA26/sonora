@@ -1,0 +1,1079 @@
+
+/* ==========================
+   CONFIGURAÇÕES GERAIS
+========================== */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: system-ui, -apple-system, sans-serif;
+}
+
+body {
+    background: #f4f4f4;
+    display: flex;
+    min-height: 100vh;
+    font-size: 16px;
+}
+
+.main-content {
+    margin-left: 210px;
+    padding: 30px;
+    width: calc(100% - 210px);
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+}
+
+/* ==========================
+   BARRA DE PESQUISA
+========================== */
+
+.search-bar {
+    display: flex;
+    align-items: stretch;
+    gap: 15px;
+    margin-bottom: 25px;
+}
+
+.search-input {
+    background-color: #fff;
+    flex: 1;
+    min-width: 0;
+    min-height: 50px;
+
+    display: flex;
+    align-items: center;
+
+    padding: 0 18px;
+    border: 1px solid transparent;
+    border-radius: 16px;
+
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+
+    transition:
+        border-color 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+.search-input:focus-within {
+    border-color: #888;
+    box-shadow: 0 0 0 4px rgba(0, 0, 0, 0.04);
+}
+
+.search-input i {
+    color: #888;
+    margin-right: 12px;
+    font-size: 17px;
+}
+
+.search-input input {
+    border: none;
+    outline: none;
+    background: transparent;
+
+    width: 100%;
+    min-width: 0;
+
+    font-size: 16px;
+    color: #333;
+}
+
+.search-input input::placeholder {
+    color: #999;
+}
+
+.btn-primary {
+    background-color: #333;
+    color: #fff;
+
+    border: none;
+    padding: 14px 28px;
+    border-radius: 16px;
+
+    font-size: 15px;
+    font-weight: 700;
+
+    cursor: pointer;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+
+    transition:
+        background-color 0.2s ease,
+        transform 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+.btn-primary:hover {
+    background-color: #000;
+    box-shadow: 0 5px 12px rgba(0, 0, 0, 0.12);
+}
+
+.btn-primary:active {
+    transform: scale(0.98);
+}
+
+.btn-primary:focus-visible {
+    outline: 2px solid #555;
+    outline-offset: 3px;
+}
+
+.full-width {
+    width: 100%;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+/* ==========================
+   CARDS PRINCIPAIS
+========================== */
+
+.card {
+    background-color: #fff;
+    border: 1px solid rgba(0, 0, 0, 0.035);
+    border-radius: 20px;
+    padding: 24px;
+
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.035);
+    margin-bottom: 22px;
+
+    min-width: 0;
+}
+
+.card h3 {
+    font-size: 18px;
+    color: #333;
+    margin-bottom: 15px;
+
+    display: flex;
+    align-items: center;
+    gap: 9px;
+
+    font-weight: 750;
+}
+
+.card h3 > i {
+    color: #555;
+}
+
+/* ==========================
+   CABEÇALHO DO CARD
+========================== */
+
+.card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 18px;
+}
+
+.card-header h3 {
+    margin-bottom: 7px;
+}
+
+.card-header small {
+    color: #888;
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+.data-badge {
+    background-color: #f2f2f2;
+    color: #666;
+
+    font-size: 13px;
+    font-weight: 650;
+
+    padding: 8px 12px;
+    border-radius: 10px;
+    white-space: nowrap;
+}
+
+/* ==========================
+   PERFIL DO ARTISTA
+========================== */
+
+.artist-header {
+    margin-bottom: 22px;
+    background: linear-gradient(120deg, #fff 0%, #f8f8f8 100%);
+}
+
+.artist-header .profile-header {
+    margin-bottom: 0;
+}
+
+.profile-header {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    margin-bottom: 20px;
+    min-width: 0;
+}
+
+.avatar-lg {
+    width: 70px;
+    height: 70px;
+    flex-shrink: 0;
+
+    border-radius: 19px;
+
+    background-color: #ededed;
+    border: 1px solid #e5e5e5;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    font-size: 27px;
+    color: #333;
+}
+
+.profile-meta {
+    min-width: 0;
+}
+
+.profile-meta h2 {
+    font-size: 25px;
+    color: #222;
+
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 7px;
+
+    font-weight: 800;
+    letter-spacing: -0.5px;
+    overflow-wrap: anywhere;
+}
+
+.profile-meta > small {
+    display: block;
+    margin-top: 8px;
+
+    font-size: 14px;
+    color: #888;
+    line-height: 1.5;
+}
+
+.verified {
+    color: #1da1f2;
+    font-size: 17px;
+}
+
+.genre-tag {
+    display: inline-block;
+    font-size: 14px;
+    color: #666;
+    margin-top: 5px;
+}
+
+/* ==========================
+   INDICADORES MUSICAIS
+========================== */
+
+.artist-analysis-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 14px;
+    margin-top: 22px;
+}
+
+.analysis-card {
+    background-color: #f8f8f8;
+    border: 1px solid #eeeeee;
+
+    padding: 20px;
+    border-radius: 15px;
+
+    display: flex;
+    align-items: center;
+    gap: 15px;
+
+    min-width: 0;
+
+    transition:
+        background-color 0.2s ease,
+        transform 0.2s ease,
+        border-color 0.2s ease;
+}
+
+.analysis-card:hover {
+    background-color: #f1f1f1;
+    border-color: #e3e3e3;
+    transform: translateY(-2px);
+}
+
+.analysis-card > div:last-child {
+    min-width: 0;
+}
+
+.analysis-icon {
+    width: 48px;
+    height: 48px;
+    flex-shrink: 0;
+
+    border-radius: 12px;
+    background-color: #eaeaea;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    color: #333;
+    font-size: 19px;
+}
+
+.analysis-card small {
+    display: block;
+    color: #777;
+    font-size: 14px;
+    margin-bottom: 5px;
+}
+
+.analysis-card strong {
+    display: block;
+    color: #222;
+    font-size: 26px;
+    font-weight: 800;
+    letter-spacing: -0.5px;
+    overflow-wrap: anywhere;
+}
+
+.analysis-description {
+    display: block;
+    margin-top: 4px;
+    color: #888;
+    font-size: 13px;
+    line-height: 1.5;
+}
+
+/* ==========================
+   ÁREA DE ANÁLISE
+========================== */
+
+.analysis-content {
+    display: grid;
+    grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+    gap: 28px;
+    margin-top: 28px;
+    padding-top: 24px;
+    border-top: 1px solid #eeeeee;
+}
+
+.chart-area,
+.analysis-summary {
+    min-width: 0;
+}
+
+.chart-area h4,
+.analysis-summary h4 {
+    font-size: 17px;
+    color: #333;
+
+    display: flex;
+    align-items: center;
+    gap: 8px;
+
+    margin-bottom: 15px;
+    font-weight: 750;
+}
+
+.chart-area h4 i,
+.analysis-summary h4 i {
+    color: #555;
+}
+
+.chart-container {
+    height: 250px;
+    position: relative;
+    width: 100%;
+}
+
+.analysis-summary {
+    padding: 5px 0;
+}
+
+.analysis-summary > p {
+    color: #666;
+    font-size: 14px;
+    line-height: 1.8;
+    margin-bottom: 18px;
+}
+
+/* ==========================
+   RESUMO DA ANÁLISE
+========================== */
+
+.summary-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    margin-bottom: 17px;
+}
+
+.summary-item > i {
+    width: 36px;
+    height: 36px;
+    flex-shrink: 0;
+
+    background-color: #ededed;
+    border-radius: 10px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    color: #333;
+    font-size: 15px;
+}
+
+.summary-item strong {
+    display: block;
+    color: #333;
+    font-size: 14px;
+    margin-bottom: 4px;
+}
+
+.summary-item span {
+    display: block;
+    color: #777;
+    font-size: 13px;
+    line-height: 1.7;
+}
+
+/* ==========================
+   GRID INFERIOR
+========================== */
+
+.dashboard-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 22px;
+    align-items: stretch;
+}
+
+.section-panel {
+    background-color: #e2e2e2;
+    padding: 16px;
+    border: 1px solid #dcdcdc;
+    border-radius: 22px;
+
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+
+    min-width: 0;
+}
+
+.section-panel .card {
+    flex: 1;
+    margin-bottom: 0;
+}
+
+.section-panel .card h3 {
+    line-height: 1.5;
+}
+
+/* ==========================
+   LISTA DE FAIXAS
+========================== */
+
+.track-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+}
+
+.track-list li {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+
+    padding: 14px 0;
+    border-bottom: 1px solid #eeeeee;
+}
+
+.track-list li:first-child {
+    padding-top: 5px;
+}
+
+.track-list li:last-child {
+    border-bottom: none;
+    padding-bottom: 5px;
+}
+
+.track-info {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    min-width: 0;
+}
+
+.track-info .rank {
+    font-weight: 800;
+    color: #999;
+    font-size: 15px;
+    width: 20px;
+    flex-shrink: 0;
+}
+
+.track-info > div {
+    min-width: 0;
+}
+
+.track-info strong {
+    font-size: 15px;
+    color: #292929;
+    display: block;
+    overflow-wrap: anywhere;
+}
+
+.track-info small {
+    display: block;
+    font-size: 13px;
+    color: #888;
+    margin-top: 4px;
+}
+
+.track-stats {
+    font-size: 13px;
+    font-weight: 700;
+    color: #555;
+    text-align: right;
+    flex-shrink: 0;
+}
+
+/* ==========================
+   RECOMENDAÇÕES
+========================== */
+
+.curation-text {
+    font-size: 15px;
+    color: #666;
+    line-height: 1.8;
+    margin-bottom: 15px;
+}
+
+.event-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 18px;
+}
+
+.event-tags span {
+    background-color: #ededed;
+    color: #444;
+
+    font-size: 13px;
+    padding: 8px 12px;
+    border-radius: 12px;
+
+    font-weight: 650;
+
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.recommendation-box {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+
+    background-color: #f5f5f5;
+    border: 1px solid #eeeeee;
+
+    padding: 15px;
+    border-radius: 14px;
+    margin-bottom: 18px;
+}
+
+.recommendation-box > i {
+    color: #555;
+    font-size: 17px;
+    margin-top: 2px;
+    flex-shrink: 0;
+}
+
+.recommendation-box strong {
+    display: block;
+    color: #333;
+    font-size: 14px;
+    margin-bottom: 5px;
+}
+
+.recommendation-box p {
+    color: #777;
+    font-size: 14px;
+    line-height: 1.8;
+    margin: 0;
+}
+
+/* ==========================
+   SELECT DE EVENTOS
+========================== */
+
+.event-select-container {
+    width: 100%;
+    margin: 22px 0;
+}
+
+.event-select-container label {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+
+    color: #333;
+    font-size: 14px;
+    font-weight: 750;
+
+    margin-bottom: 10px;
+}
+
+.event-select-container label i {
+    color: #555;
+    font-size: 15px;
+}
+
+.event-select-wrapper {
+    position: relative;
+    width: 100%;
+}
+
+.event-select-wrapper select {
+    appearance: none;
+    -webkit-appearance: none;
+
+    width: 100%;
+    min-height: 54px;
+
+    padding: 0 48px 0 17px;
+
+    background-color: #f8f8f8;
+    border: 1px solid #e5e5e5;
+    border-radius: 13px;
+
+    color: #333;
+    font-size: 15px;
+    font-weight: 600;
+
+    cursor: pointer;
+    outline: none;
+
+    transition:
+        border-color 0.2s ease,
+        background-color 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+.event-select-wrapper select:hover {
+    background-color: #f2f2f2;
+    border-color: #ccc;
+}
+
+.event-select-wrapper select:focus {
+    background-color: #fff;
+    border-color: #555;
+    box-shadow: 0 0 0 4px rgba(0, 0, 0, 0.06);
+}
+
+.event-select-wrapper select:disabled {
+    background-color: #eeeeee;
+    color: #999;
+    border-color: #e5e5e5;
+    cursor: not-allowed;
+    opacity: 0.8;
+}
+
+.event-select-wrapper select option {
+    background-color: #fff;
+    color: #333;
+    padding: 12px;
+}
+
+.select-arrow {
+    position: absolute;
+    top: 50%;
+    right: 18px;
+
+    transform: translateY(-50%);
+
+    color: #666;
+    font-size: 13px;
+
+    pointer-events: none;
+    transition: transform 0.2s ease;
+}
+
+.event-select-wrapper:focus-within .select-arrow {
+    color: #222;
+    transform: translateY(-50%) rotate(180deg);
+}
+
+.select-description {
+    display: block;
+    margin-top: 9px;
+
+    color: #999;
+    font-size: 12px;
+    line-height: 1.6;
+}
+
+/* ==========================
+   BOTÃO DE ENVIAR PARA APROVAÇÃO (JÁ ENVIADO)
+========================== */
+
+.btn-primary.ja-enviado {
+    background-color: #e8f3ec;
+    color: #39845a;
+    border: 1px solid #c8e3d1;
+    opacity: 1;
+    cursor: not-allowed;
+    box-shadow: none;
+}
+
+.btn-primary.ja-enviado:hover {
+    background-color: #e8f3ec;
+    box-shadow: none;
+}
+
+/* ==========================
+   ACESSIBILIDADE
+========================== */
+
+button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+button:focus-visible,
+input:focus-visible {
+    outline-offset: 3px;
+}
+
+/* ==========================
+   TABLETS
+========================== */
+
+@media (max-width: 1100px) {
+    .artist-analysis-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .analysis-content {
+        grid-template-columns: 1fr;
+        gap: 24px;
+    }
+
+    .dashboard-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* ==========================
+   TABLET PEQUENO E CELULAR
+========================== */
+
+@media (max-width: 768px) {
+    body {
+        flex-direction: column;
+    }
+
+    .main-content {
+        margin-left: 0;
+        width: 100%;
+        padding: 18px;
+    }
+
+    .search-bar {
+        flex-direction: column;
+        gap: 12px;
+        margin-bottom: 20px;
+    }
+
+    .search-input {
+        width: 100%;
+        flex: auto;
+        min-height: 48px;
+        padding: 0 15px;
+    }
+
+    .btn-primary {
+        width: 100%;
+    }
+
+    .card {
+        padding: 18px;
+        border-radius: 17px;
+        margin-bottom: 16px;
+    }
+
+    .card-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+    }
+
+    .card-header small {
+        font-size: 13px;
+    }
+
+    .data-badge {
+        white-space: normal;
+        font-size: 12px;
+    }
+
+    .profile-header {
+        gap: 14px;
+    }
+
+    .avatar-lg {
+        width: 56px;
+        height: 56px;
+        border-radius: 16px;
+        font-size: 22px;
+    }
+
+    .profile-meta h2 {
+        font-size: 21px;
+    }
+
+    .profile-meta > small {
+        font-size: 13px;
+    }
+
+    .artist-analysis-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 10px;
+        margin-top: 18px;
+    }
+
+    .analysis-card {
+        padding: 14px;
+        gap: 10px;
+    }
+
+    .analysis-icon {
+        width: 36px;
+        height: 36px;
+        font-size: 14px;
+    }
+
+    .analysis-card small {
+        font-size: 13px;
+    }
+
+    .analysis-card strong {
+        font-size: 21px;
+    }
+
+    .analysis-description {
+        font-size: 12px;
+    }
+
+    .analysis-content {
+        gap: 20px;
+        margin-top: 22px;
+        padding-top: 20px;
+    }
+
+    .chart-container {
+        height: 230px;
+    }
+
+    .dashboard-grid {
+        grid-template-columns: 1fr;
+        gap: 16px;
+    }
+
+    .section-panel {
+        padding: 12px;
+        border-radius: 18px;
+        gap: 14px;
+    }
+
+    .track-list li {
+        align-items: flex-start;
+        gap: 8px;
+    }
+
+    .track-info strong {
+        font-size: 14px;
+    }
+
+    .track-stats {
+        font-size: 12px;
+    }
+
+    .curation-text {
+        font-size: 14px;
+    }
+}
+
+/* ==========================
+   CELULARES PEQUENOS
+========================== */
+
+@media (max-width: 400px) {
+    .main-content {
+        padding: 12px;
+    }
+
+    .card {
+        padding: 14px;
+    }
+
+    .artist-analysis-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .profile-header {
+        align-items: flex-start;
+        gap: 12px;
+    }
+
+    .avatar-lg {
+        width: 48px;
+        height: 48px;
+        border-radius: 14px;
+        font-size: 19px;
+    }
+
+    .profile-meta h2 {
+        font-size: 18px;
+    }
+
+    .track-stats {
+        max-width: 90px;
+        overflow-wrap: anywhere;
+    }
+
+    .chart-container {
+        height: 200px;
+    }
+
+    .search-input input {
+        font-size: 14px;
+    }
+}
+
+/* ==========================
+   COMPLEMENTOS DA PESQUISA
+   Mantém a identidade visual original do Sonora
+========================== */
+
+.search-bar-form {
+    display: flex;
+    align-items: stretch;
+    gap: 15px;
+    width: 100%;
+    min-width: 0;
+}
+
+.search-feedback {
+    color: #888;
+    font-size: 14px;
+    line-height: 1.6;
+    margin: -12px 2px 18px;
+}
+
+.search-feedback[data-type="error"] {
+    color: #a33;
+}
+
+.search-feedback[data-type="success"] {
+    color: #35734b;
+}
+
+.artist-header[hidden],
+#indicadores-section[hidden],
+#details-grid[hidden],
+.empty-state[hidden] {
+    display: none !important;
+}
+
+.metric-note {
+    align-items: flex-start;
+    color: #888;
+    display: flex;
+    font-size: 13px;
+    gap: 7px;
+    line-height: 1.7;
+    margin-top: 15px;
+}
+
+.metric-note i {
+    color: #777;
+    margin-top: 2px;
+}
+
+.empty-state {
+    text-align: center;
+    padding: 34px 24px;
+}
+
+.empty-state-icon {
+    align-items: center;
+    background: #ededed;
+    border-radius: 15px;
+    color: #444;
+    display: flex;
+    font-size: 22px;
+    height: 54px;
+    justify-content: center;
+    margin: 0 auto 14px;
+    width: 54px;
+}
+
+.empty-state h3 {
+    justify-content: center;
+    margin-bottom: 8px;
+    font-size: 19px;
+}
+
+.empty-state p {
+    color: #888;
+    font-size: 14px;
+    line-height: 1.8;
+    margin: 0 auto;
+    max-width: 460px;
+}
+
+.approval-hint {
+    color: #888;
+    display: block;
+    font-size: 13px;
+    line-height: 1.6;
+    margin-top: 10px;
+    text-align: center;
+}
+
+.search-bar-form .btn-primary {
+    flex-shrink: 0;
+}
+
+@media (max-width: 768px) {
+    .search-bar-form {
+        flex-direction: column;
+    }
+
+    .search-bar-form .btn-primary {
+        width: 100%;
+    }
+
+    .search-feedback {
+        margin-top: -8px;
+        font-size: 13px;
+    }
+}

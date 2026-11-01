@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -10,22 +11,31 @@
     <link rel="stylesheet" href="../css/menu.css">
     <link rel="stylesheet" href="../css/empresa/artista.css">
 </head>
-<body>
 
+<body>
     <aside class="box-menu">
-        <p class="logo">sonora.</p>
+        <input type="checkbox" id="menu-toggle" class="menu-toggle">
+
+        <div class="menu-top">
+            <label for="menu-toggle" class="btn-hamburguer">
+                <i class="fa-solid fa-bars"></i>
+            </label>
+            <p class="logo">sonora.</p>
+        </div>
+
         <ul class="lista">
-            <li><a href="dashboard.html"><i class="fa-solid fa-house"></i>Início</a></li>
-            <li class="ativo"><a href="artista.html"><i class="fa-solid fa-magnifying-glass"></i>Artistas</a></li>
+            <li class="ativo"><a href="dashboard.html"><i class="fa-solid fa-house"></i>Início</a></li>
+            <li><a href="artista.html"><i class="fa-solid fa-magnifying-glass"></i>Artistas</a></li>
             <li><a href="cadastroFuncionario.html"><i class="fa-solid fa-users"></i>Funcionários</a></li>
             <li><a href="gerenciamentoEventos.html"><i class="fa-solid fa-music"></i>Eventos</a></li>
             <li><a href="notificacoes.html"><i class="fa-solid fa-bell"></i>Notificações</a></li>
             <li><a href="perfilEmpresa.html"><i class="fa-solid fa-building"></i>Perfil Empresa</a></li>
             <li><a href="perfil.html"><i class="fa-solid fa-user"></i>Perfil</a></li>
+
+            <li class="box-sair">
+                <a class="botao-sair" href="../index.html"><i class="fa-solid fa-right-from-bracket"></i> Sair</a>
+            </li>
         </ul>
-        <div class="box-sair">
-            <a class="botao-sair" href="../index.html"><i class="fa-solid fa-right-from-bracket"></i> Sair</a>
-        </div>
     </aside>
 
     <main class="main-content">
@@ -147,7 +157,8 @@
                 <div class="card">
                     <h3><i class="fa-solid fa-wand-magic-sparkles"></i> Recomendação de Ambiente</h3>
                     <p class="curation-text">
-                        Devido aos altos índices de <strong>Danceability (0.88)</strong> e <strong>Energy (0.82)</strong>, este perfil é altamente indicado para:
+                        Devido aos altos índices de <strong>Danceability (0.88)</strong> e <strong>Energy
+                            (0.82)</strong>, este perfil é altamente indicado para:
                     </p>
                     <div class="tag-cloud">
                         <span>Festivais Noturnos</span>
@@ -192,6 +203,13 @@
                 },
                 plugins: {
                     legend: { display: false }
+                }, ticks: {
+                    display: false
+                },
+                pointLabels: {
+                    font: {
+                        size: window.innerWidth <= 768 ? 9 : 11
+                    }
                 }
             }
         });
@@ -199,4 +217,5 @@
 
     </script>
 </body>
+
 </html>

@@ -1,262 +1,409 @@
-*{
-    margin:0;
-    padding:0;
-    box-sizing:border-box;
-    font-family:system-ui, -apple-system, sans-serif;
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: system-ui, -apple-system, sans-serif;
 }
 
-body{
-    background:#f1f2f4;
-    display:flex;
-    min-height:100vh;
+body {
+    background: #f4f4f4;
+    display: flex;
+    min-height: 100vh;
+    color: #292929;
 }
 
-.main-content{
-    margin-left:210px;
-    padding:30px;
-    width:calc(100% - 210px);
+.conteudo-principal {
+    margin-left: 210px;
+    padding: 38px;
+    width: calc(100% - 210px);
+    min-width: 0;
 }
 
-.dashboard-header{
-    margin-bottom:25px;
-}
+/* ==========================
+   CABEÇALHO
+========================== */
 
-.dashboard-header h1{
-    font-size:24px;
-    color:#222;
-}
-
-.dashboard-header p{
-    margin-top:4px;
-    color:#666;
-    font-size:14px;
-}
-
-/* PAINEL PRINCIPAL */
-
-.dashboard-grid{
-    background:#e2e2e2;
-
-    border-radius:24px;
-
-    padding:20px;
-
-    display:flex;
-    flex-direction:column;
-
-    gap:20px;
-
-    border:2px solid #bdbdbd;
-}
-
-/* KPIS */
-
-.secao-kpis{
-    display:grid;
-    grid-template-columns:repeat(4,1fr);
-    gap:15px;
-}
-
-.card-kpi{
-    background:white;
-
-    border-radius:16px;
-
-    min-height:120px;
-
-    padding:20px;
-
-    text-align:start;
-
-    display:flex;
-    flex-direction:row;
-
-
-    justify-content: space-around;
+.cabecalho-pagina {
+    display: flex;
     align-items: center;
-
-
-    border:1px solid #d7d7d7;
-
-    box-shadow:0 2px 8px rgba(0,0,0,.05);
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 22px;
+    margin-bottom: 30px;
 }
 
-.card-kpi .caixa{
-    text-align: start;
-    border-radius: 15px; padding: 20px
+.cabecalho-info {
+    flex: 1 1 320px;
+    min-width: 0;
 }
 
-.titulo-kpi{
-    font-size:16px;
-    color:#666;
+.sobretitulo {
+    display: block;
+    margin-bottom: 8px;
+    color: #858585;
+    font-size: 10px;
+    font-weight: 750;
+    letter-spacing: 2px;
 }
 
-.card-kpi h2{
-    margin-top:10px;
-    font-size:34px;
-    color:#333;
+.cabecalho-pagina h1 {
+    color: #242424;
+    font-size: clamp(26px, 3vw, 34px);
+    font-weight: 800;
+    letter-spacing: -1px;
+    line-height: 1.2;
+    overflow-wrap: break-word;
 }
 
-.card-kpi p{
-    margin-top:8px;
-
-    font-size:12px;
-
-    letter-spacing:1px;
-
-    font-weight:600;
-
-    text-transform:uppercase;
-
-    color:#666;
+.cabecalho-pagina p {
+    margin-top: 7px;
+    color: #858585;
+    font-size: 13px;
+    line-height: 1.6;
 }
 
-/* GRAFICOS */
+/* ==========================
+   ESTRUTURA
+========================== */
 
-.secao-graficos{
-    display:grid;
-    grid-template-columns:80% 20%;
-    gap:15px;
+.grade-painel {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
 }
 
-.card{
-    background:#fff;
+/* ==========================
+   KPIs
+========================== */
 
-    border-radius:18px;
-
-    padding:20px;
-
-    border:1px solid #d7d7d7;
-
-    box-shadow:0 2px 8px rgba(0,0,0,.05);
+.secao-kpis {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 20px;
 }
 
-.card-header{
-    display:flex;
-
-    justify-content:space-between;
-
-    align-items:center;
-
-    margin-bottom:15px;
-}
-
-.card-header h3{
-    font-size:15px;
-    color:#333;
-}
-
-.chart-container{
-    height:220px;
-    position:relative;
-}
-
-/* logs */
-
-.secao-shows{
-    width:100%;
-}
-
-.btn-link{
-    text-decoration:none;
-
-    color:#555;
-
-    font-size:13px;
-
-    font-weight:bold;
-}
-
-.btn-link:hover{
-    text-decoration:underline;
-}
-
-.btn-icon {
-    padding: 5px;
-    border-radius: 5px;
-    border-style: solid;
-    border-color: #555 ;
-}
-
-.shows-table{
-    width:100%;
-    border-collapse:collapse;
-}
-
-.shows-table th{
-    text-align:left;
-
-    padding:12px;
-
-    color:#666;
-
-    background:#f5f5f5;
-
-    border-bottom:1px solid #e0e0e0;
-}
-
-.shows-table td{
-    padding:14px 12px;
-
-    border-bottom:1px solid #f0f0f0;
-
-    color:#333;
-}
-
-.shows-table tr:hover{
-    background:#fafafa;
-}
-
-/* STATUS */
-
-.status{
-    display:inline-block;
-
-    padding:6px 12px;
-
-    font-size:11px;
-
-    border-radius:20px;
-
-    font-weight:600;
-}
-
-.status-ok{
-    background:#e8f5e9;
-    color:#2e7d32;
-}
-
-.status-pending{
-    background:#fff3e0;
-    color:#ef6c00;
-}
-
-
-.status-error {
-    display: inline-block;
-    background-color: #fee2e2;
-    color: #dc2626;
-    padding: 6px 12px;
-    font-size: 11px;
+.cartao-kpi {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    min-width: 0;
+    min-height: 120px;
+    padding: 22px;
+    background: #fff;
+    border: 1px solid #eaeaea;
     border-radius: 20px;
-    font-weight: 600;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.025);
+    transition: transform 0.2s, box-shadow 0.2s;
 }
 
-/* RESPONSIVO */
+.cartao-kpi:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.06);
+}
 
-@media (max-width: 900px){
+.kpi-icone {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 54px;
+    height: 54px;
+    flex-shrink: 0;
+    border-radius: 16px;
+    font-size: 22px;
+}
 
-    .main-content{
-        margin-left:0;
-        width:100%;
+.kpi-info {
+    min-width: 0;
+}
+
+.cartao-kpi h2 {
+    color: #242424;
+    font-size: 28px;
+    font-weight: 800;
+    letter-spacing: -0.8px;
+    line-height: 1.1;
+}
+
+.kpi-rotulo {
+    display: block;
+    margin-top: 5px;
+    color: #858585;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    line-height: 1.4;
+}
+
+.kpi-tendencia {
+    display: block;
+    margin-top: 6px;
+    font-size: 11px;
+    font-weight: 700;
+}
+
+.tendencia-ruim {
+    color: #ab0808;
+}
+
+.tendencia-boa {
+    color: #2e9e4f;
+}
+
+.kpi-critico .kpi-icone {
+    background: #fee2e2;
+    color: #ab0808;
+}
+
+.kpi-atraso .kpi-icone {
+    background: #fdf0d5;
+    color: #eaa111;
+}
+
+.kpi-ocorrencia .kpi-icone {
+    background: #dbe8ff;
+    color: #0c39ce;
+}
+
+.kpi-empresa .kpi-icone {
+    background: #d9f7e8;
+    color: #04a451;
+}
+
+/* ==========================
+   CARTÕES E GRÁFICOS
+========================== */
+
+.secao-graficos {
+    display: grid;
+    grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr);
+    gap: 20px;
+}
+
+.cartao {
+    width: 100%;
+    min-width: 0;
+    padding: 24px;
+    background: #fff;
+    border: 1px solid #eaeaea;
+    border-radius: 20px;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.025);
+}
+
+.cartao-cabecalho {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 14px;
+    margin-bottom: 20px;
+}
+
+.cartao-cabecalho h3 {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    color: #292929;
+    font-size: 15px;
+    font-weight: 750;
+    line-height: 1.4;
+}
+
+.cartao-cabecalho h3 i {
+    color: #555;
+}
+
+.area-grafico {
+    position: relative;
+    width: 100%;
+    height: 250px;
+}
+
+/* ==========================
+   TABELAS
+========================== */
+
+.secao-tabela {
+    width: 100%;
+    min-width: 0;
+}
+
+.tabela-rolagem {
+    width: 100%;
+    overflow-x: auto;
+}
+
+.tabela-ocorrencias {
+    width: 100%;
+    min-width: 680px;
+    border-collapse: collapse;
+}
+
+.tabela-ocorrencias th {
+    padding: 12px;
+    text-align: left;
+    background: #f7f7f7;
+    border-bottom: 1px solid #eaeaea;
+    color: #858585;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+}
+
+.tabela-ocorrencias td {
+    padding: 15px 12px;
+    border-bottom: 1px solid #f0f0f0;
+    color: #333;
+    font-size: 13px;
+    line-height: 1.5;
+}
+
+.tabela-ocorrencias tbody tr:last-child td {
+    border-bottom: none;
+}
+
+.tabela-ocorrencias tbody tr:hover {
+    background: #fafafa;
+}
+
+.link-ver-todas {
+    flex-shrink: 0;
+    padding: 8px 12px;
+    background: #f2f2f2;
+    border-radius: 10px;
+    color: #555;
+    font-size: 12px;
+    font-weight: 700;
+    text-decoration: none;
+    transition: background 0.2s;
+}
+
+.link-ver-todas:hover {
+    background: #e6e6e6;
+}
+
+/* ==========================
+   STATUS
+========================== */
+
+.selo-status {
+    display: inline-block;
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.status-resolvido {
+    background: #e8f5e9;
+    color: #2e7d32;
+}
+
+.status-atencao {
+    background: #fff3e0;
+    color: #ef6c00;
+}
+
+.status-critico {
+    background: #fee2e2;
+    color: #dc2626;
+}
+
+/* ==========================
+   TABLETS
+========================== */
+
+@media (max-width: 1100px) {
+    .conteudo-principal {
+        padding: 28px;
     }
 
-    .secao-kpis{
-        grid-template-columns:1fr;
+    .secao-kpis {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
     }
 
-    .secao-graficos{
-        grid-template-columns:1fr;
+    .secao-graficos {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* ==========================
+   TABLET PEQUENO E CELULAR
+========================== */
+
+@media (max-width: 768px) {
+    body {
+        flex-direction: column;
     }
 
+    .conteudo-principal {
+        margin-left: 0;
+        width: 100%;
+        padding: 20px 16px;
+    }
+
+    .cabecalho-pagina {
+        margin-bottom: 22px;
+        gap: 16px;
+    }
+
+    .grade-painel {
+        gap: 16px;
+    }
+
+    .secao-kpis {
+        gap: 12px;
+    }
+
+    .cartao-kpi {
+        min-height: 0;
+        padding: 18px;
+        border-radius: 17px;
+    }
+
+    .cartao {
+        padding: 18px;
+        border-radius: 17px;
+    }
+
+    .cartao-cabecalho {
+        margin-bottom: 16px;
+    }
+
+    .cartao-cabecalho h3 {
+        font-size: 14px;
+    }
+
+    .area-grafico {
+        height: 230px;
+    }
+}
+
+/* ==========================
+   CELULARES
+========================== */
+
+@media (max-width: 600px) {
+    .secao-kpis {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* ==========================
+   CELULARES PEQUENOS
+========================== */
+
+@media (max-width: 400px) {
+    .conteudo-principal {
+        padding: 16px 12px;
+    }
+
+    .cartao {
+        padding: 14px;
+    }
+
+    .area-grafico {
+        height: 210px;
+    }
 }

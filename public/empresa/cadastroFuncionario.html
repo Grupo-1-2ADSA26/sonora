@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -9,32 +10,50 @@
     <link rel="stylesheet" href="../css/menu.css">
     <link rel="stylesheet" href="../css/empresa/cadastroFuncionario.css">
 </head>
-<body>
 
+<body>
     <aside class="box-menu">
-        <p class="logo">sonora.</p>
+        <input type="checkbox" id="menu-toggle" class="menu-toggle">
+
+        <div class="menu-top">
+            <label for="menu-toggle" class="btn-hamburguer">
+                <i class="fa-solid fa-bars"></i>
+            </label>
+            <p class="logo">sonora.</p>
+        </div>
+
         <ul class="lista">
-            <li><a href="dashboard.html"><i class="fa-solid fa-house"></i>Início</a></li>
-            <li><a href="artista.html"><i class="fa-solid fa-magnifying-glass"></i>Artistas</a></li>
+
+            <li class="ativo"><a href="dashboard.html"><i class="fa-solid fa-house"></i>Início</a></li>
+            <li><a href="pesquisaArtista.html"><i class="fa-solid fa-magnifying-glass"></i>Artistas</a></li>
             <li class="ativo"><a href="cadastroFuncionario.html"><i class="fa-solid fa-users"></i>Funcionários</a></li>
+            <li><a href="aprovados.html"><i class="fa-solid fa-user-pen"></i>Aprovados</a></li>
+
             <li><a href="gerenciamentoEventos.html"><i class="fa-solid fa-music"></i>Eventos</a></li>
             <li><a href="notificacoes.html"><i class="fa-solid fa-bell"></i>Notificações</a></li>
             <li><a href="perfilEmpresa.html"><i class="fa-solid fa-building"></i>Perfil Empresa</a></li>
             <li><a href="perfil.html"><i class="fa-solid fa-user"></i>Perfil</a></li>
+
+            <li class="box-sair">
+                <a class="botao-sair" href="../index.html"><i class="fa-solid fa-right-from-bracket"></i> Sair</a>
+            </li>
         </ul>
-        <div class="box-sair">
-            <a class="botao-sair" href="../index.html"><i class="fa-solid fa-right-from-bracket"></i> Sair</a>
-        </div>
     </aside>
 
     <main class="main-content">
 
-        <header class="page-header">
-            <div>
-                <h1>GERENCIAMENTO DE FUNCIONÁRIOS</h1>
-                <p>Consulte a equipe cadastrada, edite cargos ou adicione novos colaboradores.</p>
+        <header class="cabecalho-pagina">
+            <div class="cabecalho-info">
+                <span class="sobretitulo">SONORA / EQUIPE</span>
+
+                <h1>Funcionários</h1>
+
+                <p>
+                    Consulte a equipe cadastrada, edite cargos ou adicione novos colaboradores.
+                </p>
             </div>
-            <button class="btn-primary" id="btn-novo-funcionario">
+
+            <button class="btn-primary botao-cabecalho" id="btn-novo-funcionario">
                 <i class="fa-solid fa-user-plus"></i> Cadastrar Funcionário
             </button>
         </header>
@@ -46,17 +65,21 @@
                     <span class="badge" id="badge-total">0 Funcionários Ativos</span>
                 </div>
 
-                <table class="data-table">
-                    <thead>
-                        <tr>
-                            <th>Nome</th>
-                            <th>E-mail</th>
-                            <th>Cargo</th>
-                            <th class="text-center">Ações</th>
-                        </tr>
-                    </thead>
-                    <tbody id="tabela-funcionarios"></tbody>
-                </table>
+
+
+                <div class="table-responsive">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Nome</th>
+                                <th>E-mail</th>
+                                <th>Cargo</th>
+                                <th class="text-center">Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tabela-funcionarios"></tbody>
+                    </table>
+                </div>
             </div>
         </section>
 
@@ -84,9 +107,8 @@
                     <select id="emp-role" required>
                         <option value="" disabled selected>Selecione um cargo</option>
                         <!-- Ajustado para os IDs correspondentes do banco 'cargo' -->
-                        <option value="1">Gerente / ADM</option>
+                        <option value="1">Gerente / Administrador</option>
                         <option value="2">Operacional</option>
-                        <option value="3">Suporte do Sistema</option>
                     </select>
                 </div>
                 <div class="field-group">
@@ -136,6 +158,7 @@
 
         // Se não estiver logado, volta para o login
         if (!idEmpresa) {
+            alert("Houve um erro ao tentar identificar seu usuário, realize o login novamente")
             window.location.href = "../login.html";
         }
 
@@ -174,7 +197,7 @@
                     let linhas = '';
 
                     funcionarios.forEach(func => {
-                        if(func.id_usuario == sessionStorage.getItem("ID_USUARIO")) {
+                        if (func.id_usuario == sessionStorage.getItem("ID_USUARIO")) {
                             return;
                         }
                         linhas += `
@@ -313,21 +336,21 @@
                 },
                 body: JSON.stringify(dados)
             })
-            .then(res => {
-                if (res.ok) {
-                    fecharModais();
-                    listarFuncionarios();
-                } else {
-                    alert(
-                        editando
-                            ? 'Erro ao atualizar funcionário.'
-                            : 'Erro ao cadastrar funcionário.'
-                    );
-                }
-            })
-            .catch(err =>
-                console.error('Erro ao salvar funcionário:', err)
-            );
+                .then(res => {
+                    if (res.ok) {
+                        fecharModais();
+                        listarFuncionarios();
+                    } else {
+                        alert(
+                            editando
+                                ? 'Erro ao atualizar funcionário.'
+                                : 'Erro ao cadastrar funcionário.'
+                        );
+                    }
+                })
+                .catch(err =>
+                    console.error('Erro ao salvar funcionário:', err)
+                );
         });
 
         // ---------- EXCLUIR ----------
@@ -365,7 +388,7 @@
         });
 
         // ---------- REQUISITOS SENHA ----------
-        
+
         campoSenha.addEventListener('input', () => {
             const senha = campoSenha.value;
 
@@ -431,4 +454,5 @@
         }
     </script>
 </body>
+
 </html>

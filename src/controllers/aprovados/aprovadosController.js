@@ -1,9 +1,9 @@
 var aprovadosModel = require("../../models/aprovados/aprovadosModel");
 
-function listarAprovados(req, res) {
+function listarTodosParaFuncionario(req, res) {
     var idEmpresa = req.params.idEmpresa;
 
-    aprovadosModel.listarAprovadosPorEmpresa(idEmpresa)
+    aprovadosModel.listarTodosParaFuncionario(idEmpresa)
         .then(function (resultado) {
             if (resultado.length > 0) {
                 res.status(200).json(resultado);
@@ -17,6 +17,61 @@ function listarAprovados(req, res) {
         });
 }
 
+function enviarParaAprovados(req, res) {
+    var idEmpresa = req.body.idEmpresa;
+    var idArtista = req.body.idArtista;
+    var idUsuario = req.body.idUsuario;
+    var idEvento = req.body.idEvento;
+
+    aprovadosModel.enviarParaAprovados(idEmpresa, idArtista, idUsuario, idEvento)    
+        .then(function (resultado) {
+            res.status(201).json({
+                mensagem: "Artista enviado para aprovação com sucesso!",
+                resultado: resultado
+            });
+        })
+        .catch(function (erro) {
+            console.error("Erro ao enviar artista para aprovação:", erro);
+            res.status(500).json(erro);
+        });
+}
+
+function verificarArtistaEnviado(req, res) {
+    var idEmpresa = req.params.idEmpresa;
+    var idArtista = req.params.idArtista;
+
+    aprovadosModel.verificarArtistaEnviado(idEmpresa, idArtista)
+        .then(function (resultado) {
+            res.status(200).json({
+                jaEnviado: resultado.length > 0
+            });
+        })
+        .catch(function (erro) {
+            console.error("Erro ao verificar artista:", erro);
+            res.status(500).json(erro);
+        });
+}
+
+function listarTodosParaAdministrador(req, res) {
+    var idEmpresa = req.params.idEmpresa;
+
+    aprovadosModel.listarTodosParaAdministrador(idEmpresa)
+        .then(function (resultado) {
+            if (resultado.length > 0) {
+                res.status(200).json(resultado);
+            } else {
+                res.status(204).send("Nenhum resultado encontrado!");
+            }
+        })
+        .catch(function (erro) {
+            console.error("Erro ao buscar artistas:", erro);
+            res.status(500).json(erro);
+        });
+}
+
 module.exports = {
-    listarAprovados
+    listarTodosParaFuncionario,
+    enviarParaAprovados,
+    verificarArtistaEnviado,
+    listarTodosParaAdministrador
 };

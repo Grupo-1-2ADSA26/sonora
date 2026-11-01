@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Logs | Sonora</title>
+    <script src="https://kit.fontawesome.com/d840916580.js" crossorigin="anonymous"></script>
+
+    <link rel="stylesheet" href="../css/menu.css">
+    <link rel="stylesheet" href="../css/suporte/logs.css">
+</head>
+
+<body>
+
+    <aside class="box-menu">
+        <input type="checkbox" id="menu-toggle" class="menu-toggle">
+
+        <div class="menu-top">
+            <label for="menu-toggle" class="btn-hamburguer">
+                <i class="fa-solid fa-bars"></i>
+            </label>
+            <p class="logo">sonora.</p>
+        </div>
+
+        <ul class="lista">
+            <li><a href="logs.html"><i class="fa-solid fa-house"></i>Início</a></li>
+            <li class="ativo"><a href="logsEx.html"><i class="fa-solid fa-clipboard-list"></i>Logs</a></li>
+            <li><a href="perfil.html"><i class="fa-solid fa-user"></i>Perfil</a></li>
+
+            <li class="box-sair">
+                <a class="botao-sair" href="../index.html"><i class="fa-solid fa-right-from-bracket"></i> Sair</a>
+            </li>
+        </ul>
+    </aside>
+
+    <main class="conteudo-principal">
+
+        <header class="cabecalho-pagina">
+            <div class="cabecalho-info">
+                <span class="sobretitulo">SONORA / LOGS</span>
+
+                <h1>Logs</h1>
+
+                <p>
+                    Consulte todas as ocorrências registradas e filtre por cliente, tipo ou status.
+                </p>
+            </div>
+        </header>
+
+        <section class="cartao-filtros">
+            <h3><i class="fa-solid fa-filter"></i> Filtros</h3>
+
+            <div class="grade-filtros">
+                <div class="campo-filtro">
+                    <label for="filtro-cliente">Cliente</label>
+                    <select id="filtro-cliente">
+                        <option value="">Todos</option>
+                    </select>
+                </div>
+
+                <div class="campo-filtro">
+                    <label for="filtro-tipo">Tipo</label>
+                    <select id="filtro-tipo">
+                        <option value="">Todos</option>
+                        <option value="Falha">Falha</option>
+                        <option value="Atraso">Atraso</option>
+                        <option value="Sistema">Sistema</option>
+                        <option value="Integração">Integração</option>
+                    </select>
+                </div>
+
+                <div class="campo-filtro">
+                    <label for="filtro-status">Status</label>
+                    <select id="filtro-status">
+                        <option value="">Todos</option>
+                        <option value="Crítico">Crítico</option>
+                        <option value="Atenção">Atenção</option>
+                        <option value="Em análise">Em análise</option>
+                        <option value="Informação">Informação</option>
+                        <option value="Resolvido">Resolvido</option>
+                    </select>
+                </div>
+
+                <div class="acoes-filtro">
+                    <button type="button" class="botao-limpar" id="botao-limpar">
+                        <i class="fa-solid fa-eraser"></i> Limpar
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <section class="cartao">
+            <div class="cartao-cabecalho">
+                <h3><i class="fa-solid fa-clipboard-list"></i> Ocorrências</h3>
+                <span class="contador-registros" id="contador">0 registros</span>
+            </div>
+
+            <div class="tabela-rolagem">
+                <table class="tabela-ocorrencias">
+                    <thead>
+                        <tr>
+                            <th>Data/Hora</th>
+                            <th>Cliente</th>
+                            <th>Tipo</th>
+                            <th>Mensagem</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tabela-logs"></tbody>
+                </table>
+            </div>
+
+            <p class="mensagem-vazia" id="mensagem-vazia" hidden>
+                Nenhuma ocorrência encontrada com esses filtros.
+            </p>
+        </section>
+
+    </main>
+
+    <script>
+        const ocorrencias = [
+            { dataHora: "17/10/2026 09:14", cliente: "Nova Som Ltda", tipo: "Falha", mensagem: "Erro ao buscar métricas do Spotify", status: "Crítico" },
+            { dataHora: "17/10/2026 08:55", cliente: "Beat Produções", tipo: "Atraso", mensagem: "Processamento de dados acima do tempo esperado", status: "Atenção" },
+            { dataHora: "17/10/2026 08:30", cliente: "Som Livre Eventos", tipo: "Falha", mensagem: "Falha na integração com o YouTube", status: "Crítico" },
+            { dataHora: "17/10/2026 07:12", cliente: "Alpha Music", tipo: "Sistema", mensagem: "Rotina de importação finalizada com sucesso", status: "Informação" },
+            { dataHora: "17/10/2026 06:48", cliente: "Vibe Records", tipo: "Atraso", mensagem: "Atualização de métricas atrasada", status: "Atenção" },
+            { dataHora: "16/10/2026 23:32", cliente: "Nova Som Ltda", tipo: "Integração", mensagem: "Tempo limite excedido na API do Spotify", status: "Resolvido" },
+            { dataHora: "16/10/2026 21:40", cliente: "Beat Produções", tipo: "Falha", mensagem: "Erro ao processar dados de streams", status: "Crítico" },
+            { dataHora: "16/10/2026 20:15", cliente: "Som Livre Eventos", tipo: "Integração", mensagem: "Falha na sincronização de artistas", status: "Em análise" },
+            { dataHora: "16/10/2026 18:05", cliente: "Alpha Music", tipo: "Sistema", mensagem: "Backup dos dados concluído", status: "Resolvido" },
+            { dataHora: "16/10/2026 16:32", cliente: "Vibe Records", tipo: "Falha", mensagem: "Erro ao importar catálogo musical", status: "Crítico" }
+        ];
+
+        const filtroCliente = document.getElementById("filtro-cliente");
+        const filtroTipo = document.getElementById("filtro-tipo");
+        const filtroStatus = document.getElementById("filtro-status");
+        const botaoLimpar = document.getElementById("botao-limpar");
+        const corpoTabela = document.getElementById("tabela-logs");
+        const contador = document.getElementById("contador");
+        const mensagemVazia = document.getElementById("mensagem-vazia");
+
+        function classeStatus(status) {
+            if (status === "Crítico" || status === "Falha") {
+                return "status-critico";
+            }
+
+            if (status === "Atenção" || status === "Em análise") {
+                return "status-atencao";
+            }
+
+            return "status-resolvido";
+        }
+
+        // Preenche o filtro de clientes sem repetir nomes
+        const clientes = [];
+
+        ocorrencias.forEach(function (item) {
+            if (!clientes.includes(item.cliente)) {
+                clientes.push(item.cliente);
+            }
+        });
+
+        clientes.sort().forEach(function (cliente) {
+            const opcao = document.createElement("option");
+            opcao.value = cliente;
+            opcao.textContent = cliente;
+            filtroCliente.appendChild(opcao);
+        });
+
+        function mostrarOcorrencias() {
+            const lista = ocorrencias.filter(function (item) {
+                const clienteOk = !filtroCliente.value || item.cliente === filtroCliente.value;
+                const tipoOk = !filtroTipo.value || item.tipo === filtroTipo.value;
+                const statusOk = !filtroStatus.value || item.status === filtroStatus.value;
+
+                return clienteOk && tipoOk && statusOk;
+            });
+
+            corpoTabela.innerHTML = "";
+
+            lista.forEach(function (item) {
+                corpoTabela.innerHTML += `
+                    <tr>
+                        <td>${item.dataHora}</td>
+                        <td><strong>${item.cliente}</strong></td>
+                        <td>${item.tipo}</td>
+                        <td>${item.mensagem}</td>
+                        <td>
+                            <span class="selo-status ${classeStatus(item.status)}">
+                                ${item.status}
+                            </span>
+                        </td>
+                    </tr>
+                `;
+            });
+
+            contador.textContent = lista.length === 1
+                ? "1 registro"
+                : lista.length + " registros";
+
+            mensagemVazia.hidden = lista.length > 0;
+        }
+
+        filtroCliente.addEventListener("change", mostrarOcorrencias);
+        filtroTipo.addEventListener("change", mostrarOcorrencias);
+        filtroStatus.addEventListener("change", mostrarOcorrencias);
+
+        botaoLimpar.addEventListener("click", function () {
+            filtroCliente.value = "";
+            filtroTipo.value = "";
+            filtroStatus.value = "";
+
+            mostrarOcorrencias();
+        });
+
+        mostrarOcorrencias();
+    </script>
+
+</body>
+
+</html>

@@ -1,0 +1,524 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: system-ui, -apple-system, sans-serif;
+}
+
+body {
+    background: #f4f4f4;
+    display: flex;
+    min-height: 100vh;
+}
+
+/* ==========================
+   CABEÇALHO
+========================== */
+
+.cabecalho-pagina {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 22px;
+    margin-bottom: 30px;
+}
+
+.cabecalho-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.sobretitulo {
+    display: block;
+    margin-bottom: 8px;
+    color: #858585;
+    font-size: 10px;
+    font-weight: 750;
+    letter-spacing: 2px;
+}
+
+.cabecalho-pagina h1 {
+    color: #242424;
+    font-size: clamp(26px, 3vw, 34px);
+    font-weight: 800;
+    letter-spacing: -1px;
+}
+
+.cabecalho-pagina p {
+    margin-top: 7px;
+    color: #858585;
+    font-size: 13px;
+    line-height: 1.6;
+}
+
+.icone-cabecalho {
+    width: 55px;
+    height: 55px;
+    flex-shrink: 0;
+    background: #242424;
+    color: #fff;
+    border-radius: 14px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    font-size: 21px;
+}
+
+.conteudo-principal {
+    margin-left: 210px;
+    padding: 30px;
+    width: calc(100% - 210px);
+    min-width: 0;
+}
+
+
+
+.icone-cabecalho {
+    width: 55px;
+    height: 55px;
+    flex-shrink: 0;
+    background: #242424;
+    color: #fff;
+    border-radius: 14px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    font-size: 21px;
+}
+
+.area-estatisticas {
+    display: flex;
+    flex-wrap: wrap;
+    margin-bottom: 38px;
+    gap: 18px;
+}
+
+.cartao-estatistica {
+    flex: 1 1 220px;
+    min-width: 0;
+    background: #fff;
+    padding: 18px;
+    border: 1px solid #ededed;
+    border-radius: 14px;
+
+    display: flex;
+    align-items: center;
+    gap: 14px;
+
+    box-shadow: 0 3px 12px rgba(0, 0, 0, 0.025);
+}
+
+.estatistica-icone {
+    flex-shrink: 0;
+
+    width: 52px;
+    height: 52px;
+    background: #f0f0f0;
+    color: #292929;
+    border-radius: 12px;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    font-size: 21px;
+}
+
+.estatistica-informacoes {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+}
+
+.estatistica-informacoes span {
+    font-size: 18px;
+    color: #222;
+    font-weight: bold;
+}
+
+.estatistica-informacoes strong {
+    font-size: 28px;
+    color: #222;
+    font-weight: 700;
+}
+
+.aprovados strong {
+    color: #258653;
+}
+
+.cartao-estatistica:has(.aprovados) .estatistica-icone {
+    background: #9bffc0;
+    color: #258653;
+}
+
+.analise strong {
+    color: #d69b28;
+}
+
+.cartao-estatistica:has(.analise) .estatistica-icone {
+    background: #f8e4b8;
+    color: #d69b28;
+}
+
+.reprovado strong {
+    color: #C44545;
+}
+
+.cartao-estatistica:has(.reprovado) .estatistica-icone {
+    background: #ffabab;
+    color: #C44545;
+}
+
+.secao-aprovados {
+    width: 100%;
+}
+
+.cabecalho-secao {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.cabecalho-secao h2 {
+    font-size: 19px;
+    font-weight: 700;
+    color: #292929;
+}
+
+.cabecalho-secao p {
+    font-size: 13px;
+    color: #929292;
+    margin-top: 6px;
+}
+
+.contador-aprovados {
+    font-size: 12px;
+    color: #777;
+    background: #fff;
+    padding: 9px 14px;
+    border: 1px solid #eaeaea;
+    border-radius: 8px;
+}
+
+.lista-aprovados {
+    display: flex;
+    flex-direction: column;
+    gap: 13px;
+}
+
+.cartao-artista {
+    background: #fff;
+    border: 1px solid #ededed;
+    border-radius: 14px;
+    padding: 23px 25px;
+
+    display: grid;
+    grid-template-columns: 1.5fr 1.2fr 1fr 0.5fr 1fr 1fr;
+    align-items: center;
+    gap: 25px;
+
+    box-shadow: 0 3px 12px rgba(0, 0, 0, 0.025);
+
+    transition: all 0.25s ease;
+}
+
+.cartao-artista:hover {
+    border-color: #d5d5d5;
+    box-shadow: 0 8px 22px rgba(0, 0, 0, 0.055);
+    transform: translateY(-2px);
+}
+
+.artista-identificacao {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.artista-avatar {
+    width: 53px;
+    height: 53px;
+    min-width: 53px;
+
+    background: #f1f1f1;
+    color: #333;
+    border-radius: 12px;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    font-size: 21px;
+}
+
+.artista-informacoes h3 {
+    font-size: 15px;
+    font-weight: 700;
+    color: #292929;
+    margin-bottom: 5px;
+}
+
+.artista-informacoes span {
+    font-size: 12px;
+    color: #929292;
+}
+
+.informacao-evento,
+.informacao-data,
+.informacao-visualizacao {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.rotulo-informacao {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+
+    font-size: 11px;
+    color: #333;
+    font-weight: bold;
+}
+
+.rotulo-informacao i {
+    font-size: 12px;
+}
+
+.informacao-evento strong,
+.informacao-data strong {
+    font-size: 13px;
+    font-weight: 600;
+    color: #353535;
+}
+
+.status-aprovacao {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+
+    padding: 9px 13px;
+    border-radius: 8px;
+
+    background: #edf7f0;
+    color: #328052;
+
+    font-size: 11px;
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+.status-aprovacao.aprovado {
+    color: #328052;
+}
+
+.status-aprovacao.analise {
+    color: #d69b28;
+}
+
+
+.status-aprovacao.reprovado {
+    color: #C44545;
+}
+
+.status-aprovacao i {
+    font-size: 13px;
+}
+
+.botao-detalhes {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+
+    padding: 11px 16px;
+
+    background: #292929;
+    color: #fff;
+
+    border: none;
+    border-radius: 8px;
+
+    font-size: 12px;
+    font-weight: 600;
+
+    cursor: pointer;
+    transition: 0.25s;
+    white-space: nowrap;
+}
+
+.botao-detalhes:hover {
+    background: #444;
+}
+
+.botao-detalhes i {
+    font-size: 11px;
+    transition: transform 0.2s;
+}
+
+.botao-detalhes:hover i {
+    transform: translateX(3px);
+}
+
+/* ==========================
+   TABLETS
+========================== */
+
+@media (max-width: 1100px) {
+
+    .cartao-artista {
+        grid-template-columns: 1fr 1fr;
+        gap: 20px;
+    }
+
+    .artista-identificacao {
+        grid-column: span 2;
+    }
+
+    .status-aprovacao {
+        justify-self: start;
+    }
+
+    .botao-detalhes {
+        grid-column: span 2;
+    }
+
+    .cabecalho-pagina h1 {
+        font-size: 20px;
+        letter-spacing: -0.5px;
+    }
+
+    .cabecalho-pagina p {
+        font-size: 13px;
+    }
+
+    .cabecalho-pagina {
+        margin-bottom: 22px;
+        gap: 12px;
+    }
+}
+
+/* ==========================
+   TABLET PEQUENO E CELULAR
+========================== */
+
+@media (max-width: 768px) {
+
+    body {
+        flex-direction: column;
+    }
+
+    .conteudo-principal {
+        margin-left: 0;
+        width: 100%;
+        padding: 20px 16px;
+    }
+
+    .cabecalho-pagina {
+        margin-bottom: 25px;
+        gap: 12px;
+    }
+
+    .cabecalho-pagina h1 {
+        font-size: 20px;
+        letter-spacing: -0.5px;
+    }
+
+    .cabecalho-pagina p {
+        font-size: 13px;
+    }
+
+    .area-estatisticas {
+        flex-direction: column;
+        gap: 12px;
+        margin-bottom: 28px;
+    }
+
+    .cartao-estatistica {
+        flex: none;
+        width: 100%;
+        padding: 14px;
+    }
+
+    .estatistica-icone {
+        width: 46px;
+        height: 46px;
+        font-size: 18px;
+    }
+
+    .estatistica-informacoes span {
+        font-size: 16px;
+    }
+
+    .estatistica-informacoes strong {
+        font-size: 24px;
+    }
+
+    .cabecalho-secao {
+        flex-wrap: wrap;
+        align-items: flex-start;
+        gap: 12px;
+    }
+
+    .contador-aprovados {
+        white-space: nowrap;
+    }
+
+    .cartao-artista {
+        grid-template-columns: 1fr;
+        padding: 18px;
+        gap: 16px;
+    }
+
+    .artista-identificacao {
+        grid-column: auto;
+    }
+
+    .status-aprovacao {
+        justify-self: start;
+    }
+
+    .botao-detalhes {
+        grid-column: auto;
+        width: 100%;
+    }
+}
+
+/* ==========================
+   CELULARES PEQUENOS
+========================== */
+
+@media (max-width: 420px) {
+
+    .conteudo-principal {
+        padding: 16px 12px;
+    }
+
+    .icone-cabecalho {
+        display: none;
+    }
+
+    .cabecalho-pagina h1 {
+        font-size: 18px;
+    }
+
+    .cabecalho-secao {
+        flex-direction: column;
+    }
+
+    .artista-avatar {
+        width: 46px;
+        height: 46px;
+        min-width: 46px;
+        font-size: 18px;
+    }
+
+    .artista-informacoes h3 {
+        font-size: 14px;
+    }
+}

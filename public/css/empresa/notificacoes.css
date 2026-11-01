@@ -1,0 +1,378 @@
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: system-ui, -apple-system, sans-serif;
+}
+
+body {
+    background: #f4f4f4;
+    display: flex;
+    min-height: 100vh;
+}
+
+/* CONTEÚDO PRINCIPAL */
+.main-content {
+    margin-left: 210px;
+    padding: 30px;
+    width: calc(100% - 210px);
+    min-width: 0;
+}
+
+
+.cabecalho-pagina {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 22px;
+    margin-bottom: 30px;
+}
+
+.cabecalho-info {
+    flex: 1 1 320px;
+    min-width: 0;
+}
+
+.sobretitulo {
+    display: block;
+    margin-bottom: 8px;
+    color: #858585;
+    font-size: 10px;
+    font-weight: 750;
+    letter-spacing: 2px;
+}
+
+.cabecalho-pagina h1 {
+    color: #242424;
+    font-size: clamp(26px, 3vw, 34px);
+    font-weight: 800;
+    letter-spacing: -1px;
+    line-height: 1.2;
+    overflow-wrap: break-word;
+}
+
+.cabecalho-pagina p {
+    margin-top: 7px;
+    color: #858585;
+    font-size: 13px;
+    line-height: 1.6;
+}
+
+/* CARDS DE RESUMO */
+.cards-resumo {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 18px;
+    margin-bottom: 28px;
+}
+
+.card-resumo {
+    background-color: #e2e2e2;
+    border-radius: 18px;
+    padding: 22px 18px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+    min-width: 0;
+}
+
+.card-icon {
+    width: 48px;
+    height: 48px;
+    min-width: 48px;
+    border-radius: 14px;
+    background-color: #bebebe;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #333;
+    font-size: 20px;
+}
+
+.card-resumo span {
+    font-size: 12px;
+    color: #666;
+    font-weight: 600;
+}
+
+.card-resumo h2 {
+    font-size: 27px;
+    color: #222;
+    margin: 3px 0;
+}
+
+.card-resumo p {
+    font-size: 11px;
+    color: #777;
+}
+
+/* PAINEL DE ATIVIDADES */
+.atividades-panel {
+    background-color: #e2e2e2;
+    border-radius: 22px;
+    padding: 25px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.04);
+    min-width: 0;
+}
+
+.atividades-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 22px;
+}
+
+.atividades-header h2 {
+    font-size: 19px;
+    color: #333;
+    margin-bottom: 5px;
+}
+
+.atividades-header p {
+    color: #777;
+    font-size: 12px;
+}
+
+.btn-atualizar {
+    border: none;
+    background-color: #333;
+    color: #fff;
+    padding: 11px 16px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: 700;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.btn-atualizar:hover {
+    background-color: #000;
+}
+
+/* FILTROS */
+.filtros {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 9px;
+    margin-bottom: 20px;
+}
+
+.filtro {
+    border: none;
+    background-color: #c8c8c8;
+    color: #444;
+    padding: 9px 16px;
+    border-radius: 10px;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.filtro:hover {
+    background-color: #b5b5b5;
+}
+
+.filtro.ativo {
+    background-color: #333;
+    color: #fff;
+}
+
+/* TABELA */
+.tabela-responsiva {
+    width: 100%;
+    overflow-x: auto;
+}
+
+.tabela-atividades {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 650px;
+    text-align: left;
+}
+
+.tabela-atividades th {
+    color: #666;
+    font-size: 12px;
+    font-weight: 700;
+    padding: 14px 12px;
+    border-bottom: 1px solid #c5c5c5;
+}
+
+.tabela-atividades td {
+    color: #444;
+    font-size: 13px;
+    padding: 17px 12px;
+    border-bottom: 1px solid #d0d0d0;
+}
+
+.tabela-atividades tbody tr:hover {
+    background-color: #d9d9d9;
+}
+
+.tabela-atividades tbody tr:last-child td {
+    border-bottom: none;
+}
+
+.atividade-tipo {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+.atividade-tipo i {
+    color: #444;
+    font-size: 15px;
+}
+
+/* STATUS */
+.status {
+    display: inline-block;
+    padding: 6px 11px;
+    border-radius: 8px;
+    font-size: 11px;
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+.status.sucesso {
+    background-color: #c9dfce;
+    color: #285d35;
+}
+
+.status.pendente {
+    background-color: #f0dfb9;
+    color: #77571c;
+}
+
+.status.erro {
+    background-color: #edcaca;
+    color: #8a2929;
+}
+
+/* TABLET */
+@media (max-width: 1000px) {
+    .cards-resumo {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+/* CELULAR */
+@media (max-width: 768px) {
+    body {
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+        min-width: 0;
+        overflow-x: hidden;
+    }
+
+    .box-menu {
+        width: 100%;
+        min-width: 0;
+        flex: 0 0 auto;
+    }
+
+    .main-content {
+        margin: 0;
+        width: 100%;
+        max-width: 100%;
+        min-width: 0;
+        padding: 20px 16px;
+    }
+
+    .page-header h1 {
+        font-size: 19px;
+    }
+
+    .page-header p {
+        font-size: 12px;
+        line-height: 1.5;
+    }
+
+    .cards-resumo {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 12px;
+    }
+
+    .card-resumo {
+        padding: 15px 12px;
+        gap: 10px;
+        border-radius: 14px;
+    }
+
+    .card-icon {
+        width: 38px;
+        height: 38px;
+        min-width: 38px;
+        font-size: 16px;
+    }
+
+    .card-resumo h2 {
+        font-size: 22px;
+    }
+
+    .card-resumo span {
+        font-size: 11px;
+    }
+
+    .card-resumo p {
+        font-size: 10px;
+    }
+
+    .atividades-panel {
+        padding: 17px;
+        border-radius: 17px;
+    }
+
+    .atividades-header {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .btn-atualizar {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .filtros {
+        gap: 7px;
+    }
+
+    .filtro {
+        padding: 8px 11px;
+        font-size: 11px;
+    }
+}
+
+/* CELULARES PEQUENOS */
+@media (max-width: 380px) {
+    .main-content {
+        padding: 16px 12px;
+    }
+
+    .cards-resumo {
+        gap: 9px;
+    }
+
+    .card-resumo {
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 13px;
+    }
+
+    .atividades-panel {
+        padding: 13px;
+    }
+
+    .atividades-header h2 {
+        font-size: 16px;
+    }
+}

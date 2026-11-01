@@ -6,9 +6,61 @@
 }
 
 body {
-    background-color: #d8d8d8;
+    background: #f4f4f4;
     display: flex;
     min-height: 100vh;
+}
+
+/* ==========================
+   CABEÇALHO
+========================== */
+
+.cabecalho-pagina {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 22px;
+    margin-bottom: 30px;
+}
+
+.cabecalho-info {
+    flex: 1 1 320px;
+    min-width: 0;
+}
+
+.sobretitulo {
+    display: block;
+    margin-bottom: 8px;
+    color: #858585;
+    font-size: 10px;
+    font-weight: 750;
+    letter-spacing: 2px;
+}
+
+.cabecalho-pagina h1 {
+    color: #242424;
+    font-size: clamp(26px, 3vw, 34px);
+    font-weight: 800;
+    letter-spacing: -1px;
+}
+
+.cabecalho-pagina p {
+    margin-top: 7px;
+    color: #858585;
+    font-size: 13px;
+    line-height: 1.6;
+}
+
+.botao-cabecalho {
+    flex-shrink: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 13px 22px;
+    border-radius: 14px;
+    white-space: nowrap;
 }
 
 .main-content {
@@ -137,14 +189,26 @@ body {
     transition: background 0.2s;
 }
 
-.btn-icon.edit { color: #1976d2; }
-.btn-icon.edit:hover { background-color: #e3f2fd; }
+.btn-icon.edit {
+    color: #1976d2;
+}
 
-.btn-icon.delete { color: #d32f2f; }
-.btn-icon.delete:hover { background-color: #ffebee; }
+.btn-icon.edit:hover {
+    background-color: #e3f2fd;
+}
+
+.btn-icon.delete {
+    color: #d32f2f;
+}
+
+.btn-icon.delete:hover {
+    background-color: #ffebee;
+}
 
 /* Botões Globais */
-.btn-primary, .btn-secondary, .btn-danger {
+.btn-primary,
+.btn-secondary,
+.btn-danger {
     border: none;
     padding: 12px 20px;
     border-radius: 12px;
@@ -157,14 +221,43 @@ body {
     transition: background 0.2s;
 }
 
-.btn-primary { background-color: #333; color: #fff; }
-.btn-primary:hover { background-color: #000; }
+.btn-primary {
+    background-color: #333;
+    color: #fff;
+}
 
-.btn-secondary { background-color: #bebebe; color: #333; }
-.btn-secondary:hover { background-color: #a8a8a8; }
+.btn-primary:hover {
+    background-color: #000;
+}
 
-.btn-danger { background-color: #d32f2f; color: #fff; }
-.btn-danger:hover { background-color: #9a0007; }
+.btn-secondary {
+    background-color: #bebebe;
+    color: #333;
+}
+
+.btn-secondary:hover {
+    background-color: #a8a8a8;
+}
+
+.btn-danger {
+    background-color: #d32f2f;
+    color: #fff;
+}
+
+.btn-danger:hover {
+    background-color: #9a0007;
+}
+
+
+.table-responsive {
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+.table-responsive .data-table {
+    min-width: 650px;
+}
 
 /* Modais */
 .modal-overlay {
@@ -246,7 +339,8 @@ body {
     gap: 6px;
 }
 
-.field-group input, .field-group select {
+.field-group input,
+.field-group select {
     background: transparent;
     border: none;
     outline: none;
@@ -277,8 +371,13 @@ body {
     color: #333;
 }
 
-.modal-body p { margin-bottom: 6px; }
-.modal-body small { color: #666; }
+.modal-body p {
+    margin-bottom: 6px;
+}
+
+.modal-body small {
+    color: #666;
+}
 
 .modal-actions {
     display: flex;
@@ -286,11 +385,18 @@ body {
     margin-top: 15px;
 }
 
-.modal-actions .btn-primary, 
-.modal-actions .btn-danger { flex: 2; }
-.modal-actions .btn-secondary { flex: 1; }
+.modal-actions .btn-primary,
+.modal-actions .btn-danger {
+    flex: 2;
+}
 
-.danger-text { color: #d32f2f; }
+.modal-actions .btn-secondary {
+    flex: 1;
+}
+
+.danger-text {
+    color: #d32f2f;
+}
 
 .erro-campo {
     display: block;
@@ -331,4 +437,210 @@ input.invalido {
 
 #regras-senha li.ok::before {
     content: "✓ ";
+}
+
+/* ==========================================
+   RESPONSIVO - TABLET E CELULAR
+   ========================================== */
+
+@media only screen and (max-width: 768px) {
+
+    /* Layout principal */
+    body {
+        flex-direction: column;
+    }
+
+    .main-content {
+        margin-left: 0 !important;
+        width: 100% !important;
+        padding: 15px !important;
+    }
+
+
+    /* Cabeçalho da página */
+    .page-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 15px;
+        margin-bottom: 20px;
+    }
+
+    .cabecalho-pagina {
+        margin-bottom: 22px;
+        gap: 16px;
+    }
+
+    .botao-cabecalho {
+        width: 100%;
+        flex-shrink: 1;
+    }
+
+    .page-header h1 {
+        font-size: 21px;
+    }
+
+    .page-header p {
+        font-size: 12px;
+    }
+
+    .page-header .btn-primary {
+        width: 100%;
+    }
+
+    /* Painel principal */
+    .section-panel {
+        padding: 12px;
+        border-radius: 16px;
+        width: 100%;
+    }
+
+    .card {
+        padding: 15px;
+        border-radius: 14px;
+        width: 100%;
+    }
+
+    /* Cabeçalho do card */
+    .card-header {
+        flex-wrap: wrap;
+        gap: 10px;
+        margin-bottom: 15px;
+    }
+
+    .card-header h3 {
+        font-size: 15px;
+    }
+
+    .badge {
+        font-size: 11px;
+    }
+
+    /* Tabela responsiva */
+    .data-table {
+        min-width: 650px;
+        font-size: 12px;
+    }
+
+    .data-table th {
+        padding: 10px 8px;
+        font-size: 12px;
+        white-space: nowrap;
+    }
+
+    .data-table td {
+        padding: 12px 8px;
+        white-space: nowrap;
+    }
+
+    /* Permite rolagem horizontal da tabela */
+    .card:has(.data-table) {
+        overflow-x: auto;
+    }
+
+    .user-cell {
+        gap: 8px;
+    }
+
+    .avatar {
+        width: 32px;
+        height: 32px;
+        flex-shrink: 0;
+    }
+
+    .role-tag {
+        font-size: 11px;
+        padding: 5px 8px;
+    }
+
+    /* Botões de ação */
+    .btn-icon {
+        font-size: 14px;
+        padding: 6px;
+    }
+
+    /* Modal */
+    .modal-overlay {
+        padding: 15px;
+    }
+
+    .modal-box {
+        width: 100%;
+        max-width: 100%;
+        padding: 18px;
+        border-radius: 16px;
+        max-height: 90vh;
+        overflow-y: auto;
+    }
+
+    .modal-header h3 {
+        font-size: 16px;
+    }
+
+    /* Campos do formulário */
+    .field-group {
+        padding: 9px 12px;
+    }
+
+    .field-group input,
+    .field-group select {
+        font-size: 14px;
+    }
+
+    /* Botões do modal */
+    .modal-actions {
+        flex-direction: column;
+    }
+
+    .modal-actions .btn-primary,
+    .modal-actions .btn-danger,
+    .modal-actions .btn-secondary {
+        flex: none;
+        width: 100%;
+    }
+
+}
+
+
+/* ==========================================
+   RESPONSIVO - CELULARES PEQUENOS
+   ========================================== */
+
+@media only screen and (max-width: 480px) {
+
+    .main-content {
+        padding: 12px !important;
+    }
+
+    .page-header h1 {
+        font-size: 19px;
+    }
+
+    .section-panel {
+        padding: 10px;
+    }
+
+    .card {
+        padding: 12px;
+    }
+
+    .card-header h3 {
+        font-size: 14px;
+    }
+
+    .data-table {
+        min-width: 600px;
+    }
+
+    .modal-box {
+        padding: 15px;
+    }
+
+    .modal-header h3 {
+        font-size: 15px;
+    }
+
+    .modal-actions {
+        gap: 8px;
+    }
+
 }

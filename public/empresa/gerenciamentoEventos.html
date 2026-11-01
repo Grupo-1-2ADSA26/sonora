@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -9,33 +10,49 @@
     <link rel="stylesheet" href="../css/menu.css">
     <link rel="stylesheet" href="../css/empresa/gerenciamentoEventos.css">
 </head>
-<body>
 
+<body>
     <aside class="box-menu">
-        <p class="logo">sonora.</p>
+        <input type="checkbox" id="menu-toggle" class="menu-toggle">
+
+        <div class="menu-top">
+            <label for="menu-toggle" class="btn-hamburguer">
+                <i class="fa-solid fa-bars"></i>
+            </label>
+            <p class="logo">sonora.</p>
+        </div>
+
         <ul class="lista">
-            <li><a href="dashboard.html"><i class="fa-solid fa-house"></i>Início</a></li>
-            <li><a href="artista.html"><i class="fa-solid fa-magnifying-glass"></i>Artistas</a></li>
+            <li class="ativo"><a href="dashboard.html"><i class="fa-solid fa-house"></i>Início</a></li>
+            <li><a href="pesquisaArtista.html"><i class="fa-solid fa-magnifying-glass"></i>Artistas</a></li>
             <li><a href="cadastroFuncionario.html"><i class="fa-solid fa-users"></i>Funcionários</a></li>
+            <li><a href="aprovados.html"><i class="fa-solid fa-user-pen"></i>Aprovados</a></li>
             <li class="ativo"><a href="gerenciamentoEventos.html"><i class="fa-solid fa-music"></i>Eventos</a></li>
+
             <li><a href="notificacoes.html"><i class="fa-solid fa-bell"></i>Notificações</a></li>
             <li><a href="perfilEmpresa.html"><i class="fa-solid fa-building"></i>Perfil Empresa</a></li>
             <li><a href="perfil.html"><i class="fa-solid fa-user"></i>Perfil</a></li>
+
+            <li class="box-sair">
+                <a class="botao-sair" href="../index.html"><i class="fa-solid fa-right-from-bracket"></i> Sair</a>
+            </li>
         </ul>
-        <div class="box-sair">
-            <a class="botao-sair" href="../index.html"><i class="fa-solid fa-right-from-bracket"></i> Sair</a>
-        </div>
     </aside>
 
     <main class="conteudo-principal">
 
         <header class="cabecalho-pagina">
-            <div>
-                <h1>GERENCIAMENTO DE SHOWS E EVENTOS</h1>
-                <p>Cadastre, edite e gerencie os eventos da sua empresa.</p>
+            <div class="cabecalho-info">
+                <span class="sobretitulo">SONORA / EVENTOS</span>
+
+                <h1>Shows e eventos</h1>
+
+                <p>
+                    Cadastre, edite e gerencie os eventos da sua empresa.
+                </p>
             </div>
 
-            <button id="btn-cadastrar-evento" class="btn-primary">
+            <button id="btn-cadastrar-evento" class="btn-primary botao-cabecalho">
                 <i class="fa-solid fa-calendar-plus"></i>
                 Cadastrar Evento
             </button>
@@ -74,7 +91,7 @@
 
             <form id="formulario-evento">
                 <input type="hidden" id="id-evento">
-                
+
                 <div class="field-group">
                     <label>
                         <i class="fa-solid fa-font"></i>
@@ -156,6 +173,18 @@
                     Tem certeza que deseja excluir o evento
                     <strong id="nome-evento-exclusao"></strong>?
                 </p>
+
+                <div class="aviso-exclusao">
+                    <i class="fa-solid fa-triangle-exclamation"></i>
+                    <p>
+                        <strong>Atenção!</strong>
+                        Para excluir este evento, é necessário remover primeiro
+                        todos os artistas relacionados a ele na seção de aprovados.
+                        Enquanto houver artistas vinculados ao evento, a exclusão
+                        não poderá ser realizada.
+                    </p>
+                </div>
+
                 <small>Esta ação não poderá ser desfeita.</small>
             </div>
 
@@ -178,14 +207,13 @@
         let idEventoExcluir = null;
 
         // Pega o ID da empresa do sessionStorage de forma segura
-        const idEmpresa = sessionStorage.ID_EMPRESA || sessionStorage.id_empresa;
+        const idEmpresa = sessionStorage.ID_EMPRESA;
 
         document.addEventListener("DOMContentLoaded", () => {
             if (!idEmpresa) {
                 mostrarToast("Sessão expirada. Faça login novamente.", true);
-                setTimeout(() => {
-                    window.location.href = "../index.html";
-                }, 2000);
+                alert("Houve um erro ao tentar identificar seu usuário, realize o login novamente")
+                window.location.href = "../login.html";
                 return;
             }
 
@@ -208,20 +236,20 @@
 
         function listarEventos() {
             fetch(`/evento/listar/${idEmpresa}`)
-            .then(resposta => {
-                if (!resposta.ok) {
-                    throw new Error("Erro ao buscar eventos");
-                }
-                return resposta.json();
-            })
-            .then(dados => {
-                eventos = dados;
-                renderizarEventos();
-            })
-            .catch(erro => {
-                console.error(erro);
-                mostrarToast("Erro ao carregar eventos", true);
-            });
+                .then(resposta => {
+                    if (!resposta.ok) {
+                        throw new Error("Erro ao buscar eventos");
+                    }
+                    return resposta.json();
+                })
+                .then(dados => {
+                    eventos = dados;
+                    renderizarEventos();
+                })
+                .catch(erro => {
+                    console.error(erro);
+                    mostrarToast("Erro ao carregar eventos", true);
+                });
         }
 
         function renderizarEventos() {
@@ -352,25 +380,25 @@
                 },
                 body: JSON.stringify(dados)
             })
-            .then(resposta => {
-                if (!resposta.ok) {
-                    throw new Error("Erro ao salvar");
-                }
-                return resposta.json();
-            })
-            .then(() => {
-                fecharModais();
-                listarEventos();
-                mostrarToast(
-                    idEvento
-                        ? "Evento atualizado com sucesso!"
-                        : "Evento cadastrado com sucesso!"
-                );
-            })
-            .catch(erro => {
-                console.error(erro);
-                mostrarToast("Erro ao salvar evento", true);
-            });
+                .then(resposta => {
+                    if (!resposta.ok) {
+                        throw new Error("Erro ao salvar");
+                    }
+                    return resposta.json();
+                })
+                .then(() => {
+                    fecharModais();
+                    listarEventos();
+                    mostrarToast(
+                        idEvento
+                            ? "Evento atualizado com sucesso!"
+                            : "Evento cadastrado com sucesso!"
+                    );
+                })
+                .catch(erro => {
+                    console.error(erro);
+                    mostrarToast("Erro ao salvar evento", true);
+                });
         }
 
         function abrirModalExcluir(idEvento) {
@@ -388,21 +416,21 @@
             fetch(`/evento/excluir/${idEventoExcluir}`, {
                 method: "DELETE"
             })
-            .then(resposta => {
-                if (!resposta.ok) {
-                    throw new Error("Erro ao excluir");
-                }
-                return resposta.json();
-            })
-            .then(() => {
-                fecharModais();
-                listarEventos();
-                mostrarToast("Evento excluído com sucesso!");
-            })
-            .catch(erro => {
-                console.error(erro);
-                mostrarToast("Erro ao excluir evento", true);
-            });
+                .then(resposta => {
+                    if (!resposta.ok) {
+                        throw new Error("Erro ao excluir");
+                    }
+                    return resposta.json();
+                })
+                .then(() => {
+                    fecharModais();
+                    listarEventos();
+                    mostrarToast("Evento excluído com sucesso!");
+                })
+                .catch(erro => {
+                    console.error(erro);
+                    mostrarToast("Erro ao excluir evento, verifique se todos artistas foram descorrelacionado ao evento", true);
+                });
         }
 
         function fecharModais() {
@@ -423,4 +451,5 @@
     </script>
 
 </body>
+
 </html>

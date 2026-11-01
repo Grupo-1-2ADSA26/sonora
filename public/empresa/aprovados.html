@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aprovados | Sonora</title>
+    <script src="https://kit.fontawesome.com/d840916580.js" crossorigin="anonymous"></script>
+
+    <link rel="stylesheet" href="../css/menu.css">
+    <link rel="stylesheet" href="../css/empresa/aprovados.css">
+</head>
+
+<body>
+    <aside class="box-menu">
+        <input type="checkbox" id="menu-toggle" class="menu-toggle">
+
+        <div class="menu-top">
+            <label for="menu-toggle" class="btn-hamburguer">
+                <i class="fa-solid fa-bars"></i>
+            </label>
+            <p class="logo">sonora.</p>
+        </div>
+
+        <ul class="lista">
+            <li><a href="dashboard.html"><i class="fa-solid fa-house"></i>Início</a></li>
+            <li><a href="pesquisaArtista.html"><i class="fa-solid fa-magnifying-glass"></i>Artistas</a>
+            </li>
+            <li><a href="cadastroFuncionario.html"><i class="fa-solid fa-users"></i>Funcionários</a></li>
+            <li class="ativo"><a href="aprovados.html"><i class="fa-solid fa-user-pen"></i>Aprovados</a></li>
+            <li><a href="gerenciamentoEventos.html"><i class="fa-solid fa-music"></i>Eventos</a></li>
+            <li><a href="notificacoes.html"><i class="fa-solid fa-bell"></i>Notificações</a></li>
+            <li><a href="perfilEmpresa.html"><i class="fa-solid fa-building"></i>Perfil Empresa</a></li>
+            <li><a href="perfil.html"><i class="fa-solid fa-user"></i>Perfil</a></li>
+
+            <li class="box-sair">
+                <a class="botao-sair" href="../index.html"><i class="fa-solid fa-right-from-bracket"></i> Sair</a>
+            </li>
+        </ul>
+    </aside>
+
+    <main class="conteudo-principal">
+        <header class="cabecalho-pagina">
+            <div class="cabecalho-info">
+                <span class="sobretitulo">SONORA / APROVADOS</span>
+
+                <h1>Gerenciamento de Artistas aprovados</h1>
+
+                <p>
+                    Confira os artistas selecionados para seus eventos.
+                </p>
+            </div>
+
+            <div class="icone-cabecalho">
+                <i class="fa-solid fa-music"></i>
+            </div>
+        </header>
+
+
+        <section class="area-estatisticas">
+
+            <div class="cartao-estatistica">
+                <div class="estatistica-icone">
+                    <i class="fa-solid fa-user-check"></i>
+                </div>
+
+                <div class="estatistica-informacoes aprovados">
+                    <span>Aprovados</span>
+                    <strong id="qtd-aprovados">0</strong>
+                </div>
+
+            </div>
+
+            <div class="cartao-estatistica">
+                <div class="estatistica-icone">
+                    <i class="fa-solid fa-user-check"></i>
+                </div>
+
+                <div class="estatistica-informacoes analise">
+                    <span>Em Análise</span>
+                    <strong id="qtd-analise">0</strong>
+                </div>
+
+            </div>
+
+            <div class="cartao-estatistica">
+                <div class="estatistica-icone">
+                    <i class="fa-solid fa-user-check"></i>
+                </div>
+
+                <div class="estatistica-informacoes reprovado">
+                    <span>Reprovados</span>
+                    <strong id="qtd-reprovados">0</strong>
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <section class="secao-aprovados">
+
+            <div class="cabecalho-secao">
+                <div>
+                    <h2>Lista de aprovados</h2>
+                    <p>Artistas confirmados nos eventos da empresa.</p>
+                </div>
+
+                <span class="contador-aprovados" id="contador-aprovados">
+                    0 registros
+                </span>
+            </div>
+
+
+            <div class="lista-aprovados" id="feed-aprovados">
+            </div>
+
+        </section>
+
+    </main>
+    <script>
+        const feedAprovados = document.getElementById("feed-aprovados");
+
+        const qtdAprovados = document.getElementById("qtd-aprovados");
+        const qtdAnalise = document.getElementById("qtd-analise");
+        const qtdReprovados = document.getElementById("qtd-reprovados");
+
+        const contadorAprovados = document.getElementById("contador-aprovados");
+
+        const idEmpresa = sessionStorage.getItem('ID_EMPRESA');
+
+        async function listarTodos() {
+            try {
+                const resposta = await fetch(`/aprovados/listarTodos/${idEmpresa}`);
+
+                if (resposta.status === 204) {
+                    feedAprovados.innerHTML = `
+                        <p class="mensagem-vazia">
+                            Nenhum artista encontrado.
+                        </p>
+                    `;
+
+                    atualizarEstatisticas([]);
+                    return;
+                }
+
+                if (!resposta.ok) {
+                    throw new Error("Erro ao buscar artistas.");
+                }
+
+                const artistas = await resposta.json();
+
+                atualizarEstatisticas(artistas);
+                montarCards(artistas);
+
+            } catch (erro) {
+                console.error("Erro ao listar artistas:", erro);
+
+                feedAprovados.innerHTML = `
+                    <p class="mensagem-vazia">
+                        Não foi possível carregar os artistas.
+                    </p>
+                `;
+            }
+        }
+
+        // Atualiza os números das estatísticas
+        function atualizarEstatisticas(artistas) {
+            const aprovados = artistas.filter(
+                artista => artista.status_aprovacao === "APROVADO"
+            ).length;
+
+            const analise = artistas.filter(
+                artista => artista.status_aprovacao === "PENDENTE"
+            ).length;
+
+            const reprovados = artistas.filter(
+                artista => artista.status_aprovacao === "REPROVADO"
+            ).length;
+
+            qtdAprovados.textContent = aprovados;
+            qtdAnalise.textContent = analise;
+            qtdReprovados.textContent = reprovados;
+
+            contadorAprovados.textContent = `${artistas.length} registros`;
+        }
+
+        // Monta os cards dos artistas
+        function montarCards(artistas) {
+            feedAprovados.innerHTML = "";
+
+            artistas.forEach(artista => {
+                const status = artista.status_aprovacao;
+
+                let classeStatus = "";
+                let iconeStatus = "";
+                let textoStatus = "";
+
+                if (status === "APROVADO") {
+                    classeStatus = "aprovado";
+                    iconeStatus = "fa-circle-check";
+                    textoStatus = "Aprovado";
+
+                } else if (status === "REPROVADO") {
+                    classeStatus = "reprovado";
+                    iconeStatus = "fa-circle-xmark";
+                    textoStatus = "Reprovado";
+
+                } else {
+                    classeStatus = "analise";
+                    iconeStatus = "fa-clock";
+                    textoStatus = "Em análise";
+                }
+
+                const visualizado = artista.status_visualizacao === "VISUALIZADO";
+
+                const iconeVisualizacao = visualizado
+                    ? "fa-eye"
+                    : "fa-eye-slash";
+
+                const textoVisualizacao = visualizado
+                    ? "Visualizado"
+                    : "Não visualizado";
+
+                const data = new Date(artista.data_atualizacao);
+
+                const dataFormatada = data.toLocaleDateString("pt-BR");
+
+                const card = document.createElement("article");
+                card.className = "cartao-artista";
+
+                card.innerHTML = `
+                    <div class="artista-identificacao">
+
+                        <div class="artista-avatar">
+                            <i class="fa-solid fa-microphone"></i>
+                        </div>
+
+                        <div class="artista-informacoes">
+                            <h3>${artista.nome_artista}</h3>
+                            <span>${artista.genero || "Gênero não informado"}</span>
+                        </div>
+
+                    </div>
+
+                    <div class="informacao-evento">
+                        <span class="rotulo-informacao">
+                            <i class="fa-solid fa-calendar-days"></i>
+                            Evento
+                        </span>
+
+                        <strong>${artista.nome_evento}</strong>
+                    </div>
+
+                    <div class="informacao-data">
+                        <span class="rotulo-informacao">
+                            <i class="fa-regular fa-clock"></i>
+                            Data de atualização
+                        </span>
+
+                        <strong>${dataFormatada}</strong>
+                    </div>
+
+                    <div class="informacao-visualizacao">
+                        <span class="rotulo-informacao">
+                            <i class="fa-solid ${iconeVisualizacao}"></i>
+                            ${textoVisualizacao}
+                        </span>
+                    </div>
+
+                    <div class="status-aprovacao ${classeStatus}">
+                        <i class="fa-solid ${iconeStatus}"></i>
+                        ${textoStatus}
+                    </div>
+
+                    <button class="botao-detalhes" type="button"
+                        onclick="verPerfil(${artista.id_artista})">
+                        Ver perfil
+                        <i class="fa-solid fa-arrow-right"></i>
+                    </button>
+                `;
+
+                feedAprovados.appendChild(card);
+            });
+        }
+
+        // Redireciona para o perfil do artista
+        function verPerfil(idArtista) {
+            window.location.href = `pesquisaArtista.html?id=${idArtista}`;
+        }
+
+        // Inicializa a listagem
+        if (idEmpresa) {
+            listarTodos();
+        } else {
+            console.error("ID da empresa não encontrado na sessão.");
+        }
+
+    </script>
+</body>
+
+</html>

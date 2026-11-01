@@ -4,64 +4,73 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Perfil Empresa | Sonora</title>
+    <title>Perfil Suporte | Sonora</title>
     <script src="https://kit.fontawesome.com/d840916580.js" crossorigin="anonymous"></script>
 
     <link rel="stylesheet" href="../css/menu.css">
-    <link rel="stylesheet" href="../css/funcionario/perfil.css">
+    <link rel="stylesheet" href="../css/suporte/perfil.css">
 </head>
 
 <body>
 
     <aside class="box-menu">
-        <p class="logo">sonora.</p>
+        <input type="checkbox" id="menu-toggle" class="menu-toggle">
+
+        <div class="menu-top">
+            <label for="menu-toggle" class="btn-hamburguer">
+                <i class="fa-solid fa-bars"></i>
+            </label>
+            <p class="logo">sonora.</p>
+        </div>
+
         <ul class="lista">
             <li><a href="logs.html"><i class="fa-solid fa-house"></i>Início</a></li>
-           
+            <li><a href="logsEx.html"><i class="fa-solid fa-clipboard-list"></i>Logs</a></li>
+            <li class="ativo"><a href="perfil.html"><i class="fa-solid fa-user"></i>Perfil</a></li>
+
+            <li class="box-sair">
+                <a class="botao-sair" href="../index.html"><i class="fa-solid fa-right-from-bracket"></i> Sair</a>
+            </li>
         </ul>
-        <div class="box-sair">
-            <a class="botao-sair" href="../index.html"><i class="fa-solid fa-right-from-bracket"></i> Sair</a>
-        </div>
     </aside>
 
-    <main class="main-content">
+    <main class="conteudo-principal">
 
-        <header class="page-header">
-            <h1>PERFIL DO FUNCIONÁRIO</h1>
+        <header class="cabecalho-pagina">
+            <div class="cabecalho-info">
+                <span class="sobretitulo">SONORA / MEU PERFIL</span>
+
+                <h1>Perfil</h1>
+
+                <p>
+                    Consulte e atualize seus dados de acesso.
+                </p>
+            </div>
         </header>
 
-        <div class="profile-container">
-            <section class="profile-card">
+        <div class="perfil-container">
+            <section class="cartao-perfil">
 
-                <form class="profile-form">
+                <form class="formulario-perfil">
 
-                    <div class="avatar-card">
-                        <div class="avatar-box">
-                            <i class="fa-solid fa-user"></i>
-                        </div>
-                        <label for="upload-logo" class="btn-change-photo">
-                            <i class="fa-solid fa-camera"></i> Alterar Logo
-                        </label>
-                        <input type="file" id="upload-logo" accept="image/*" style="display: none;">
+                    <div class="grupo-campo">
+                        <label for="input-nome"><i class="fa-solid fa-address-card"></i> Nome</label>
+                        <input type="text" id="input-nome" value="Paulo Henrique da Silva" placeholder="Seu nome">
                     </div>
 
-                    <div class="field-group">
-                        <label><i class="fa-solid fa-address-card"></i> Nome: <input type="text" value="Paulo Henrique da Silva"></label>
-                    </div>
-
-                    <div class="field-group">
-                        <label><i class="fa-solid fa-lock"></i> Senha</label>
-                        <div class="password-box">
-                            <input type="password" id="input-senha" value="12345678" placeholder="Sua senha" required>
+                    <div class="grupo-campo">
+                        <label for="input-senha"><i class="fa-solid fa-lock"></i> Senha</label>
+                        <div class="caixa-senha">
+                            <input type="password" id="input-senha" placeholder="Sua senha" required>
                             <i class="fa-solid fa-eye" id="toggle-senha" title="Mostrar/Ocultar Senha"></i>
                         </div>
                     </div>
 
-                    <div class="form-actions">
-                        <button type="submit" class="btn-primary">
+                    <div class="acoes-formulario">
+                        <button type="submit" class="botao-principal">
                             <i class="fa-solid fa-floppy-disk"></i> Salvar
                         </button>
-                        <button type="button" class="btn-danger">
+                        <button type="button" class="botao-perigo">
                             <i class="fa-solid fa-trash-can"></i> Excluir
                         </button>
                     </div>

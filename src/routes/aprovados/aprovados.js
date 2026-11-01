@@ -18,4 +18,12 @@ router.get("/listarTodos/:idEmpresa", function (req, res) {
     aprovadosController.listarTodosParaAdministrador(req, res);
 });
 
+router.post("/sugerir", function (req, res) { 
+    aprovadosController.sugerirArtista(req, res); 
+});
+
+router.put("/atualizarStatus", function (req, res) { 
+    aprovadosController.atualizarStatus(req, res); 
+});
+
 module.exports = router;

@@ -82,19 +82,21 @@ function autenticar(email, senha) {
     return database.executar(instrucaoSql);
 }
 
+// ===== ANÁLISE DO ARTISTA =====
 function buscarCabecalhoArtista(idArtista, idEmpresa) {
     var instrucao = `
-        SELECT DISTINCT 
-            a.nome AS nome_artista, 
-            m.genero AS genero_principal, 
+        SELECT
+            a.nome AS nome_artista,
+            a.genero AS genero_principal,
             aa.status_aprovacao
         FROM artista a
-        JOIN musica m ON a.id_artista = m.id_artista
-        JOIN artista_aprovado aa ON a.id_artista = aa.id_artista
-        WHERE a.id_artista = ${idArtista} AND aa.id_empresa = ${idEmpresa}
+        LEFT JOIN artista_aprovado aa
+            ON aa.id_artista = a.id_artista
+           AND aa.id_empresa = ?
+        WHERE a.id_artista = ?
         LIMIT 1;
     `;
-    return database.executar(instrucao);
+    return database.executar(instrucao, [idEmpresa, idArtista]);
 }
 
 function buscarKpisEPerfilSonoro(idArtista) {
@@ -108,9 +110,9 @@ function buscarKpisEPerfilSonoro(idArtista) {
             AVG(ms.speechiness) AS speechiness
         FROM metrica_streaming ms
         JOIN musica mu ON ms.id_musica = mu.id_musica
-        WHERE mu.id_artista = ${idArtista};
+        WHERE mu.id_artista = ?;
     `;
-    return database.executar(instrucao);
+    return database.executar(instrucao, [idArtista]);
 }
 
 function buscarEngajamentoPlataforma(idArtista) {
@@ -124,25 +126,27 @@ function buscarEngajamentoPlataforma(idArtista) {
         FROM metrica_streaming ms
         JOIN plataforma p ON ms.id_plataforma = p.id_plataforma
         JOIN musica mu ON ms.id_musica = mu.id_musica
-        WHERE mu.id_artista = ${idArtista}
+        WHERE mu.id_artista = ?
         GROUP BY p.id_plataforma, p.nome;
     `;
-    return database.executar(instrucao);
+    return database.executar(instrucao, [idArtista]);
 }
 
+// Uma linha por música (as 10 mais ouvidas), em vez de uma por música e plataforma
 function buscarVariacaoRitmo(idArtista) {
     var instrucao = `
         SELECT 
             mu.titulo,
-            ms.tempo
+            ROUND(AVG(ms.tempo)) AS tempo
         FROM metrica_streaming ms
         JOIN musica mu ON ms.id_musica = mu.id_musica
-        WHERE mu.id_artista = ${idArtista};
+        WHERE mu.id_artista = ?
+        GROUP BY mu.id_musica, mu.titulo
+        ORDER BY SUM(ms.streams) DESC
+        LIMIT 10;
     `;
-    return database.executar(instrucao);
+    return database.executar(instrucao, [idArtista]);
 }
-
-
 
 module.exports = {
     cadastrar,

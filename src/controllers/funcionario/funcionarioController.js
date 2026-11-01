@@ -1,4 +1,5 @@
 var funcionarioModel = require("../../models/funcionario/funcionarioModel");
+var artistaModel = require("../../models/artista/artistaModel");
 
 function cadastrar(req, res) {
     var { nome, email, senha, idEmpresa, idCargo } = req.body;
@@ -11,8 +12,6 @@ function cadastrar(req, res) {
             .catch(erro => res.status(500).json(erro.sqlMessage));
     }
 }
-
-
 
 function listarPorEmpresa(req, res) {
     var idEmpresa = req.params.idEmpresa;
@@ -40,7 +39,6 @@ function atualizar(req, res) {
         funcionarioModel.atualizar(idUsuario, nome, email, senha, idCargo)
             .then(resultado => res.status(200).json(resultado))
             .catch(erro => res.status(500).json(erro.sqlMessage));
-
     }
 }
 
@@ -92,90 +90,99 @@ function autenticar(req, res) {
     }
 }
 
-function carregarAnaliseArtista(req, res) {
-    var idArtista = req.params.idArtista;
-    var idEmpresa = req.params.idEmpresa;
+// Converte para número mantendo null quando não há dado
+function paraNumero(valor) {
+    return valor === null || valor === undefined ? null : Number(valor);
+}
 
-    if (!idArtista || !idEmpresa) {
-        return res.status(400).send("ID do artista ou ID da empresa não informados!");
+// Converte um valor de 0 a 1 em porcentagem de 0 a 100
+function paraPorcento(valor) {
+    return valor === null || valor === undefined
+        ? 0
+        : Math.round(Number(valor) * 100);
+}
+
+function carregarAnaliseArtista(req, res) {
+    var idArtista = Number(req.params.idArtista);
+    var idEmpresa = Number(req.params.idEmpresa);
+
+    if (!Number.isInteger(idArtista) || idArtista <= 0 ||
+        !Number.isInteger(idEmpresa) || idEmpresa <= 0) {
+        return res.status(400).send("ID do artista ou ID da empresa inválido!");
     }
 
-   
     funcionarioModel.buscarCabecalhoArtista(idArtista, idEmpresa)
         .then(function (resultadoCabecalho) {
             if (resultadoCabecalho.length === 0) {
-                return res.status(404).send("Artista não encontrado ou não aprovado para esta empresa.");
+                return res.status(404).send("Artista não encontrado para esta empresa.");
             }
 
             var cabecalho = resultadoCabecalho[0];
 
-     
-            funcionarioModel.buscarKpisEPerfilSonoro(idArtista)
-                .then(function (resultadoKpis) {
-                    var kpisDados = resultadoKpis[0];
+            return Promise.all([
+                funcionarioModel.buscarKpisEPerfilSonoro(idArtista),
+                funcionarioModel.buscarEngajamentoPlataforma(idArtista),
+                funcionarioModel.buscarVariacaoRitmo(idArtista),
+                artistaModel.buscarKpisArtista(idArtista)
+            ]).then(function (resultados) {
+                var perfil = resultados[0][0] || {};
+                var plataformas = resultados[1] || [];
+                var ritmo = resultados[2] || [];
+                var kpisArtista = resultados[3][0] || {};
 
-                
-                    funcionarioModel.buscarEngajamentoPlataforma(idArtista)
-                        .then(function (resultadoEngajamento) {
+                var popularidade = Number(kpisArtista.popularidade) || 0;
+                var bpm = paraNumero(perfil.media_bpm);
 
-                           
-                            funcionarioModel.buscarVariacaoRitmo(idArtista)
-                                .then(function (resultadoRitmo) {
-
-                                    
-                                    var dadosAnalise = {
-                                        cabecalho: cabecalho,
-                                        kpis: {
-                                            energiaMedia: kpisDados.media_energy,
-                                            dancabilidadeMedia: kpisDados.media_danceability,
-                                            bpmMedio: kpisDados.media_bpm
-                                        },
-                                        graficoRadar: {
-                                            energy: kpisDados.energy,
-                                            danceability: kpisDados.danceability,
-                                            acousticness: kpisDados.acousticness,
-                                            valence: kpisDados.valence,
-                                            speechiness: kpisDados.speechiness
-                                        },
-                                        graficoBarras: resultadoEngajamento,
-                                        graficoLinha: resultadoRitmo
-                                    };
-
-                                    res.json(dadosAnalise);
-
-                                })
-                                .catch(function (erro) {
-                                    console.error("Erro ao buscar variação de ritmo:", erro);
-                                    res.status(500).json(erro);
-                                });
-
+                res.json({
+                    cabecalho: {
+                        nome: cabecalho.nome_artista,
+                        genero: cabecalho.genero_principal,
+                        status_aprovacao: cabecalho.status_aprovacao
+                    },
+                    kpis: {
+                        popularidade: popularidade,
+                        energy: paraNumero(perfil.media_energy),
+                        danceability: paraNumero(perfil.media_danceability),
+                        bpm: bpm === null ? null : Math.round(bpm)
+                    },
+                    graficoRadar: {
+                        labels: ["Popularidade", "Energia", "Dançabilidade", "Acústica", "Valência", "Fala"],
+                        valores: [
+                            popularidade,
+                            paraPorcento(perfil.media_energy),
+                            paraPorcento(perfil.media_danceability),
+                            paraPorcento(perfil.acousticness),
+                            paraPorcento(perfil.valence),
+                            paraPorcento(perfil.speechiness)
+                        ]
+                    },
+                    graficoBarras: {
+                        labels: plataformas.map(function (p) { return p.plataforma; }),
+                        valores: plataformas.map(function (p) {
+                            return Number(p.streams) || Number(p.views) || 0;
                         })
-                        .catch(function (erro) {
-                            console.error("Erro ao buscar engajamento:", erro);
-                            res.status(500).json(erro);
-                        });
-
-                })
-                .catch(function (erro) {
-                    console.error("Erro ao buscar KPIs:", erro);
-                    res.status(500).json(erro);
+                    },
+                    graficoLinha: {
+                        label: "BPM médio",
+                        labels: ritmo.map(function (r) { return r.titulo; }),
+                        valores: ritmo.map(function (r) { return Number(r.tempo) || 0; })
+                    }
                 });
-
+            });
         })
         .catch(function (erro) {
-            console.error("Erro ao buscar cabeçalho:", erro);
-            res.status(500).json(erro);
+            console.error("Erro ao carregar análise do artista:", erro);
+            res.status(500).json({ mensagem: "Erro ao carregar a análise do artista." });
         });
+        
 }
-
-
 
 module.exports = {
     cadastrar,
     listarPorEmpresa,
     buscarPorId,
     atualizar,
-    deletar, 
+    deletar,
     autenticar,
     carregarAnaliseArtista
 };

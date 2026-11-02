@@ -20,6 +20,20 @@ function listarPorEmpresa(req, res) {
         .catch(erro => res.status(500).json(erro.sqlMessage));
 }
 
+function listarArtistaAprovado(req, res) {
+    var idEmpresa = req.params.idEmpresa;
+    funcionarioModel.listarArtistaAprovado(idEmpresa)
+        .then(resultado => res.status(200).json(resultado))
+        .catch(erro => res.status(500).json(erro.sqlMessage));
+}
+
+function buscarMediaDancabilidade(req, res) {
+    var idEmpresa = req.params.idEmpresa;
+    funcionarioModel.buscarMediaDancabilidade(idEmpresa)
+        .then(resultado => res.status(200).json(resultado))
+        .catch(erro => res.status(500).json(erro.sqlMessage));
+}
+
 function buscarPorId(req, res) {
     var idUsuario = req.params.idUsuario;
     funcionarioModel.buscarPorId(idUsuario)
@@ -184,5 +198,7 @@ module.exports = {
     atualizar,
     deletar,
     autenticar,
-    carregarAnaliseArtista
+    carregarAnaliseArtista,
+    listarArtistaAprovado,
+    buscarMediaDancabilidade
 };

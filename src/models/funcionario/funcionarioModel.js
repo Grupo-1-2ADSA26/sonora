@@ -148,6 +148,34 @@ function buscarVariacaoRitmo(idArtista) {
     return database.executar(instrucao, [idArtista]);
 }
 
+function listarArtistaAprovado(idEmpresa) {
+    var instrucao = `
+        SELECT *
+        FROM artista_aprovado
+        WHERE id_empresa = ${idEmpresa}
+        AND data_atualizacao >= DATE_FORMAT(CURDATE(), '%Y-%m-01')
+        AND data_atualizacao < DATE_FORMAT(CURDATE() + INTERVAL 1 MONTH, '%Y-%m-01');
+    `;
+    return database.executar(instrucao);
+}
+
+function buscarMediaDancabilidade(idEmpresa) {
+    var instrucao = `
+        SELECT
+            ROUND(AVG(ms.danceability), 3) AS media_dancabilidade
+        FROM artista_aprovado aa
+        INNER JOIN musica m
+            ON m.id_artista = aa.id_artista
+        INNER JOIN metrica_streaming ms
+            ON ms.id_musica = m.id_musica
+        WHERE aa.id_empresa = ${idEmpresa}
+          AND aa.status_aprovacao = 'APROVADO'
+          AND ms.danceability IS NOT NULL;
+    `;
+    return database.executar(instrucao);
+}
+
+
 module.exports = {
     cadastrar,
     listarPorEmpresa,
@@ -159,5 +187,7 @@ module.exports = {
     buscarCabecalhoArtista,
     buscarKpisEPerfilSonoro,
     buscarEngajamentoPlataforma,
-    buscarVariacaoRitmo
+    buscarVariacaoRitmo,
+    listarArtistaAprovado,
+    buscarMediaDancabilidade
 };

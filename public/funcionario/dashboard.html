@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Dashboard | Sonora</title>
+    <title>Painel | Sonora</title>
 
     <script src="https://kit.fontawesome.com/d840916580.js" crossorigin="anonymous"></script>
 
@@ -16,94 +16,142 @@
 </head>
 
 <body>
+
+    <!-- MENU LATERAL -->
     <aside class="box-menu">
         <input type="checkbox" id="menu-toggle" class="menu-toggle">
-        <div class="menu-top">
-            <label for="menu-toggle" class="btn-hamburguer"><i class="fa-solid fa-bars"></i></label>
-            <p class="logo">sonora.</p>
 
+        <div class="menu-top">
+            <label for="menu-toggle" class="btn-hamburguer">
+                <i class="fa-solid fa-bars"></i>
+            </label>
+
+            <p class="logo">sonora.</p>
         </div>
+
         <ul class="lista">
-            <li class="ativo"><a href="dashboard.html"><i class="fa-solid fa-house"></i><span>Início</span></a></li>
-            <li><a href="pesquisa.html"><i class="fa-solid fa-magnifying-glass"></i><span>Artistas</span></a></li>
-            <li><a href="recomendacoes.html"><i class="fa-solid fa-music"></i><span>Recomendações</span></a></li>
-            <li><a href="aprovados.html"><i class="fa-solid fa-bell"></i><span>Aprovados</span></a></li>
-            <li><a href="perfil.html"><i class="fa-solid fa-user"></i><span>Perfil</span></a></li>
+            <li class="ativo">
+                <a href="dashboard.html">
+                    <i class="fa-solid fa-house"></i>
+                    <span>Início</span>
+                </a>
+            </li>
+
+            <li>
+                <a href="pesquisa.html">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                    <span>Artistas</span>
+                </a>
+            </li>
+
+            <li>
+                <a href="recomendacoes.html">
+                    <i class="fa-solid fa-music"></i>
+                    <span>Recomendações</span>
+                </a>
+            </li>
+
+            <li>
+                <a href="aprovados.html">
+                    <i class="fa-solid fa-bell"></i>
+                    <span>Aprovados</span>
+                </a>
+            </li>
+
+            <li>
+                <a href="perfil.html">
+                    <i class="fa-solid fa-user"></i>
+                    <span>Perfil</span>
+                </a>
+            </li>
+
             <li class="box-sair">
-                <a class="botao-sair" href="../index.html"><i class="fa-solid fa-right-from-bracket"></i> Sair</a>
+                <a class="botao-sair" href="../index.html">
+                    <i class="fa-solid fa-right-from-bracket"></i>
+                    Sair
+                </a>
             </li>
         </ul>
     </aside>
 
+    <!-- CONTEÚDO PRINCIPAL -->
     <main class="main-content">
 
+        <!-- CABEÇALHO -->
         <header class="page-header">
-
             <div class="header-info">
                 <span class="eyebrow">SONORA / VISÃO GERAL</span>
 
-                <h1>Dashboard</h1>
+                <h1>Painel</h1>
 
                 <p>
-                    Acompanhe os dados e o desempenho dos shows.
+                    Acompanhe os indicadores e o desempenho dos artistas aprovados.
                 </p>
             </div>
-
-
-
         </header>
 
+        <!-- INDICADORES -->
         <section class="summary">
 
             <article class="summary-card">
-
                 <div class="summary-icon">
-                    <i class="fa-solid fa-calendar-check"></i>
+                    <i class="fa-solid fa-person-running"></i>
                 </div>
 
                 <div class="summary-info">
-                    <span>Shows realizados</span>
-                    <strong>24</strong>
-                    <small>
-                        <i class="fa-solid fa-chart-line"></i>
-                        Visão geral dos eventos
-                    </small>
+                    <span>Média de dançabilidade</span>
+                    <strong id="averageDanceability">—</strong>
+                    <small>Média dos artistas aprovados</small>
                 </div>
-
             </article>
 
             <article class="summary-card">
-
                 <div class="summary-icon">
-                    <i class="fa-solid fa-star"></i>
+                    <i class="fa-solid fa-music"></i>
                 </div>
 
                 <div class="summary-info">
-                    <span>Ambiente preferido</span>
-                    <strong>Palco</strong>
-                    <small>87% de efetividade</small>
+                    <span>Gênero predominante</span>
+                    <strong id="topGenre">Funk</strong>
+                    <small>Gênero mais frequente entre os artistas aprovados</small>
+                </div>
+            </article>
+
+            <article class="summary-card">
+                <div class="summary-icon">
+                    <i class="fa-solid fa-users"></i>
                 </div>
 
+                <div class="summary-info">
+                    <span>Artistas aprovados</span>
+                    <strong id="approvedArtists">—</strong>
+                    <small>Total de artistas aprovados</small>
+                </div>
             </article>
 
         </section>
 
+        <!-- AVISO QUANDO NÃO HOUVER RESULTADOS -->
         <div id="emptyState" class="empty-state" hidden>
-            <i class="fa-solid fa-magnifying-glass"></i>
-            <h2>Nenhum resultado encontrado</h2>
-            <p>Tente pesquisar por outro termo.</p>
+            <i class="fa-solid fa-chart-simple"></i>
+            <h2>Nenhum dado disponível</h2>
+            <p>Não há informações suficientes para exibir os indicadores e gráficos.</p>
         </div>
 
+        <!-- GRÁFICOS -->
         <section class="dashboard-grid">
 
-            <article class="dashboard-card effectiveness">
+            <!-- GRÁFICO DE ARTISTAS MAIS POPULARES -->
+            <article class="dashboard-card">
 
                 <div class="card-header">
                     <div>
                         <span class="card-label">DESEMPENHO</span>
-                        <h2>Efetividade por ambiente</h2>
+
+                        <h2>Artistas mais populares</h2>
+
                         <p>
-                            Comparativo de efetividade em cada ambiente.
+                            Ranking dos artistas aprovados por popularidade.
                         </p>
                     </div>
 
@@ -113,24 +161,27 @@
                 </div>
 
                 <div class="chart-container">
-                    <canvas id="environmentChart"></canvas>
+                    <canvas id="popularArtistsChart"></canvas>
                 </div>
 
                 <div class="card-footer">
                     <span class="footer-dot"></span>
-                    <span>Efetividade por ambiente (%)</span>
+                    <span>Índice de popularidade dos artistas aprovados (%)</span>
                 </div>
 
             </article>
 
-            <article class="dashboard-card shows">
+            <!-- GRÁFICO DE APROVAÇÕES MENSAIS -->
+            <article class="dashboard-card">
 
                 <div class="card-header">
                     <div>
                         <span class="card-label">ACOMPANHAMENTO</span>
-                        <h2>Shows realizados</h2>
+
+                        <h2>Aprovações mensais</h2>
+
                         <p>
-                            Quantidade de shows por mês.
+                            Evolução mensal da quantidade de artistas aprovados.
                         </p>
                     </div>
 
@@ -140,12 +191,12 @@
                 </div>
 
                 <div class="chart-container">
-                    <canvas id="showsChart"></canvas>
+                    <canvas id="monthlyApprovalsChart"></canvas>
                 </div>
 
                 <div class="card-footer">
                     <span class="footer-dot"></span>
-                    <span>Quantidade de eventos por mês</span>
+                    <span>Total de artistas aprovados por mês</span>
                 </div>
 
             </article>
@@ -154,11 +205,54 @@
 
     </main>
 
+    <!-- CONFIGURAÇÃO DOS GRÁFICOS -->
     <script>
-        // Configuração visual dos gráficos
-        Chart.defaults.font.family =
-            "system-ui, -apple-system, sans-serif";
 
+        // Busca os artistas aprovados da empresa que iniciou a sessão.
+        const idEmpresa = sessionStorage.getItem("ID_EMPRESA");
+
+        fetch(`./artistas-aprovados/${idEmpresa}`)
+            .then(resposta => {
+                if (!resposta.ok) {
+                    throw new Error("Erro ao buscar artistas aprovados");
+                }
+
+                return resposta.json();
+            })
+            .then(dados => {
+                console.log("Artistas aprovados:", dados);
+
+                document.getElementById("approvedArtists").textContent = dados.length;
+            })
+            .catch(erro => {
+                console.error("Erro ao carregar artistas:", erro);
+            });
+
+
+        
+fetch(`http://localhost:3333/funcionario/media-dancabilidade/${idEmpresa}`)
+    .then(resposta => {
+        if (!resposta.ok) {
+            throw new Error("Erro ao buscar média de dançabilidade");
+        }
+        return resposta.json();
+    })
+    .then(dados => {
+        console.log("Média de dançabilidade:", dados);
+
+        const media = dados[0]?.media_dancabilidade;
+
+        document.getElementById("averageDanceability").textContent =
+            media !== null && media !== undefined
+                ? (Number(media) * 100).toFixed(1) + "%"
+                : "N/A";
+    })
+    .catch(erro => {
+        console.error("Erro ao carregar média de dançabilidade:", erro);
+    });
+
+        // Configurações visuais gerais dos gráficos
+        Chart.defaults.font.family = "system-ui, -apple-system, sans-serif";
         Chart.defaults.color = "#858585";
 
         Chart.defaults.plugins.tooltip.backgroundColor = "#242424";
@@ -166,38 +260,43 @@
         Chart.defaults.plugins.tooltip.cornerRadius = 10;
         Chart.defaults.plugins.tooltip.displayColors = false;
 
-        // Gráfico de efetividade por ambiente
-        const environmentChart = new Chart(
-            document.getElementById("environmentChart"),
+
+        // GRÁFICO: ARTISTAS APROVADOS MAIS POPULARES
+        const popularArtistsChart = new Chart(
+            document.getElementById("popularArtistsChart"),
             {
                 type: "bar",
 
                 data: {
+                    // Dados de exemplo: substituir pelos dados reais do sistema.
                     labels: [
-                        "Palco",
-                        "Ar Livre",
-                        "Bar",
-                        "Balada"
+                        "Anitta",
+                        "Jão",
+                        "BTS",
+                        "Michael Jackson",
+                        "Slipknot"
                     ],
 
                     datasets: [{
-                        label: "Efetividade",
-                        data: [87, 78, 71, 63],
+                        label: "Índice de popularidade",
+                        data: [92, 85, 78, 70, 64],
 
                         backgroundColor: [
                             "#292929",
-                            "#555555",
-                            "#858585",
+                            "#444444",
+                            "#666666",
+                            "#888888",
                             "#b8b8b8"
                         ],
 
                         borderRadius: 7,
                         borderSkipped: false,
-                        barThickness: 27
+                        barThickness: 25
                     }]
                 },
 
                 options: {
+                    indexAxis: "y",
                     responsive: true,
                     maintainAspectRatio: false,
 
@@ -212,31 +311,13 @@
 
                         tooltip: {
                             callbacks: {
-                                label: context =>
-                                    ` ${context.parsed.y}%`
+                                label: contexto => ` ${contexto.parsed.x}%`
                             }
                         }
                     },
 
                     scales: {
                         x: {
-                            grid: {
-                                display: false
-                            },
-
-                            border: {
-                                display: false
-                            },
-
-                            ticks: {
-                                color: "#777",
-                                font: {
-                                    size: 11
-                                }
-                            }
-                        },
-
-                        y: {
                             beginAtZero: true,
                             max: 100,
 
@@ -252,9 +333,17 @@
                             ticks: {
                                 stepSize: 20,
                                 padding: 10,
+                                callback: valor => `${valor}%`
+                            }
+                        },
 
-                                callback: value =>
-                                    value + "%"
+                        y: {
+                            border: {
+                                display: false
+                            },
+
+                            grid: {
+                                display: false
                             }
                         }
                     }
@@ -262,13 +351,15 @@
             }
         );
 
-        // Gráfico de shows por mês
-        const showsChart = new Chart(
-            document.getElementById("showsChart"),
+
+        // GRÁFICO: QUANTIDADE MENSAL DE ARTISTAS APROVADOS
+        const monthlyApprovalsChart = new Chart(
+            document.getElementById("monthlyApprovalsChart"),
             {
                 type: "line",
 
                 data: {
+                    // Dados de exemplo: substituir pelos dados reais do sistema.
                     labels: [
                         "Jan",
                         "Fev",
@@ -279,8 +370,8 @@
                     ],
 
                     datasets: [{
-                        label: "Shows",
-                        data: [2, 4, 3, 5, 4, 6],
+                        label: "Artistas aprovados",
+                        data: [3, 5, 4, 7, 6, 9],
 
                         borderColor: "#292929",
                         backgroundColor: "rgba(41, 41, 41, 0.08)",
@@ -313,8 +404,8 @@
 
                         tooltip: {
                             callbacks: {
-                                label: context =>
-                                    ` ${context.parsed.y} shows`
+                                label: contexto =>
+                                    ` ${contexto.parsed.y} artistas`
                             }
                         }
                     },
@@ -344,7 +435,8 @@
 
                             ticks: {
                                 stepSize: 1,
-                                padding: 10
+                                padding: 10,
+                                precision: 0
                             }
                         }
                     }
@@ -352,67 +444,12 @@
             }
         );
 
-        // Pesquisa dinâmica
-        const searchInput =
-            document.getElementById("searchInput");
 
-        const clearSearch =
-            document.getElementById("clearSearch");
+        /*
+         * Os indicadores e gráficos ainda possuem valores de exemplo.
+         * Os dados reais serão utilizados conforme as consultas da API forem implementadas.
+         */
 
-        const emptyState =
-            document.getElementById("emptyState");
-
-        const dashboardItems =
-            document.querySelectorAll(
-                ".summary-card, .dashboard-card"
-            );
-
-        function normalizarTexto(texto) {
-            return texto
-                .normalize("NFD")
-                .replace(/[\u0300-\u036f]/g, "")
-                .toLowerCase()
-                .trim();
-        }
-
-        function filtrarDashboard() {
-            const termo = normalizarTexto(searchInput.value);
-
-            let resultados = 0;
-
-            dashboardItems.forEach(item => {
-                const conteudo = normalizarTexto(
-                    item.textContent
-                );
-
-                const corresponde =
-                    conteudo.includes(termo);
-
-                item.hidden = !corresponde;
-
-                if (corresponde) {
-                    resultados++;
-                }
-            });
-
-            clearSearch.hidden = termo.length === 0;
-
-            emptyState.hidden =
-                termo.length === 0 || resultados > 0;
-        }
-
-        searchInput.addEventListener(
-            "input",
-            filtrarDashboard
-        );
-
-        clearSearch.addEventListener("click", () => {
-            searchInput.value = "";
-
-            filtrarDashboard();
-
-            searchInput.focus();
-        });
     </script>
 
 </body>

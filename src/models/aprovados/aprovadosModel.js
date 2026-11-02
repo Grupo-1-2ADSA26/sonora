@@ -70,6 +70,7 @@ function listarTodosParaAdministrador(idEmpresa) {
             a.id_artista,
             a.nome AS nome_artista,
             a.genero AS genero,
+            aa.id_evento,
             aa.status_aprovacao,
             aa.status_visualizacao,
             aa.data_atualizacao,
@@ -97,11 +98,22 @@ function listarTodosParaAdministrador(idEmpresa) {
     return database.executar(instrucaoSql);
 }
 
+function atualizarCard(idEmpresa, idArtista, idEvento, status) {
+    var instrucaoSql = `
+        UPDATE artista_aprovado
+        SET id_evento = ?, status_aprovacao = ?
+        WHERE id_empresa = ? AND id_artista = ?;
+    `;
+
+    return database.executar(instrucaoSql, [idEvento, status, idEmpresa, idArtista]);
+}
+
 module.exports = {
     listarTodosParaFuncionario,
     enviarParaAprovados,
     verificarArtistaEnviado,
     listarTodosParaAdministrador,
     sugerirArtista,
-    atualizarStatus
+    atualizarStatus,
+    atualizarCard
 };

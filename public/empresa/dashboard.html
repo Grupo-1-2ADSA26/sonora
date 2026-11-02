@@ -58,47 +58,73 @@
             <section class="secao-kpis">
 
                 <div class="card-kpi">
-                    <span class="titulo-kpi">Artista mais ouvido</span>
-                    <h2>Anitta</h2>
-                    <p>500M Streams</p>
+                    <span class="titulo-kpi">Artista com maior engajamento</span>
+                    <h2>Ludmilla</h2>
+                    <p>8,4% de Engajamento</p>
+                    <span class="descricao-kpi">Engajamento = interações (curtidas, salvamentos e compartilhamentos) ÷ ouvintes × 100.</span>
                 </div>
 
                 <div class="card-kpi">
-                    <span class="titulo-kpi">Música mais ouvida</span>
-                    <h2>Okê</h2>
-                    <p>260M Curtidas</p>
-                </div>
-
-                <div class="card-kpi">
-                    <span class="titulo-kpi">Gênero mais ouvido</span>
+                    <span class="titulo-kpi">Gênero em destaque</span>
                     <h2>Funk</h2>
-                    <p>500M Streams</p>
+                    <p>1,21 bi de Streams · 28,0% do total</p>
+                    <span class="descricao-kpi">Gênero com mais streams no período. % do total = streams do gênero ÷ streams de todos os gêneros.</span>
+                </div>
+
+                <div class="card-kpi">
+                    <span class="titulo-kpi">Artista com maior número de streams</span>
+                    <h2>Anitta</h2>
+                    <p>487,3 mi de Streams</p>
+                    <span class="descricao-kpi">Artista com mais reproduções no período, somando todas as suas músicas.</span>
                 </div>
 
             </section>
 
             <!-- Gráficos -->
             <section class="secao-graficos">
-                <div class="card grafico-menor">
+                <div class="card">
                     <div class="card-header">
-                        <h3>Artistas com Maior Engajamento</h3>
+                        <div>
+                            <h3>Artistas Mais Ouvidos</h3>
+                            <p class="card-subtitulo">Últimos 30 dias · streams em milhões</p>
+                            <p class="card-descricao">Artistas com mais streams (reproduções) no período.</p>
+                        </div>
                     </div>
                     <div class="chart-container">
-                        <canvas id="chartGeneros"></canvas>
+                        <canvas id="chartArtistas"></canvas>
                     </div>
                 </div>
-                <div class="card grafico-maior">
+                <div class="card">
                     <div class="card-header">
-                        <h3>Gêneros com Mais Visualizações</h3>
+                        <div>
+                            <h3>Músicas Mais Ouvidas</h3>
+                            <p class="card-subtitulo">Últimos 30 dias · reproduções em milhões</p>
+                            <p class="card-descricao">Músicas com mais reproduções no período.</p>
+                        </div>
                     </div>
                     <div class="chart-container">
-                        <canvas id="chartGeneros2"></canvas>
+                        <canvas id="chartMusicas"></canvas>
                     </div>
                 </div>
-            </section>
+                <div class="card">
+                    <div class="card-header">
+                        <div>
+                            <h3>Top 5 Artistas com Maior Engajamento</h3>
+                            <p class="card-subtitulo">Últimos 30 dias · média da plataforma: 7%</p>
+                            <p class="card-descricao">Engajamento = interações ÷ ouvintes × 100.</p>
+                        </div>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="chartEngajamento"></canvas>
+                    </div>
+                    <ul class="legenda-grafico">
+                        <li><span class="legenda-media"></span>Média</li>
+                        <li><span class="legenda-cor legenda-acima"></span>Acima</li>
+                        <li><span class="legenda-cor legenda-abaixo"></span>Abaixo</li>
+                    </ul>
+                </div>
 
-            <!-- Eventos -->
-            <section class="secao-eventos">
+                <!-- Eventos -->
                 <div class="card">
                     <div class="card-header">
                         <h3>
@@ -241,43 +267,99 @@
             }
         }
 
-        const ctx = document.getElementById('chartGeneros').getContext('2d');
-        new Chart(ctx, {
-            type: 'bar',
-            data: {
-                labels: ['Sertanejo', 'Trap/Rap', 'Funk', 'Pop', 'Pagode'],
-                datasets: [{
-                    label: 'Volume de Streams (Em Milhões)',
-                    data: [120, 98, 85, 70, 54],
-                    backgroundColor: ['#333', '#555', '#777', '#999', '#bbb'],
-                    borderRadius: 8
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: { legend: { display: false } },
-                scales: { y: { beginAtZero: true } }
-            }
-        });
+        const corDestaque = '#242424';
+        const corNeutra = '#bdbdbd';
+        const corAcima = '#2e7d32';
+        const corAbaixo = '#b42318';
+        const mediaPlataforma = 7;
 
-        const ctx2 = document.getElementById('chartGeneros2').getContext('2d');
-        new Chart(ctx2, {
+        const opcoesBase = {
+            responsive: true,
+            maintainAspectRatio: false,
+            animation: false,
+            events: [],
+            plugins: {
+                legend: { display: false },
+                tooltip: { enabled: false }
+            }
+        };
+
+        const grade = { color: '#ececec' };
+        const semGrade = { display: false };
+        const textoEixo = { color: '#555', font: { size: 12 } };
+
+        function criarBarrasHorizontais(id, nomes, valores) {
+            new Chart(document.getElementById(id), {
+                type: 'bar',
+                data: {
+                    labels: nomes,
+                    datasets: [{
+                        data: valores,
+                        backgroundColor: valores.map((_, indice) => indice === 0 ? corDestaque : corNeutra),
+                        borderRadius: 4,
+                        maxBarThickness: 18
+                    }]
+                },
+                options: {
+                    ...opcoesBase,
+                    indexAxis: 'y',
+                    scales: {
+                        x: { beginAtZero: true, grid: grade, ticks: textoEixo },
+                        y: { grid: semGrade, ticks: textoEixo }
+                    }
+                }
+            });
+        }
+
+        criarBarrasHorizontais(
+            'chartArtistas',
+            ['Anitta', 'Matuê', 'Jorge & Mateus', 'Ludmilla', 'Luísa Sonza'],
+            [487.3, 402.7, 376.4, 333.1, 288.5]
+        );
+
+        criarBarrasHorizontais(
+            'chartMusicas',
+            ['Okê', 'Envolver', 'Medicina', 'Tá Rocheda', 'Sem Você'],
+            [68.4, 61.6, 54, 48.2, 41.5]
+        );
+
+        const engajamento = [8.4, 7.9, 7.1, 6.4, 5.8];
+
+        new Chart(document.getElementById('chartEngajamento'), {
             type: 'bar',
             data: {
-                labels: ['Sertanejo', 'Trap/Rap', 'Funk', 'Pop', 'Pagode'],
-                datasets: [{
-                    label: 'Volume de Streams (Em Milhões)',
-                    data: [120, 98, 85, 70, 54],
-                    backgroundColor: ['#333', '#555', '#777', '#999', '#bbb'],
-                    borderRadius: 8
-                }]
+                labels: ['Ludmilla', 'Anitta', 'Matuê', ['Luísa', 'Sonza'], ['Jorge &', 'Mateus']],
+                datasets: [
+                    {
+                        type: 'bar',
+                        data: engajamento,
+                        backgroundColor: engajamento.map(valor => valor >= mediaPlataforma ? corAcima : corAbaixo),
+                        borderRadius: 4,
+                        maxBarThickness: 56,
+                        order: 2
+                    },
+                    {
+                        type: 'line',
+                        data: engajamento.map(() => mediaPlataforma),
+                        borderColor: corDestaque,
+                        borderWidth: 2,
+                        borderDash: [6, 4],
+                        pointRadius: 0,
+                        order: 1
+                    }
+                ]
             },
             options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: { legend: { display: false } },
-                scales: { y: { beginAtZero: true } }
+                ...opcoesBase,
+                scales: {
+                    x: { grid: semGrade, ticks: { ...textoEixo, maxRotation: 0 } },
+                    y: {
+                        beginAtZero: true,
+                        max: 10,
+                        grid: grade,
+                        ticks: { ...textoEixo, stepSize: 2, autoSkip: false, callback: valor => valor + '%' }
+                    }
+                }
             }
         });
     </script>

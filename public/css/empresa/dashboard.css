@@ -131,7 +131,7 @@ body {
 
 .secao-graficos {
     display: grid;
-    grid-template-columns: minmax(0, 1fr) minmax(0, 1.3fr);
+    grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 20px;
 }
 
@@ -166,6 +166,64 @@ body {
     color: #555;
 }
 
+.card-subtitulo {
+    margin-top: 4px;
+    color: #858585;
+    font-size: 12px;
+    line-height: 1.5;
+}
+
+.card-descricao {
+    margin-top: 2px;
+    color: #858585;
+    font-size: 11px;
+    line-height: 1.5;
+}
+
+.descricao-kpi {
+    display: block;
+    margin-top: 6px;
+    color: #858585;
+    font-size: 11px;
+    line-height: 1.45;
+}
+
+.legenda-grafico {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 8px 18px;
+    margin-top: 14px;
+    list-style: none;
+    color: #555;
+    font-size: 12px;
+}
+
+.legenda-grafico li {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+}
+
+.legenda-media {
+    width: 18px;
+    border-top: 2px dashed #242424;
+}
+
+.legenda-cor {
+    width: 10px;
+    height: 10px;
+    border-radius: 3px;
+}
+
+.legenda-acima {
+    background: #2e7d32;
+}
+
+.legenda-abaixo {
+    background: #b42318;
+}
+
 .chart-container {
     position: relative;
     width: 100%;
@@ -175,11 +233,6 @@ body {
 /* ==========================
    EVENTOS
 ========================== */
-
-.secao-eventos {
-    width: 100%;
-    min-width: 0;
-}
 
 .btn-link {
     flex-shrink: 0;
@@ -262,6 +315,87 @@ body {
 .status-finalizado {
     background-color: #e8e8e8;
     color: #555;
+}
+
+@media (min-width: 1200px) {
+    .main-content {
+        display: flex;
+        flex-direction: column;
+        height: 100vh;
+        min-height: 740px;
+        padding-top: 20px;
+        padding-bottom: 20px;
+    }
+
+    .cabecalho-pagina {
+        margin-bottom: 16px;
+    }
+
+    .dashboard-grid {
+        flex: 1;
+        min-height: 0;
+        gap: 16px;
+    }
+
+    .secao-kpis {
+        gap: 16px;
+    }
+
+    .card-kpi {
+        min-height: 0;
+        padding: 12px 22px;
+    }
+
+    .card-kpi h2 {
+        margin-top: 4px;
+        font-size: 24px;
+    }
+
+    .card-kpi p {
+        margin-top: 4px;
+    }
+
+    .descricao-kpi {
+        margin-top: 4px;
+    }
+
+    .secao-graficos {
+        flex: 1;
+        min-height: 0;
+        gap: 16px;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        grid-template-rows: minmax(0, 1fr) auto;
+    }
+
+    .secao-graficos .card {
+        display: flex;
+        flex-direction: column;
+        min-height: 0;
+        padding: 18px 22px;
+    }
+
+    .secao-graficos .card:last-child {
+        grid-column: 1 / -1;
+    }
+
+    .card-header {
+        margin-bottom: 6px;
+    }
+
+    .chart-container {
+        flex: 1;
+        min-height: 0;
+        height: auto;
+    }
+
+    .legenda-grafico {
+        margin-top: 8px;
+    }
+
+    .tabela-rolagem {
+        max-height: 130px;
+        overflow-y: auto;
+    }
 }
 
 /* ==========================

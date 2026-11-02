@@ -160,14 +160,17 @@
 
                 <div class="modal-actions">
                     <button type="submit" class="btn-primary">
+                        <i class="fa-solid fa-check"></i>
                         Confirmar alterações
                     </button>
-
                     <button type="button" class="btn-secondary btn-close">
                         Cancelar
                     </button>
                 </div>
 
+                <button type="button" class="btn-excluir" onclick="excluirArtista()">
+                    <i class="fa-solid fa-trash"></i> Excluir artista
+                </button>
             </form>
         </div>
     </div>
@@ -519,6 +522,45 @@
         } catch (erro) {
             console.error("Erro ao decidir:", erro);
             alert(erro.message || "Não foi possível atualizar o status.");
+        }
+    }
+
+    async function excluirArtista() {
+        if (!artistaEditando) {
+            alert("Nenhum artista selecionado.");
+            return;
+        }
+
+        const confirmar = confirm(
+            "Tem certeza que deseja excluir este artista da lista de aprovados?"
+        );
+
+        if (!confirmar) return;
+
+        try {
+            const resposta = await fetch(
+                `/aprovados/excluir/${idEmpresa}/${artistaEditando}`,
+                {
+                    method: "DELETE"
+                }
+            );
+
+            const dados = await resposta.json();
+
+            if (!resposta.ok) {
+                throw new Error(
+                    dados.mensagem || "Não foi possível excluir o artista."
+                );
+            }
+
+            fecharModalEditar();
+            await listarTodos();
+
+            alert("Artista excluído com sucesso!");
+
+        } catch (erro) {
+            console.error("Erro ao excluir artista:", erro);
+            alert(erro.message || "Erro ao excluir artista.");
         }
     }
 

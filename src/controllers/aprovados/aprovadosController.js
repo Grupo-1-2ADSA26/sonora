@@ -184,6 +184,30 @@ function atualizarCard(req, res) {
         });
 }
 
+function excluirArtistaAprovado(req, res) {
+    var idEmpresa = req.params.idEmpresa;
+    var idArtista = req.params.idArtista;
+
+    if (!idEmpresa || !idArtista) {
+        return res.status(400).send("ID da empresa e do artista são obrigatórios.");
+    }
+
+    aprovadosModel.excluirArtistaAprovado(idEmpresa, idArtista)
+        .then(function (resultado) {
+            if (resultado.affectedRows === 0) {
+                return res.status(404).send("Artista aprovado não encontrado.");
+            }
+
+            res.status(200).json({
+                mensagem: "Artista excluído com sucesso!"
+            });
+        })
+        .catch(function (erro) {
+            console.log(erro);
+            res.status(500).json(erro);
+        });
+}
+
 module.exports = {
     listarTodosParaFuncionario,
     enviarParaAprovados,
@@ -191,5 +215,6 @@ module.exports = {
     listarTodosParaAdministrador,
     atualizarStatus,
     sugerirArtista,
-    atualizarCard
+    atualizarCard,
+    excluirArtistaAprovado
 };

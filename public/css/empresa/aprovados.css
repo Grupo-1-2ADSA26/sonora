@@ -497,6 +497,34 @@ body {
     background-color: #a8a8a8;
 }
 
+.btn-excluir {
+    width: 100%;
+    margin-top: 15px;
+    padding: 12px 20px;
+    border: none;
+    border-radius: 12px;
+    background-color: #b83232;
+    color: #fff;
+    font-size: 14px;
+    font-weight: bold;
+    cursor: pointer;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+
+    transition: background-color 0.2s ease;
+}
+
+.btn-excluir:hover {
+    background-color: #922525;
+}
+
+.btn-excluir i {
+    font-size: 14px;
+}
+
 /* ============================= */
 /* RESPONSIVO DO MODAL           */
 /* ============================= */

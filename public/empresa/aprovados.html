@@ -119,6 +119,59 @@
 
     </main>
 
+    <!-- MODAL DE EDIÇÃO DO CARD -->
+    <div class="modal-overlay" id="modal-editar">
+        <div class="modal-box">
+
+            <div class="modal-header">
+                <h3>
+                    <i class="fa-solid fa-pen-to-square"></i>
+                    Editar card
+                </h3>
+
+                <button type="button" class="btn-close">&times;</button>
+            </div>
+
+            <form id="form-editar">
+
+                <div class="field-group">
+                    <label for="editar-evento">
+                        <i class="fa-solid fa-calendar-days"></i>
+                        Evento
+                    </label>
+
+                    <select id="editar-evento" required>
+                        <option value="">Selecione um evento</option>
+                    </select>
+                </div>
+
+                <div class="field-group">
+                    <label for="editar-status">
+                        <i class="fa-solid fa-clipboard-check"></i>
+                        Status da aprovação
+                    </label>
+
+                    <select id="editar-status" required>
+                        <option value="PENDENTE">Em análise</option>
+                        <option value="ANALISE_CONCLUIDA">Análise concluída</option>
+                        <option value="REPROVADO">Reprovado</option>
+                    </select>
+                </div>
+
+                <div class="modal-actions">
+                    <button type="submit" class="btn-primary">
+                        Confirmar alterações
+                    </button>
+
+                    <button type="button" class="btn-secondary btn-close">
+                        Cancelar
+                    </button>
+                </div>
+
+            </form>
+        </div>
+    </div>
+
 </body>
 <script>
     const SITUACOES = {
@@ -139,6 +192,9 @@
 
     const idEmpresa = sessionStorage.getItem('ID_EMPRESA');
 
+    let listaArtistas = [];
+    let artistaEditando = null;
+
     async function listarTodos() {
         try {
             const resposta = await fetch(`/aprovados/listarTodos/${idEmpresa}`);
@@ -151,6 +207,7 @@
                 `;
 
                 atualizarEstatisticas([]);
+                listaArtistas = [];
                 return;
             }
 
@@ -159,6 +216,8 @@
             }
 
             const artistas = await resposta.json();
+
+            listaArtistas = artistas;
 
             atualizarEstatisticas(artistas);
             montarCards(artistas);
@@ -278,6 +337,12 @@
                         <i class="fa-solid fa-arrow-right"></i>
                     </button>
 
+                    <button class="botao-detalhes" type="button"
+                        onclick="editarCard(${artista.id_artista})">
+                        Editar
+                        <i class="fa-solid fa-pen-to-square"></i>
+                    </button>
+
                     ${acoesDecisao}
                 </div>
             `;
@@ -285,6 +350,150 @@
             feedAprovados.appendChild(card);
         });
     }
+
+    // =============================
+    // MODAL DE EDIÇÃO DO CARD
+    // =============================
+
+    const modalEditar = document.getElementById("modal-editar");
+    const formularioEditar = document.getElementById("form-editar");
+
+    const campoEvento = document.getElementById("editar-evento");
+    const campoStatus = document.getElementById("editar-status");
+
+    // Abre o modal
+    function abrirModalEditar() {
+        modalEditar.classList.add("active");
+    }
+
+    // Fecha o modal
+    function fecharModalEditar() {
+        modalEditar.classList.remove("active");
+        artistaEditando = null;
+    }
+
+    // Botões de fechar
+    document.querySelectorAll("#modal-editar .btn-close")
+        .forEach(botao => {
+            botao.addEventListener("click", fecharModalEditar);
+        });
+
+    // Carrega os eventos da empresa
+    async function carregarEventos(idEventoAtual) {
+        campoEvento.innerHTML = `
+            <option value="">Carregando eventos...</option>
+        `;
+
+        try {
+            const resposta = await fetch(`/evento/listar/${idEmpresa}`);
+
+            if (resposta.status === 204) {
+                campoEvento.innerHTML = `
+                    <option value="">Nenhum evento cadastrado</option>
+                `;
+                return;
+            }
+
+            if (!resposta.ok) {
+                throw new Error("Erro ao carregar eventos.");
+            }
+
+            const eventos = await resposta.json();
+
+            campoEvento.innerHTML = `
+                <option value="">Selecione um evento</option>
+            `;
+
+            eventos.forEach(evento => {
+                const opcao = document.createElement("option");
+
+                opcao.value = evento.id_evento;
+                opcao.textContent = evento.nome;
+
+                if (evento.id_evento == idEventoAtual) {
+                    opcao.selected = true;
+                }
+
+                campoEvento.appendChild(opcao);
+            });
+
+        } catch (erro) {
+            console.error("Erro ao carregar eventos:", erro);
+
+            campoEvento.innerHTML = `
+                <option value="">Erro ao carregar eventos</option>
+            `;
+        }
+    }
+
+    // Abre edição preenchendo os dados atuais
+    async function editarCard(idArtista) {
+        const artista = listaArtistas.find(item =>
+            item.id_artista == idArtista
+        );
+
+        if (!artista) {
+            alert("Não foi possível encontrar o card.");
+            return;
+        }
+
+        artistaEditando = idArtista;
+
+        campoStatus.value = artista.status_aprovacao;
+
+        await carregarEventos(artista.id_evento);
+
+        abrirModalEditar();
+    }
+
+    // Salva as alterações
+    formularioEditar.addEventListener("submit", async function (e) {
+        e.preventDefault();
+
+        if (!artistaEditando) return;
+
+        const idEvento = campoEvento.value;
+        const status = campoStatus.value;
+
+        if (!idEvento) {
+            alert("Selecione um evento.");
+            return;
+        }
+
+        try {
+            const resposta = await fetch("/aprovados/atualizarCard", {
+                method: "PUT",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    idEmpresa: idEmpresa,
+                    idArtista: artistaEditando,
+                    idEvento: idEvento,
+                    status: status
+                })
+            });
+
+            const dados = await resposta.json();
+
+            if (!resposta.ok) {
+                throw new Error(
+                    dados.mensagem || "Erro ao atualizar o card."
+                );
+            }
+
+            fecharModalEditar();
+
+            await listarTodos();
+
+        } catch (erro) {
+            console.error("Erro ao editar card:", erro);
+
+            alert(
+                erro.message || "Não foi possível atualizar o card."
+            );
+        }
+    });
 
     // Empresa aprova ou reprova artista sugerido pelo funcionário
     async function decidir(idArtista, status) {

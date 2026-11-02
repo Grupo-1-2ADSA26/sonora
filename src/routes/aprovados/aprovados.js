@@ -1,5 +1,7 @@
+
 var express = require("express");
 var router = express.Router();
+
 var aprovadosController = require("../../controllers/aprovados/aprovadosController");
 
 router.get("/aprovados/:idEmpresa", function (req, res) {
@@ -18,12 +20,16 @@ router.get("/listarTodos/:idEmpresa", function (req, res) {
     aprovadosController.listarTodosParaAdministrador(req, res);
 });
 
-router.post("/sugerir", function (req, res) { 
-    aprovadosController.sugerirArtista(req, res); 
+router.post("/sugerir", function (req, res) {
+    aprovadosController.sugerirArtista(req, res);
 });
 
-router.put("/atualizarStatus", function (req, res) { 
-    aprovadosController.atualizarStatus(req, res); 
+router.put("/atualizarStatus", function (req, res) {
+    aprovadosController.atualizarStatus(req, res);
+});
+
+router.put("/atualizarCard", function (req, res) {
+    aprovadosController.atualizarCard(req, res);
 });
 
 module.exports = router;

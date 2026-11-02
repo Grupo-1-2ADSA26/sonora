@@ -108,6 +108,16 @@ function atualizarCard(idEmpresa, idArtista, idEvento, status) {
     return database.executar(instrucaoSql, [idEvento, status, idEmpresa, idArtista]);
 }
 
+function excluirArtistaAprovado(idEmpresa, idArtista) {
+    var instrucaoSql = `
+        DELETE FROM artista_aprovado
+        WHERE id_empresa = ?
+        AND id_artista = ?;
+    `;
+
+    return database.executar(instrucaoSql, [idEmpresa, idArtista]);
+}
+
 module.exports = {
     listarTodosParaFuncionario,
     enviarParaAprovados,
@@ -115,5 +125,6 @@ module.exports = {
     listarTodosParaAdministrador,
     sugerirArtista,
     atualizarStatus,
-    atualizarCard
+    atualizarCard,
+    excluirArtistaAprovado
 };

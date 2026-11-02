@@ -32,4 +32,8 @@ router.put("/atualizarCard", function (req, res) {
     aprovadosController.atualizarCard(req, res);
 });
 
+router.delete("/excluir/:idEmpresa/:idArtista", function (req, res) {
+    aprovadosController.excluirArtistaAprovado(req, res);
+});
+
 module.exports = router;

@@ -175,6 +175,26 @@ function buscarMediaDancabilidade(idEmpresa) {
     return database.executar(instrucao);
 }
 
+function buscarGeneroPredominante(idEmpresa) {
+    var instrucao = `
+        SELECT
+            SUBSTRING_INDEX(TRIM(a.genero), ',', 1) AS genero,
+            COUNT(*) AS quantidade
+        FROM artista_aprovado aa
+        INNER JOIN artista a
+            ON a.id_artista = aa.id_artista
+        WHERE aa.id_empresa = ?
+          AND aa.status_aprovacao = 'APROVADO'
+          AND a.genero IS NOT NULL
+          AND a.genero <> ''
+        GROUP BY genero
+        ORDER BY quantidade DESC
+        LIMIT 1;
+    `;
+
+    return database.executar(instrucao, [idEmpresa]);
+}
+
 
 module.exports = {
     cadastrar,
@@ -189,5 +209,6 @@ module.exports = {
     buscarEngajamentoPlataforma,
     buscarVariacaoRitmo,
     listarArtistaAprovado,
-    buscarMediaDancabilidade
+    buscarMediaDancabilidade,
+    buscarGeneroPredominante
 };

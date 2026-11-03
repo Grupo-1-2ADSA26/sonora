@@ -17,5 +17,7 @@ router.get("/analise-artista/:idArtista/:idEmpresa", function (req, res) {
 
 router.get("/artistas-aprovados/:idEmpresa", (req, res) => {funcionarioController.listarArtistaAprovado(req, res);});
 router.get("/media-dancabilidade/:idEmpresa", (req, res) => {funcionarioController.buscarMediaDancabilidade(req, res);});
+router.get("/genero-predominante/:idEmpresa", (req, res) => {funcionarioController.buscarGeneroPredominante(req, res);});
+
 
 module.exports = router;

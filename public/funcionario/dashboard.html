@@ -44,12 +44,6 @@
                 </a>
             </li>
 
-            <li>
-                <a href="recomendacoes.html">
-                    <i class="fa-solid fa-music"></i>
-                    <span>Recomendações</span>
-                </a>
-            </li>
 
             <li>
                 <a href="aprovados.html">
@@ -231,25 +225,41 @@
 
         
 fetch(`http://localhost:3333/funcionario/media-dancabilidade/${idEmpresa}`)
-    .then(resposta => {
-        if (!resposta.ok) {
-            throw new Error("Erro ao buscar média de dançabilidade");
-        }
-        return resposta.json();
-    })
+    .then(resposta => resposta.json())
     .then(dados => {
-        console.log("Média de dançabilidade:", dados);
+        console.log("Dados:", dados);
+        console.log("Primeiro registro:", dados[0]);
 
         const media = dados[0]?.media_dancabilidade;
 
+        console.log("Média:", media);
+
         document.getElementById("averageDanceability").textContent =
-            media !== null && media !== undefined
-                ? (Number(media) * 100).toFixed(1) + "%"
-                : "N/A";
+            (Number(media) * 100).toFixed(1) + "%";
+    })
+    .catch(console.error);
+
+    fetch(`http://localhost:3333/funcionario/genero-predominante/${idEmpresa}`)
+    .then(resposta => {
+        if (!resposta.ok) {
+            throw new Error("Erro ao buscar gênero predominante");
+        }
+
+        return resposta.json();
+    })
+    .then(dados => {
+        console.log("Gênero predominante:", dados);
+
+        const genero = dados[0]?.genero;
+
+        document.getElementById("topGenre").textContent =
+            genero || "N/A";
     })
     .catch(erro => {
-        console.error("Erro ao carregar média de dançabilidade:", erro);
+        console.error("Erro ao carregar gênero predominante:", erro);
+        document.getElementById("topGenre").textContent = "N/A";
     });
+
 
         // Configurações visuais gerais dos gráficos
         Chart.defaults.font.family = "system-ui, -apple-system, sans-serif";

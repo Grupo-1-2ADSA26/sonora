@@ -191,6 +191,18 @@ function carregarAnaliseArtista(req, res) {
         
 }
 
+function buscarGeneroPredominante(req, res) {
+    var idEmpresa = req.params.idEmpresa;
+
+    funcionarioModel.buscarGeneroPredominante(idEmpresa)
+        .then(resultado => {
+            res.status(200).json(resultado);
+        })
+        .catch(erro => {
+            res.status(500).json(erro.sqlMessage);
+        });
+}
+
 module.exports = {
     cadastrar,
     listarPorEmpresa,
@@ -200,5 +212,6 @@ module.exports = {
     autenticar,
     carregarAnaliseArtista,
     listarArtistaAprovado,
-    buscarMediaDancabilidade
+    buscarMediaDancabilidade,
+    buscarGeneroPredominante
 };

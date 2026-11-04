@@ -62,32 +62,39 @@ function montarDadosArtista(artista, res) {
 
     Promise.all([
         artistaModel.buscarDadosArtista(idArtista),
-        artistaModel.buscarTop3Faixas(idArtista)
+        artistaModel.buscarTop3Faixas(idArtista),
+        artistaModel.buscarKpisArtista(idArtista)
     ])
         .then(function (resultados) {
             var dadosMetricas = resultados[0][0] || {};
             var resultadoFaixas = resultados[1] || [];
+            var dadosKpis = resultados[2][0] || {};
 
             res.status(200).json({
                 id_artista: idArtista,
                 nome: artista.nome,
                 genero: dadosMetricas.genero_principal || "Não informado",
 
-                popularidade: null,
+                popularidade: Number(dadosKpis.popularidade || 0),
+                total_streams: Number(dadosKpis.total_streams || 0),
 
-                total_streams: Number(
-                    dadosMetricas.total_streams || 0
-                ),
-
-                energy: dadosMetricas.media_energy !== null
-                    ? Number(dadosMetricas.media_energy).toFixed(2)
+                engajamento: dadosKpis.engajamento !== null &&
+                    dadosKpis.engajamento !== undefined
+                    ? Number(dadosKpis.engajamento)
                     : null,
 
-                danceability: dadosMetricas.media_danceability !== null
-                    ? Number(dadosMetricas.media_danceability).toFixed(2)
+                energy: dadosMetricas.media_energy !== null &&
+                    dadosMetricas.media_energy !== undefined
+                    ? Number(dadosMetricas.media_energy)
                     : null,
 
-                bpm: dadosMetricas.media_bpm !== null
+                danceability: dadosMetricas.media_danceability !== null &&
+                    dadosMetricas.media_danceability !== undefined
+                    ? Number(dadosMetricas.media_danceability)
+                    : null,
+
+                bpm: dadosMetricas.media_bpm !== null &&
+                    dadosMetricas.media_bpm !== undefined
                     ? Math.round(Number(dadosMetricas.media_bpm))
                     : null,
 
@@ -102,7 +109,7 @@ function montarDadosArtista(artista, res) {
             });
         })
         .catch(function (erro) {
-            console.error("Erro ao buscar métricas ou faixas:", erro);
+            console.error("Erro ao buscar dados do artista:", erro);
 
             return res.status(500).json({
                 mensagem: "Erro ao buscar dados do artista."

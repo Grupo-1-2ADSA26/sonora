@@ -1,3 +1,4 @@
+
 * {
     margin: 0;
     padding: 0;
@@ -19,9 +20,7 @@ body {
     min-width: 0;
 }
 
-/* ==========================
-   CABEÇALHO
-========================== */
+/* CABEÇALHO */
 
 .cabecalho-pagina {
     display: flex;
@@ -59,9 +58,7 @@ body {
     line-height: 1.6;
 }
 
-/* ==========================
-   ESTRUTURA
-========================== */
+/* ESTRUTURA */
 
 .dashboard-grid {
     display: flex;
@@ -69,9 +66,7 @@ body {
     gap: 20px;
 }
 
-/* ==========================
-   KPIs
-========================== */
+/* KPIs */
 
 .secao-kpis {
     display: grid;
@@ -86,11 +81,9 @@ body {
     padding: 24px;
     min-height: 130px;
     min-width: 0;
-
     display: flex;
     flex-direction: column;
     justify-content: center;
-
     box-shadow: 0 5px 20px rgba(0, 0, 0, 0.025);
     transition: transform 0.2s, box-shadow 0.2s;
 }
@@ -125,9 +118,15 @@ body {
     text-transform: uppercase;
 }
 
-/* ==========================
-   CARDS E GRÁFICOS
-========================== */
+.descricao-kpi {
+    display: block;
+    margin-top: 6px;
+    color: #858585;
+    font-size: 11px;
+    line-height: 1.45;
+}
+
+/* CARDS E GRÁFICOS */
 
 .secao-graficos {
     display: grid;
@@ -180,13 +179,13 @@ body {
     line-height: 1.5;
 }
 
-.descricao-kpi {
-    display: block;
-    margin-top: 6px;
-    color: #858585;
-    font-size: 11px;
-    line-height: 1.45;
+.chart-container {
+    position: relative;
+    width: 100%;
+    height: 250px;
 }
+
+/* LEGENDA */
 
 .legenda-grafico {
     display: flex;
@@ -224,15 +223,7 @@ body {
     background: #b42318;
 }
 
-.chart-container {
-    position: relative;
-    width: 100%;
-    height: 250px;
-}
-
-/* ==========================
-   EVENTOS
-========================== */
+/* EVENTOS */
 
 .btn-link {
     flex-shrink: 0;
@@ -317,12 +308,10 @@ body {
     color: #555;
 }
 
+/* TELAS GRANDES */
+
 @media (min-width: 1200px) {
     .main-content {
-        display: flex;
-        flex-direction: column;
-        height: 100vh;
-        min-height: 740px;
         padding-top: 20px;
         padding-bottom: 20px;
     }
@@ -332,8 +321,6 @@ body {
     }
 
     .dashboard-grid {
-        flex: 1;
-        min-height: 0;
         gap: 16px;
     }
 
@@ -342,7 +329,6 @@ body {
     }
 
     .card-kpi {
-        min-height: 0;
         padding: 12px 22px;
     }
 
@@ -360,32 +346,30 @@ body {
     }
 
     .secao-graficos {
-        flex: 1;
-        min-height: 0;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
         gap: 16px;
-        grid-template-columns: repeat(3, minmax(0, 1fr));
-        grid-template-rows: minmax(0, 1fr) auto;
     }
 
-    .secao-graficos .card {
-        display: flex;
-        flex-direction: column;
-        min-height: 0;
-        padding: 18px 22px;
-    }
-
-    .secao-graficos .card:last-child {
+    /* Terceiro card: gráfico de engajamento */
+    .secao-graficos .card:nth-child(3) {
         grid-column: 1 / -1;
     }
 
+    /* Quarto card: eventos */
+    .secao-graficos .card:nth-child(4) {
+        grid-column: 1 / -1;
+    }
+
+    .secao-graficos .card {
+        padding: 18px 22px;
+    }
+
     .card-header {
-        margin-bottom: 6px;
+        margin-bottom: 10px;
     }
 
     .chart-container {
-        flex: 1;
-        min-height: 0;
-        height: auto;
+        height: 250px;
     }
 
     .legenda-grafico {
@@ -393,14 +377,12 @@ body {
     }
 
     .tabela-rolagem {
-        max-height: 130px;
+        max-height: 180px;
         overflow-y: auto;
     }
 }
 
-/* ==========================
-   TABLETS
-========================== */
+/* TABLETS */
 
 @media (max-width: 1100px) {
     .main-content {
@@ -416,9 +398,7 @@ body {
     }
 }
 
-/* ==========================
-   TABLET PEQUENO E CELULAR
-========================== */
+/* TABLET PEQUENO E CELULAR */
 
 @media (max-width: 768px) {
     body {
@@ -455,7 +435,13 @@ body {
     }
 
     .secao-graficos {
+        grid-template-columns: 1fr;
         gap: 16px;
+    }
+
+    .secao-graficos .card:nth-child(3),
+    .secao-graficos .card:nth-child(4) {
+        grid-column: auto;
     }
 
     .card {
@@ -476,9 +462,7 @@ body {
     }
 }
 
-/* ==========================
-   CELULARES PEQUENOS
-========================== */
+/* CELULARES PEQUENOS */
 
 @media (max-width: 400px) {
     .main-content {

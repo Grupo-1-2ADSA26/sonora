@@ -82,19 +82,21 @@ function autenticar(email, senha) {
     return database.executar(instrucaoSql);
 }
 
+// ===== ANÁLISE DO ARTISTA =====
 function buscarCabecalhoArtista(idArtista, idEmpresa) {
     var instrucao = `
-        SELECT DISTINCT 
-            a.nome AS nome_artista, 
-            m.genero AS genero_principal, 
+        SELECT
+            a.nome AS nome_artista,
+            a.genero AS genero_principal,
             aa.status_aprovacao
         FROM artista a
-        JOIN musica m ON a.id_artista = m.id_artista
-        JOIN artista_aprovado aa ON a.id_artista = aa.id_artista
-        WHERE a.id_artista = ${idArtista} AND aa.id_empresa = ${idEmpresa}
+        LEFT JOIN artista_aprovado aa
+            ON aa.id_artista = a.id_artista
+           AND aa.id_empresa = ?
+        WHERE a.id_artista = ?
         LIMIT 1;
     `;
-    return database.executar(instrucao);
+    return database.executar(instrucao, [idEmpresa, idArtista]);
 }
 
 function buscarKpisEPerfilSonoro(idArtista) {
@@ -108,9 +110,9 @@ function buscarKpisEPerfilSonoro(idArtista) {
             AVG(ms.speechiness) AS speechiness
         FROM metrica_streaming ms
         JOIN musica mu ON ms.id_musica = mu.id_musica
-        WHERE mu.id_artista = ${idArtista};
+        WHERE mu.id_artista = ?;
     `;
-    return database.executar(instrucao);
+    return database.executar(instrucao, [idArtista]);
 }
 
 function buscarEngajamentoPlataforma(idArtista) {
@@ -124,24 +126,74 @@ function buscarEngajamentoPlataforma(idArtista) {
         FROM metrica_streaming ms
         JOIN plataforma p ON ms.id_plataforma = p.id_plataforma
         JOIN musica mu ON ms.id_musica = mu.id_musica
-        WHERE mu.id_artista = ${idArtista}
+        WHERE mu.id_artista = ?
         GROUP BY p.id_plataforma, p.nome;
     `;
-    return database.executar(instrucao);
+    return database.executar(instrucao, [idArtista]);
 }
 
+// Uma linha por música (as 10 mais ouvidas), em vez de uma por música e plataforma
 function buscarVariacaoRitmo(idArtista) {
     var instrucao = `
         SELECT 
             mu.titulo,
-            ms.tempo
+            ROUND(AVG(ms.tempo)) AS tempo
         FROM metrica_streaming ms
         JOIN musica mu ON ms.id_musica = mu.id_musica
-        WHERE mu.id_artista = ${idArtista};
+        WHERE mu.id_artista = ?
+        GROUP BY mu.id_musica, mu.titulo
+        ORDER BY SUM(ms.streams) DESC
+        LIMIT 10;
+    `;
+    return database.executar(instrucao, [idArtista]);
+}
+
+function listarArtistaAprovado(idEmpresa) {
+    var instrucao = `
+        SELECT *
+        FROM artista_aprovado
+        WHERE id_empresa = ${idEmpresa}
+        AND data_atualizacao >= DATE_FORMAT(CURDATE(), '%Y-%m-01')
+        AND data_atualizacao < DATE_FORMAT(CURDATE() + INTERVAL 1 MONTH, '%Y-%m-01');
     `;
     return database.executar(instrucao);
 }
 
+function buscarMediaDancabilidade(idEmpresa) {
+    var instrucao = `
+        SELECT
+            ROUND(AVG(ms.danceability), 3) AS media_dancabilidade
+        FROM artista_aprovado aa
+        INNER JOIN musica m
+            ON m.id_artista = aa.id_artista
+        INNER JOIN metrica_streaming ms
+            ON ms.id_musica = m.id_musica
+        WHERE aa.id_empresa = ${idEmpresa}
+          AND aa.status_aprovacao = 'APROVADO'
+          AND ms.danceability IS NOT NULL;
+    `;
+    return database.executar(instrucao);
+}
+
+function buscarGeneroPredominante(idEmpresa) {
+    var instrucao = `
+        SELECT
+            SUBSTRING_INDEX(TRIM(a.genero), ',', 1) AS genero,
+            COUNT(*) AS quantidade
+        FROM artista_aprovado aa
+        INNER JOIN artista a
+            ON a.id_artista = aa.id_artista
+        WHERE aa.id_empresa = ?
+          AND aa.status_aprovacao = 'APROVADO'
+          AND a.genero IS NOT NULL
+          AND a.genero <> ''
+        GROUP BY genero
+        ORDER BY quantidade DESC
+        LIMIT 1;
+    `;
+
+    return database.executar(instrucao, [idEmpresa]);
+}
 
 
 module.exports = {
@@ -155,5 +207,8 @@ module.exports = {
     buscarCabecalhoArtista,
     buscarKpisEPerfilSonoro,
     buscarEngajamentoPlataforma,
-    buscarVariacaoRitmo
+    buscarVariacaoRitmo,
+    listarArtistaAprovado,
+    buscarMediaDancabilidade,
+    buscarGeneroPredominante
 };

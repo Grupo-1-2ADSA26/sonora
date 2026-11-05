@@ -42,6 +42,7 @@
     app.use("/evento", eventoRouter);
     app.use("/aprovados", aprovadosRouter);
     app.use("/artista", artistaRouter);
+    
 
 
     app.listen(PORTA_APP, function () {

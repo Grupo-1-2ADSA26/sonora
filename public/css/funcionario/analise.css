@@ -303,6 +303,53 @@ body {
     letter-spacing: 1px;
 }
 
+.acao-aprovacao {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    flex-wrap: wrap;
+    margin-bottom: 24px;
+    padding: 20px 24px;
+    background: #ffffff;
+    border: 1px solid #e5e5e5;
+    border-radius: 16px;
+}
+
+/* sem isto o display:flex ignora o atributo hidden */
+.acao-aprovacao[hidden] {
+    display: none;
+}
+
+.acao-aprovacao h3 {
+    margin: 0 0 4px;
+    font-size: 16px;
+}
+
+.acao-aprovacao p {
+    margin: 0;
+    font-size: 14px;
+    color: #666666;
+}
+
+.botao-aprovar-artista {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 20px;
+    border: none;
+    border-radius: 10px;
+    background: #15803d;
+    color: #ffffff;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.botao-aprovar-artista:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
 /* Tablets */
 
 @media (max-width: 1100px) {

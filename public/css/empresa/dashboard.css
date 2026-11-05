@@ -1,3 +1,4 @@
+
 * {
     margin: 0;
     padding: 0;
@@ -19,9 +20,7 @@ body {
     min-width: 0;
 }
 
-/* ==========================
-   CABEÇALHO
-========================== */
+/* CABEÇALHO */
 
 .cabecalho-pagina {
     display: flex;
@@ -59,9 +58,7 @@ body {
     line-height: 1.6;
 }
 
-/* ==========================
-   ESTRUTURA
-========================== */
+/* ESTRUTURA */
 
 .dashboard-grid {
     display: flex;
@@ -69,9 +66,7 @@ body {
     gap: 20px;
 }
 
-/* ==========================
-   KPIs
-========================== */
+/* KPIs */
 
 .secao-kpis {
     display: grid;
@@ -86,11 +81,9 @@ body {
     padding: 24px;
     min-height: 130px;
     min-width: 0;
-
     display: flex;
     flex-direction: column;
     justify-content: center;
-
     box-shadow: 0 5px 20px rgba(0, 0, 0, 0.025);
     transition: transform 0.2s, box-shadow 0.2s;
 }
@@ -125,13 +118,19 @@ body {
     text-transform: uppercase;
 }
 
-/* ==========================
-   CARDS E GRÁFICOS
-========================== */
+.descricao-kpi {
+    display: block;
+    margin-top: 6px;
+    color: #858585;
+    font-size: 11px;
+    line-height: 1.45;
+}
+
+/* CARDS E GRÁFICOS */
 
 .secao-graficos {
     display: grid;
-    grid-template-columns: minmax(0, 1fr) minmax(0, 1.3fr);
+    grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 20px;
 }
 
@@ -166,20 +165,65 @@ body {
     color: #555;
 }
 
+.card-subtitulo {
+    margin-top: 4px;
+    color: #858585;
+    font-size: 12px;
+    line-height: 1.5;
+}
+
+.card-descricao {
+    margin-top: 2px;
+    color: #858585;
+    font-size: 11px;
+    line-height: 1.5;
+}
+
 .chart-container {
     position: relative;
     width: 100%;
     height: 250px;
 }
 
-/* ==========================
-   EVENTOS
-========================== */
+/* LEGENDA */
 
-.secao-eventos {
-    width: 100%;
-    min-width: 0;
+.legenda-grafico {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 8px 18px;
+    margin-top: 14px;
+    list-style: none;
+    color: #555;
+    font-size: 12px;
 }
+
+.legenda-grafico li {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+}
+
+.legenda-media {
+    width: 18px;
+    border-top: 2px dashed #242424;
+}
+
+.legenda-cor {
+    width: 10px;
+    height: 10px;
+    border-radius: 3px;
+}
+
+.legenda-acima {
+    background: #2e7d32;
+}
+
+.legenda-abaixo {
+    background: #b42318;
+}
+
+/* EVENTOS */
 
 .btn-link {
     flex-shrink: 0;
@@ -264,9 +308,81 @@ body {
     color: #555;
 }
 
-/* ==========================
-   TABLETS
-========================== */
+/* TELAS GRANDES */
+
+@media (min-width: 1200px) {
+    .main-content {
+        padding-top: 20px;
+        padding-bottom: 20px;
+    }
+
+    .cabecalho-pagina {
+        margin-bottom: 16px;
+    }
+
+    .dashboard-grid {
+        gap: 16px;
+    }
+
+    .secao-kpis {
+        gap: 16px;
+    }
+
+    .card-kpi {
+        padding: 12px 22px;
+    }
+
+    .card-kpi h2 {
+        margin-top: 4px;
+        font-size: 24px;
+    }
+
+    .card-kpi p {
+        margin-top: 4px;
+    }
+
+    .descricao-kpi {
+        margin-top: 4px;
+    }
+
+    .secao-graficos {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 16px;
+    }
+
+    /* Terceiro card: gráfico de engajamento */
+    .secao-graficos .card:nth-child(3) {
+        grid-column: 1 / -1;
+    }
+
+    /* Quarto card: eventos */
+    .secao-graficos .card:nth-child(4) {
+        grid-column: 1 / -1;
+    }
+
+    .secao-graficos .card {
+        padding: 18px 22px;
+    }
+
+    .card-header {
+        margin-bottom: 10px;
+    }
+
+    .chart-container {
+        height: 250px;
+    }
+
+    .legenda-grafico {
+        margin-top: 8px;
+    }
+
+    .tabela-rolagem {
+        max-height: 180px;
+        overflow-y: auto;
+    }
+}
+
+/* TABLETS */
 
 @media (max-width: 1100px) {
     .main-content {
@@ -282,9 +398,7 @@ body {
     }
 }
 
-/* ==========================
-   TABLET PEQUENO E CELULAR
-========================== */
+/* TABLET PEQUENO E CELULAR */
 
 @media (max-width: 768px) {
     body {
@@ -321,7 +435,13 @@ body {
     }
 
     .secao-graficos {
+        grid-template-columns: 1fr;
         gap: 16px;
+    }
+
+    .secao-graficos .card:nth-child(3),
+    .secao-graficos .card:nth-child(4) {
+        grid-column: auto;
     }
 
     .card {
@@ -342,9 +462,7 @@ body {
     }
 }
 
-/* ==========================
-   CELULARES PEQUENOS
-========================== */
+/* CELULARES PEQUENOS */
 
 @media (max-width: 400px) {
     .main-content {

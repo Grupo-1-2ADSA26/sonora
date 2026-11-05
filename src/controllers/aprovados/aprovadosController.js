@@ -1,3 +1,4 @@
+
 var aprovadosModel = require("../../models/aprovados/aprovadosModel");
 
 function listarTodosParaFuncionario(req, res) {
@@ -23,7 +24,12 @@ function enviarParaAprovados(req, res) {
     var idUsuario = req.body.idUsuario;
     var idEvento = req.body.idEvento;
 
-    aprovadosModel.enviarParaAprovados(idEmpresa, idArtista, idUsuario, idEvento)    
+    aprovadosModel.enviarParaAprovados(
+        idEmpresa,
+        idArtista,
+        idUsuario,
+        idEvento
+    )
         .then(function (resultado) {
             res.status(201).json({
                 mensagem: "Artista enviado para aprovação com sucesso!",
@@ -31,8 +37,16 @@ function enviarParaAprovados(req, res) {
             });
         })
         .catch(function (erro) {
+            if (erro.code === "ER_DUP_ENTRY") {
+                return res.status(409).json({
+                    mensagem: "Este artista já foi enviado."
+                });
+            }
+
             console.error("Erro ao enviar artista para aprovação:", erro);
-            res.status(500).json(erro);
+            res.status(500).json({
+                mensagem: "Erro ao enviar artista para aprovação."
+            });
         });
 }
 
@@ -69,9 +83,138 @@ function listarTodosParaAdministrador(req, res) {
         });
 }
 
+var STATUS_PERMITIDOS = [
+    "ANALISE_CONCLUIDA",
+    "APROVADO",
+    "REPROVADO"
+];
+
+function sugerirArtista(req, res) {
+    var { idEmpresa, idArtista, idUsuario, idEvento } = req.body;
+
+    if (!idEmpresa || !idArtista || !idUsuario || !idEvento) {
+        return res.status(400).json({
+            mensagem: "Dados incompletos."
+        });
+    }
+
+    aprovadosModel.sugerirArtista(
+        idEmpresa,
+        idArtista,
+        idUsuario,
+        idEvento
+    )
+        .then(function () {
+            res.status(201).json({
+                mensagem: "Artista sugerido para a empresa com sucesso!"
+            });
+        })
+        .catch(function (erro) {
+            if (erro.code === "ER_DUP_ENTRY") {
+                return res.status(409).json({
+                    mensagem: "Este artista já foi enviado."
+                });
+            }
+
+            console.error("Erro ao sugerir artista:", erro);
+            res.status(500).json(erro);
+        });
+}
+
+function atualizarStatus(req, res) {
+    var { idEmpresa, idArtista, status } = req.body;
+
+    if (!idEmpresa || !idArtista || !STATUS_PERMITIDOS.includes(status)) {
+        return res.status(400).json({
+            mensagem: "Dados inválidos para atualizar o status."
+        });
+    }
+
+    aprovadosModel.atualizarStatus(idEmpresa, idArtista, status)
+        .then(function (resultado) {
+            if (resultado.affectedRows === 0) {
+                return res.status(404).json({
+                    mensagem: "Registro não encontrado."
+                });
+            }
+
+            res.status(200).json({
+                mensagem: "Status atualizado com sucesso!"
+            });
+        })
+        .catch(function (erro) {
+            console.error("Erro ao atualizar status:", erro);
+            res.status(500).json(erro);
+        });
+}
+
+function atualizarCard(req, res) {
+    var { idEmpresa, idArtista, idEvento, status } = req.body;
+
+    var statusCardPermitidos = [
+        "PENDENTE",
+        "ANALISE_CONCLUIDA",
+        "REPROVADO"
+    ];
+
+    if (!idEmpresa || !idArtista || !idEvento || !statusCardPermitidos.includes(status)) {
+        return res.status(400).json({
+            mensagem: "Dados inválidos para atualizar o card."
+        });
+    }
+
+    aprovadosModel.atualizarCard(idEmpresa, idArtista, idEvento, status)
+        .then(function () {
+            res.status(200).json({
+                mensagem: "Card atualizado com sucesso!"
+            });
+        })
+        .catch(function (erro) {
+            console.error("Erro ao atualizar card:", erro);
+
+            if (erro.code === "ER_NO_REFERENCED_ROW_2") {
+                return res.status(400).json({
+                    mensagem: "O evento selecionado não existe."
+                });
+            }
+
+            res.status(500).json({
+                mensagem: "Erro ao atualizar card."
+            });
+        });
+}
+
+function excluirArtistaAprovado(req, res) {
+    var idEmpresa = req.params.idEmpresa;
+    var idArtista = req.params.idArtista;
+
+    if (!idEmpresa || !idArtista) {
+        return res.status(400).send("ID da empresa e do artista são obrigatórios.");
+    }
+
+    aprovadosModel.excluirArtistaAprovado(idEmpresa, idArtista)
+        .then(function (resultado) {
+            if (resultado.affectedRows === 0) {
+                return res.status(404).send("Artista aprovado não encontrado.");
+            }
+
+            res.status(200).json({
+                mensagem: "Artista excluído com sucesso!"
+            });
+        })
+        .catch(function (erro) {
+            console.log(erro);
+            res.status(500).json(erro);
+        });
+}
+
 module.exports = {
     listarTodosParaFuncionario,
     enviarParaAprovados,
     verificarArtistaEnviado,
-    listarTodosParaAdministrador
+    listarTodosParaAdministrador,
+    atualizarStatus,
+    sugerirArtista,
+    atualizarCard,
+    excluirArtistaAprovado
 };

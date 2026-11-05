@@ -192,6 +192,10 @@ body {
     background-color: #000;
 }
 
+.situacao-analise { background: #fef3c7; color: #b45309; }
+.situacao-concluida { background: #dcfce7; color: #15803d; }
+.situacao-reprovada { background: #fee2e2; color: #b91c1c; }
+
 /* ==========================
    TABLETS
 ========================== */

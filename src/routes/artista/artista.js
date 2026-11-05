@@ -10,4 +10,8 @@ router.get("/pesquisarPorId/:idArtista", function (req, res) {
     artistaController.pesquisarArtistaPorId(req, res);
 });
 
+router.get("/kpis/:idArtista", function (req, res) {
+    artistaController.pesquisarKpisArtista(req, res);
+});
+
 module.exports = router;

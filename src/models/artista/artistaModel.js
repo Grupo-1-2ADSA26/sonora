@@ -1,4 +1,3 @@
-
 var database = require("../../database/config");
 
 function buscarPorNome(nome) {
@@ -6,10 +5,11 @@ function buscarPorNome(nome) {
         SELECT id_artista, nome, genero
         FROM artista
         WHERE nome LIKE ?
+        ORDER BY (nome = ?) DESC, nome ASC
         LIMIT 1;
     `;
 
-    return database.executar(instrucaoSql, [`%${nome}%`]);
+    return database.executar(instrucaoSql, [`%${nome}%`, nome]);
 }
 
 function buscarPorId(idArtista) {
@@ -22,6 +22,7 @@ function buscarPorId(idArtista) {
     return database.executar(instrucaoSql, [idArtista]);
 }
 
+// Busca os indicadores e métricas usadas nas telas de pesquisa e análise.
 function buscarDadosArtista(idArtista) {
     var instrucaoSql = `
         SELECT
@@ -29,68 +30,28 @@ function buscarDadosArtista(idArtista) {
             AVG(ms.energy) AS media_energy,
             AVG(ms.danceability) AS media_danceability,
             AVG(ms.tempo) AS media_bpm,
-            AVG(ms.streams) AS media_streams,
-            COALESCE(SUM(ms.streams), 0) AS total_streams
-        FROM artista a
-        LEFT JOIN musica m
-            ON m.id_artista = a.id_artista
-        LEFT JOIN metrica_streaming ms
-            ON ms.id_musica = m.id_musica
-        WHERE a.id_artista = ?
-        GROUP BY a.id_artista, a.genero;
-    `;
-
-    return database.executar(instrucaoSql, [idArtista]);
-}
-
-function buscarTop3Faixas(idArtista) {
-    var instrucaoSql = `
-        SELECT
-            m.id_musica,
-            m.titulo,
-            m.album,
-            COALESCE(SUM(ms.streams), 0) AS total_streams
-        FROM musica m
-        LEFT JOIN metrica_streaming ms
-            ON ms.id_musica = m.id_musica
-        WHERE m.id_artista = ?
-        GROUP BY
-            m.id_musica,
-            m.titulo,
-            m.album
-        ORDER BY total_streams DESC
-        LIMIT 3;
-    `;
-
-    return database.executar(instrucaoSql, [idArtista]);
-}
-
-// Fórmula do engajamento (%):
-// ((Total de likes + Total de comentários) / Total de visualizações) * 100
-// Se não houver visualizações, retorna NULL.
-
-// Fórmula da popularidade (0 a 100):
-// (Streams do artista / Maior total de streams entre os artistas) * 100
-// Se não houver streams na base, retorna 0.
-
-function buscarKpisArtista(idArtista) {
-    var instrucaoSql = `
-        SELECT
+            AVG(ms.acousticness) AS acousticness,
+            AVG(ms.valence) AS valence,
+            AVG(ms.speechiness) AS speechiness,
             COALESCE(SUM(ms.streams), 0) AS total_streams,
 
+            // Engajamento = (curtidas + comentários) / visualizações * 100.
             CASE
-                WHEN SUM(ms.views) > 0 THEN
+                WHEN COALESCE(SUM(ms.views), 0) > 0 THEN
                     ROUND(
                         (
-                            (COALESCE(SUM(ms.likes), 0) +
-                            COALESCE(SUM(ms.comentarios), 0))
-                            / SUM(ms.views)
+                            (
+                                COALESCE(SUM(ms.likes), 0) +
+                                COALESCE(SUM(ms.comentarios), 0)
+                            ) / SUM(ms.views)
                         ) * 100,
                         2
                     )
                 ELSE NULL
             END AS engajamento,
 
+            // Popularidade é calculada em relação ao artista
+            // com maior quantidade total de streams.
             CASE
                 WHEN ranking.maior_total_streams > 0 THEN
                     ROUND(
@@ -104,14 +65,16 @@ function buscarKpisArtista(idArtista) {
             END AS popularidade
 
         FROM artista a
+
         LEFT JOIN musica m
             ON m.id_artista = a.id_artista
+
         LEFT JOIN metrica_streaming ms
             ON ms.id_musica = m.id_musica
 
-        LEFT JOIN (
-            SELECT
-                MAX(totais.total_streams) AS maior_total_streams
+        // Calcula o maior total de streams entre todos os artistas.
+        CROSS JOIN (
+            SELECT MAX(total_streams) AS maior_total_streams
             FROM (
                 SELECT
                     a2.id_artista,
@@ -123,12 +86,41 @@ function buscarKpisArtista(idArtista) {
                     ON ms2.id_musica = m2.id_musica
                 GROUP BY a2.id_artista
             ) AS totais
-        ) AS ranking ON 1 = 1
+        ) AS ranking
 
         WHERE a.id_artista = ?
+
         GROUP BY
             a.id_artista,
+            a.genero,
             ranking.maior_total_streams;
+    `;
+
+    return database.executar(instrucaoSql, [idArtista]);
+}
+
+function buscarTop3Faixas(idArtista) {
+    var instrucaoSql = `
+        SELECT
+            m.id_musica,
+            m.titulo,
+            m.album,
+            COALESCE(SUM(ms.streams), 0) AS total_streams
+
+        FROM musica m
+
+        LEFT JOIN metrica_streaming ms
+            ON ms.id_musica = m.id_musica
+
+        WHERE m.id_artista = ?
+
+        GROUP BY
+            m.id_musica,
+            m.titulo,
+            m.album
+
+        ORDER BY total_streams DESC
+        LIMIT 3;
     `;
 
     return database.executar(instrucaoSql, [idArtista]);
@@ -138,6 +130,5 @@ module.exports = {
     buscarPorNome,
     buscarPorId,
     buscarDadosArtista,
-    buscarTop3Faixas,
-    buscarKpisArtista
+    buscarTop3Faixas
 };

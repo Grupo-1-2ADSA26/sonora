@@ -6,17 +6,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Notificações | Sonora</title>
     <script src="https://kit.fontawesome.com/d840916580.js" crossorigin="anonymous"></script>
-
-    <link rel="stylesheet" href="../css/index.css">
     <link rel="stylesheet" href="../css/menu.css">
     <link rel="stylesheet" href="../css/empresa/notificacoes.css">
-
 </head>
 
 <body>
     <aside class="box-menu">
         <input type="checkbox" id="menu-toggle" class="menu-toggle">
-
         <div class="menu-top">
             <label for="menu-toggle" class="btn-hamburguer">
                 <i class="fa-solid fa-bars"></i>
@@ -25,13 +21,12 @@
         </div>
 
         <ul class="lista">
-            <li class="ativo"><a href="dashboard.html"><i class="fa-solid fa-house"></i>Início</a></li>
+            <li><a href="dashboard.html"><i class="fa-solid fa-house"></i>Início</a></li>
             <li><a href="pesquisaArtista.html"><i class="fa-solid fa-magnifying-glass"></i>Artistas</a></li>
-
             <li><a href="cadastroFuncionario.html"><i class="fa-solid fa-users"></i>Funcionários</a></li>
             <li><a href="aprovados.html"><i class="fa-solid fa-user-pen"></i>Aprovados</a></li>
             <li><a href="gerenciamentoEventos.html"><i class="fa-solid fa-music"></i>Eventos</a></li>
-            <li><a href="notificacoes.html"><i class="fa-solid fa-bell"></i>Notificações</a></li>
+            <li class="ativo"><a href="notificacoes.html"><i class="fa-solid fa-bell"></i>Notificações</a></li>
             <li><a href="perfilEmpresa.html"><i class="fa-solid fa-building"></i>Perfil Empresa</a></li>
             <li><a href="perfil.html"><i class="fa-solid fa-user"></i>Perfil</a></li>
 
@@ -39,237 +34,366 @@
                 <a class="botao-sair" href="../index.html"><i class="fa-solid fa-right-from-bracket"></i> Sair</a>
             </li>
         </ul>
+
     </aside>
 
 
     <main class="main-content">
-
         <header class="cabecalho-pagina">
             <div class="cabecalho-info">
-                <span class="sobretitulo">SONORA / NOTIFICAÇÕES</span>
-
+                <span class="sobretitulo">
+                    SONORA / PREFERÊNCIAS
+                </span>
                 <h1>Notificações</h1>
-
                 <p>
-                    Acompanhe as atividades e atualizações da sua empresa.
+                    Escolha quais notificações você deseja receber.
                 </p>
             </div>
         </header>
 
-        <!-- INDICADORES -->
-        <section class="cards-resumo">
 
-            <div class="card-resumo">
-                <div class="card-icon">
-                    <i class="fa-solid fa-users"></i>
+        <div class="notificacoes-container">
+
+            <section class="card-configuracao">
+                <div class="card-header">
+                    <div>
+                        <h3>
+                            <i class="fa-solid fa-calendar-days"></i>
+                            Eventos
+                        </h3>
+                        <p>
+                            Receba avisos sobre alterações e acontecimentos relacionados aos seus eventos.
+                        </p>
+                    </div>
                 </div>
 
-                <div>
-                    <span>Funcionários</span>
-                    <h2>12</h2>
-                    <p>Cadastrados</p>
+
+                <div class="lista-configuracoes">
+                    <div class="configuracao">
+                        <div class="configuracao-info">
+                            <h4>Evento criado</h4>
+                            <p>
+                                Receber uma notificação quando um novo evento for criado.
+                            </p>
+                        </div>
+
+                        <label class="switch">
+                            <input type="checkbox" id="evento-criado">
+                            <span class="slider"></span>
+                        </label>
+
+                    </div>
+
+
+                    <div class="configuracao">
+                        <div class="configuracao-info">
+                            <h4>Evento atualizado</h4>
+                            <p>
+                                Receber uma notificação quando um evento for alterado.
+                            </p>
+                        </div>
+
+                        <label class="switch">
+                            <input type="checkbox" id="evento-atualizado">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+
+
+                    <div class="configuracao">
+                        <div class="configuracao-info">
+                            <h4>Evento cancelado</h4>
+                            <p>
+                                Receber uma notificação quando um evento for cancelado.
+                            </p>
+                        </div>
+
+                        <label class="switch">
+                            <input type="checkbox" id="evento-cancelado">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+
+
+                    <div class="configuracao">
+
+                        <div class="configuracao-info">
+                            <h4>Próximo evento</h4>
+                            <p>
+                                Receber um aviso quando um evento estiver próximo da data marcada.
+                            </p>
+                        </div>
+
+                        <label class="switch">
+                            <input type="checkbox" id="evento-proximo">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+
                 </div>
-            </div>
+            </section>
 
-            <div class="card-resumo">
-                <div class="card-icon">
-                    <i class="fa-solid fa-music"></i>
+            <section class="card-configuracao" id="card-artistas">
+
+                <div class="card-header">
+                    <div>
+                        <h3>
+                            <i class="fa-solid fa-microphone"></i>
+                            Artistas
+                        </h3>
+
+                        <p>
+                            Receba avisos sobre sugestões e decisões relacionadas aos artistas.
+                        </p>
+                    </div>
                 </div>
 
-                <div>
-                    <span>Novos artistas</span>
-                    <h2>08</h2>
-                    <p>Disponíveis</p>
+
+                <div class="lista-configuracoes">
+
+                    <div class="configuracao" id="config-artista-sugerido">
+                        <div class="configuracao-info">
+                            <h4>Artista sugerido</h4>
+                            <p>
+                                Receber uma notificação quando um artista for sugerido.
+                            </p>
+                        </div>
+                        <label class="switch">
+                            <input type="checkbox" id="artista-sugerido">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+
+                    <div class="configuracao" id="config-artista-aprovado">
+                        <div class="configuracao-info">
+                            <h4>Artista aprovado</h4>
+                            <p>
+                                Receber uma notificação quando um artista for aprovado.
+                            </p>
+                        </div>
+                        <label class="switch">
+                            <input type="checkbox" id="artista-aprovado">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+
+                    <div class="configuracao" id="config-artista-rejeitado">
+                        <div class="configuracao-info">
+                            <h4>Artista rejeitado</h4>
+                            <p>
+                                Receber uma notificação quando um artista for rejeitado.
+                            </p>
+                        </div>
+                        <label class="switch">
+                            <input type="checkbox" id="artista-rejeitado">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
                 </div>
-            </div>
+            </section>
 
-            <div class="card-resumo">
-                <div class="card-icon">
-                    <i class="fa-solid fa-bell"></i>
+            <section class="card-configuracao" id="card-analises">
+                <div class="card-header">
+                    <div>
+                        <h3>
+                            <i class="fa-solid fa-chart-line"></i>
+                            Análises
+                        </h3>
+                        <p>
+                            Receba avisos sobre o andamento das análises de artistas.
+                        </p>
+                    </div>
                 </div>
 
-                <div>
-                    <span>Notificações</span>
-                    <h2>25</h2>
-                    <p>Registradas</p>
+                <div class="lista-configuracoes">
+                    <div class="configuracao">
+                        <div class="configuracao-info">
+                            <h4>Análise concluída</h4>
+                            <p>
+                                Receber uma notificação quando a análise de um artista for concluída.
+                            </p>
+                        </div>
+                        <label class="switch">
+                            <input type="checkbox" id="analise-concluida">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
                 </div>
-            </div>
+            </section>
 
-            <div class="card-resumo">
-                <div class="card-icon">
-                    <i class="fa-solid fa-file-lines"></i>
-                </div>
-
-                <div>
-                    <span>Logs</span>
-                    <h2>43</h2>
-                    <p>Registros do sistema</p>
-                </div>
-            </div>
-
-        </section>
-
-        <!-- HISTÓRICO DE ATIVIDADES -->
-        <section class="atividades-panel">
-
-            <div class="atividades-header">
-                <div>
-                    <h2>Atividades recentes</h2>
-                    <p>Confira as últimas movimentações do sistema.</p>
-                </div>
-
-                <button class="btn-atualizar" type="button">
-                    <i class="fa-solid fa-rotate"></i>
-                    Atualizar
+            <div class="acoes-configuracao">
+                <button type="button" id="btn-salvar" onclick="salvarConfiguracoes()">
+                    <i class="fa-solid fa-check"></i>
+                    Salvar configurações
                 </button>
             </div>
-
-            <!-- FILTROS -->
-            <div class="filtros">
-                <button class="filtro ativo">Todas</button>
-                <button class="filtro">Funcionários</button>
-                <button class="filtro">Artistas</button>
-                <button class="filtro">Sistema</button>
-            </div>
-
-            <!-- TABELA -->
-            <div class="tabela-responsiva">
-                <table class="tabela-atividades">
-
-                    <thead>
-                        <tr>
-                            <th>Atividade</th>
-                            <th>Descrição</th>
-                            <th>Data</th>
-                            <th>Status</th>
-                        </tr>
-                    </thead>
-
-                    <tbody>
-
-                        <tr>
-                            <td>
-                                <div class="atividade-tipo">
-                                    <i class="fa-solid fa-user-plus"></i>
-                                    Funcionário
-                                </div>
-                            </td>
-
-                            <td>Novo funcionário cadastrado.</td>
-                            <td>29/10/2026</td>
-
-                            <td>
-                                <span class="status sucesso">Concluído</span>
-                            </td>
-                        </tr>
-
-                        <tr>
-                            <td>
-                                <div class="atividade-tipo">
-                                    <i class="fa-solid fa-music"></i>
-                                    Artista
-                                </div>
-                            </td>
-
-                            <td>Novo artista disponível para aprovação.</td>
-                            <td>29/10/2026</td>
-
-                            <td>
-                                <span class="status pendente">Pendente</span>
-                            </td>
-                        </tr>
-
-                        <tr>
-                            <td>
-                                <div class="atividade-tipo">
-                                    <i class="fa-solid fa-check"></i>
-                                    Artista
-                                </div>
-                            </td>
-
-                            <td>Artista aprovado pela empresa.</td>
-                            <td>28/10/2026</td>
-
-                            <td>
-                                <span class="status sucesso">Concluído</span>
-                            </td>
-                        </tr>
-
-                        <tr>
-                            <td>
-                                <div class="atividade-tipo">
-                                    <i class="fa-solid fa-database"></i>
-                                    Sistema
-                                </div>
-                            </td>
-
-                            <td>Importação de dados finalizada.</td>
-                            <td>28/10/2026</td>
-
-                            <td>
-                                <span class="status sucesso">Concluído</span>
-                            </td>
-                        </tr>
-
-                        <tr>
-                            <td>
-                                <div class="atividade-tipo">
-                                    <i class="fa-solid fa-triangle-exclamation"></i>
-                                    Sistema
-                                </div>
-                            </td>
-
-                            <td>Erro durante a leitura de uma planilha.</td>
-                            <td>27/10/2026</td>
-
-                            <td>
-                                <span class="status erro">Erro</span>
-                            </td>
-                        </tr>
-
-                    </tbody>
-
-                </table>
-            </div>
-
-        </section>
-
+            <div id="mensagem" class="mensagem"></div>
+        </div>
     </main>
+
+    <script>
+        const idUsuario = sessionStorage.getItem("ID_USUARIO");
+        const idCargo = Number(sessionStorage.getItem("ID_CARGO"));
+
+        window.addEventListener("DOMContentLoaded", function() {
+            if (!idUsuario) {
+                mostrarMensagem(
+                    "Usuário não identificado.",
+                    "erro"
+                );
+                return;
+            }
+
+            configurarTelaPorCargo();
+            carregarConfiguracoes();
+        });
+
+
+        function configurarTelaPorCargo() {
+            const configArtistaSugerido =
+                document.getElementById("config-artista-sugerido");
+            const configArtistaAprovado =
+                document.getElementById("config-artista-aprovado");
+            const configArtistaRejeitado =
+                document.getElementById("config-artista-rejeitado");
+            const cardAnalises =
+                document.getElementById("card-analises");
+
+            if (idCargo === 1) {
+                // ADMIN
+                configArtistaSugerido.style.display = "flex";
+                configArtistaAprovado.style.display = "none";
+                configArtistaRejeitado.style.display = "none";
+                cardAnalises.style.display = "block";
+
+            } else if (idCargo === 2) {
+                // FUNCIONÁRIO
+                configArtistaSugerido.style.display = "none";
+                configArtistaAprovado.style.display = "flex";
+                configArtistaRejeitado.style.display = "flex";
+                cardAnalises.style.display = "none";
+
+            }
+        }
+
+        async function carregarConfiguracoes() {
+            try {
+                const resposta = await fetch(`/notificacao/${idUsuario}`);
+                if (!resposta.ok) {
+                    throw new Error("Erro ao buscar configurações.");
+                }
+
+                const configuracoes = await resposta.json();
+
+                document.getElementById("evento-criado").checked =
+                    Boolean(configuracoes.evento_criado);
+
+                document.getElementById("evento-atualizado").checked =
+                    Boolean(configuracoes.evento_atualizado);
+
+                document.getElementById("evento-cancelado").checked =
+                    Boolean(configuracoes.evento_cancelado);
+
+                document.getElementById("evento-proximo").checked =
+                    Boolean(configuracoes.evento_proximo);
+
+                document.getElementById("artista-sugerido").checked =
+                    Boolean(configuracoes.artista_sugerido);
+
+                document.getElementById("artista-aprovado").checked =
+                    Boolean(configuracoes.artista_aprovado);
+
+                document.getElementById("artista-rejeitado").checked =
+                    Boolean(configuracoes.artista_rejeitado);
+
+                document.getElementById("analise-concluida").checked =
+                    Boolean(configuracoes.analise_concluida);
+
+            } catch (erro) {
+                console.error(erro);
+                mostrarMensagem(
+                    "Não foi possível carregar as configurações.",
+                    "erro"
+                );
+            }
+        }
+
+
+        async function salvarConfiguracoes() {
+            const botao = document.getElementById("btn-salvar");
+            botao.disabled = true;
+
+            const configuracoes = {
+
+                evento_criado:
+                    document.getElementById("evento-criado").checked,
+
+                evento_atualizado:
+                    document.getElementById("evento-atualizado").checked,
+
+                evento_cancelado:
+                    document.getElementById("evento-cancelado").checked,
+
+                evento_proximo:
+                    document.getElementById("evento-proximo").checked,
+
+                artista_sugerido:
+                    document.getElementById("artista-sugerido").checked,
+
+                artista_aprovado:
+                    document.getElementById("artista-aprovado").checked,
+
+                artista_rejeitado:
+                    document.getElementById("artista-rejeitado").checked,
+
+                analise_concluida:
+                    document.getElementById("analise-concluida").checked
+            };
+
+
+            try {
+
+                const resposta = await fetch(`/notificacao/${idUsuario}`, {
+                    method: "PUT",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify(configuracoes)
+                });
+
+                if (!resposta.ok) {
+                    throw new Error("Erro ao salvar configurações.");
+                }
+
+                mostrarMensagem(
+                    "Configurações salvas com sucesso.",
+                    "sucesso"
+                );
+
+            } catch (erro) {
+                console.error(erro);
+                mostrarMensagem(
+                    "Não foi possível salvar as configurações.",
+                    "erro"
+                );
+            } finally {
+                botao.disabled = false;
+            }
+        }
+
+
+        function mostrarMensagem(texto, tipo) {
+            const mensagem = document.getElementById("mensagem");
+            mensagem.textContent = texto;
+            mensagem.className = `mensagem ${tipo}`;
+
+            setTimeout(function() {
+                mensagem.className = "mensagem";
+            }, 4000);
+        }
+
+    </script>
 
 </body>
 
 </html>
-
-<script>
-    const filtros = document.querySelectorAll(".filtro");
-    const linhas = document.querySelectorAll(".tabela-atividades tbody tr");
-
-    filtros.forEach(filtro => {
-        filtro.addEventListener("click", () => {
-
-            // Remove o ativo dos outros filtros
-            filtros.forEach(item => item.classList.remove("ativo"));
-
-            // Ativa o filtro clicado
-            filtro.classList.add("ativo");
-
-            const categoria = filtro.textContent.trim();
-
-            linhas.forEach(linha => {
-                const tipo = linha.querySelector(".atividade-tipo").textContent.trim();
-
-                if (categoria === "Todas") {
-                    linha.style.display = "";
-                } else if (categoria === "Funcionários" && tipo === "Funcionário") {
-                    linha.style.display = "";
-                } else if (categoria === "Artistas" && tipo === "Artista") {
-                    linha.style.display = "";
-                } else if (categoria === "Sistema" && tipo === "Sistema") {
-                    linha.style.display = "";
-                } else {
-                    linha.style.display = "none";
-                }
-            });
-        });
-    });
-</script>

@@ -150,6 +150,58 @@ CREATE TABLE artista_aprovado (
     FOREIGN KEY (id_evento) REFERENCES evento(id_evento)
 );
 
+CREATE TABLE notificacao (
+    id_usuario INT PRIMARY KEY,
+
+    evento_criado BOOLEAN DEFAULT FALSE,
+    evento_atualizado BOOLEAN DEFAULT FALSE,
+    evento_cancelado BOOLEAN DEFAULT FALSE,
+    evento_proximo BOOLEAN DEFAULT FALSE,
+
+    artista_sugerido BOOLEAN DEFAULT FALSE,
+    artista_aprovado BOOLEAN DEFAULT FALSE,
+    artista_rejeitado BOOLEAN DEFAULT FALSE,
+
+    analise_concluida BOOLEAN DEFAULT FALSE,
+
+    FOREIGN KEY (id_usuario)
+        REFERENCES usuario(id_usuario)
+);
+
+CREATE TABLE notificacao_mensagem (
+    id_notificacao INT PRIMARY KEY AUTO_INCREMENT,
+
+    id_empresa INT NOT NULL,
+
+    id_usuario_origem INT NOT NULL,
+    id_usuario_destino INT NOT NULL,
+
+    tipo VARCHAR(50) NOT NULL,
+    titulo VARCHAR(150) NOT NULL,
+    mensagem VARCHAR(500) NOT NULL,
+
+    lida BOOLEAN DEFAULT FALSE,
+    data_hora DATETIME DEFAULT CURRENT_TIMESTAMP,
+
+    id_evento INT NULL,
+    id_artista INT NULL,
+
+    FOREIGN KEY (id_empresa)
+        REFERENCES empresa(id_empresa),
+
+    FOREIGN KEY (id_usuario_origem)
+        REFERENCES usuario(id_usuario),
+
+    FOREIGN KEY (id_usuario_destino)
+        REFERENCES usuario(id_usuario),
+
+    FOREIGN KEY (id_evento)
+        REFERENCES evento(id_evento),
+
+    FOREIGN KEY (id_artista)
+        REFERENCES artista(id_artista)
+);
+
 -- INSERÇÕES DE DADOS INICIAIS
 INSERT INTO cargo (nome) VALUES 
 ('Gerente / ADM (Carla)'),

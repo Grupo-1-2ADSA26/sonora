@@ -32,6 +32,26 @@ function listarPorEmpresa(req, res) {
         });
 }
 
+function listarArtistasPorEvento(req, res) {
+    var idEvento = Number(req.params.idEvento);
+    var idEmpresa = Number(req.params.idEmpresa);
+
+    if (!idEvento || isNaN(idEvento) || !idEmpresa || isNaN(idEmpresa)) {
+        return res.status(400).json({
+            mensagem: "ID do evento ou da empresa inválido."
+        });
+    }
+
+    eventoModel.listarArtistasPorEvento(idEvento, idEmpresa)
+        .then(function(resultado) {
+            res.status(200).json(resultado);
+        })
+        .catch(function(erro) {
+            console.log(erro);
+            res.status(500).json(erro.sqlMessage);
+        });
+}
+
 function atualizar(req, res) {
     var id_evento = req.params.id_evento;
 
@@ -73,6 +93,7 @@ function excluir(req, res) {
 module.exports = {
     cadastrar,
     listarPorEmpresa,
+    listarArtistasPorEvento,
     atualizar,
     excluir
 };

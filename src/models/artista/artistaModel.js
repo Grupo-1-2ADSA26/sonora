@@ -22,7 +22,7 @@ function buscarPorId(idArtista) {
     return database.executar(instrucaoSql, [idArtista]);
 }
 
-// Busca os indicadores e métricas usadas nas telas de pesquisa e análise.
+
 function buscarDadosArtista(idArtista) {
     var instrucaoSql = `
         SELECT
@@ -35,7 +35,6 @@ function buscarDadosArtista(idArtista) {
             AVG(ms.speechiness) AS speechiness,
             COALESCE(SUM(ms.streams), 0) AS total_streams,
 
-            // Engajamento = (curtidas + comentários) / visualizações * 100.
             CASE
                 WHEN COALESCE(SUM(ms.views), 0) > 0 THEN
                     ROUND(
@@ -50,8 +49,6 @@ function buscarDadosArtista(idArtista) {
                 ELSE NULL
             END AS engajamento,
 
-            // Popularidade é calculada em relação ao artista
-            // com maior quantidade total de streams.
             CASE
                 WHEN ranking.maior_total_streams > 0 THEN
                     ROUND(
@@ -72,7 +69,6 @@ function buscarDadosArtista(idArtista) {
         LEFT JOIN metrica_streaming ms
             ON ms.id_musica = m.id_musica
 
-        // Calcula o maior total de streams entre todos os artistas.
         CROSS JOIN (
             SELECT MAX(total_streams) AS maior_total_streams
             FROM (

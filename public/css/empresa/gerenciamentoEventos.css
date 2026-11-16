@@ -260,6 +260,27 @@ select:focus-visible {
     padding-top: 12px;
 }
 
+.cabecalho-card-evento {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 10px;
+}
+
+.quantidade-artistas-evento {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 11px;
+    color: #666;
+    white-space: nowrap;
+}
+
+.quantidade-artistas-evento i {
+    font-size: 12px;
+}
+
 /* ==============================
    STATUS DOS EVENTOS
 ============================== */
@@ -537,6 +558,106 @@ select:focus-visible {
     flex: 1;
 }
 
+.modal-detalhes {
+    max-width: 700px;
+}
+
+.info-evento-detalhes {
+    background-color: #bebebe;
+    border-radius: 14px;
+    padding: 18px;
+    margin-bottom: 20px;
+}
+
+.info-evento-detalhes h2 {
+    margin: 12px 0 8px;
+    font-size: 22px;
+    color: #222;
+}
+
+.info-evento-detalhes > p {
+    color: #555;
+    font-size: 13px;
+    line-height: 1.6;
+    margin-bottom: 18px;
+}
+
+.artistas-evento {
+    background-color: #d0d0d0;
+    border-radius: 14px;
+    padding: 18px;
+}
+
+.artistas-evento .barra-titulo {
+    margin-bottom: 15px;
+}
+
+.artistas-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 12px;
+}
+
+.card-artista-evento {
+    background-color: #fff;
+    border-radius: 12px;
+    padding: 13px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.icone-artista {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: #333;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.card-artista-evento h4 {
+    font-size: 14px;
+    color: #222;
+    margin-bottom: 4px;
+}
+
+.card-artista-evento p {
+    font-size: 11px;
+    color: #777;
+}
+
+.nenhum-artista-evento {
+    text-align: center;
+    padding: 25px 10px;
+    color: #777;
+}
+
+.nenhum-artista-evento i {
+    font-size: 25px;
+    margin-bottom: 8px;
+}
+
+.nenhum-artista-evento p {
+    font-size: 13px;
+}
+
+.carregando-artistas,
+.erro-artistas {
+    text-align: center;
+    padding: 20px;
+    color: #777;
+    font-size: 13px;
+}
+
+.erro-artistas {
+    color: #b71c1c;
+}
+
 /* ==============================
    NOTIFICAÇÃO TOAST
 ============================== */
@@ -690,6 +811,16 @@ select:focus-visible {
     .modal-actions .btn-danger {
         width: 100%;
         flex: none;
+    }
+}
+
+@media (max-width: 768px) {
+    .modal-detalhes {
+        max-width: 420px;
+    }
+
+    .artistas-grid {
+        grid-template-columns: 1fr;
     }
 }
 

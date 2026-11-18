@@ -89,51 +89,7 @@ function autenticar(req, res) {
     }
 }
 
-function buscarShowMaisProximo(req, res) {
-    var idEmpresa = req.params.idEmpresa;
-    funcionarioModel.buscarShowMaisProximo(idEmpresa)
-        .then(resultado => res.status(200).json(resultado))
-        .catch(erro => res.status(500).json(erro.sqlMessage));
-}
 
-function buscarGeneroPredominante(req, res) {
-    var idEmpresa = req.params.idEmpresa;
-    funcionarioModel.buscarGeneroPredominante(idEmpresa)
-        .then(resultado => res.status(200).json(resultado))
-        .catch(erro => res.status(500).json(erro.sqlMessage));
-}
-
-function buscarArtistasPendentesTotal(req, res) {
-    var idEmpresa = req.params.idEmpresa;
-    var periodo = req.query.periodo || 'todos';
-    funcionarioModel.buscarArtistasPendentesTotal(idEmpresa, periodo)
-        .then(resultado => res.status(200).json(resultado[0] || { pendentes: 0, total: 0 }))
-        .catch(erro => res.status(500).json(erro.sqlMessage));
-}
-
-function buscarArtistasPorEvento(req, res) {
-    var idEmpresa = req.params.idEmpresa;
-    var periodo = req.query.periodo || 'todos';
-    funcionarioModel.buscarArtistasPorEvento(idEmpresa, periodo)
-        .then(resultado => res.status(200).json(resultado))
-        .catch(erro => res.status(500).json(erro.sqlMessage));
-}
-
-function buscarImportanciaEvento(req, res) {
-    var idEmpresa = req.params.idEmpresa;
-    var periodo = req.query.periodo || 'todos';
-    funcionarioModel.buscarImportanciaEvento(idEmpresa, periodo)
-        .then(resultado => res.status(200).json(resultado))
-        .catch(erro => res.status(500).json(erro.sqlMessage));
-}
-
-function buscarAprovacoesMensais(req, res) {
-    var idEmpresa = req.params.idEmpresa;
-    var periodo = req.query.periodo || 'todos';
-    funcionarioModel.buscarAprovacoesMensais(idEmpresa, periodo)
-        .then(resultado => res.status(200).json(resultado))
-        .catch(erro => res.status(500).json(erro.sqlMessage));
-}
 
 module.exports = {
     cadastrar,
@@ -141,11 +97,5 @@ module.exports = {
     buscarPorId,
     atualizar,
     deletar,
-    autenticar,
-    buscarShowMaisProximo,
-    buscarGeneroPredominante,
-    buscarArtistasPendentesTotal,
-    buscarArtistasPorEvento,
-    buscarImportanciaEvento,
-    buscarAprovacoesMensais
+    autenticar
 };

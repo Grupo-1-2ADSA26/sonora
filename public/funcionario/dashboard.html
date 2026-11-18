@@ -13,7 +13,7 @@
 
 <body>
 
-
+    
     <aside class="box-menu">
         <input type="checkbox" id="menu-toggle" class="menu-toggle">
         <div class="menu-top">
@@ -62,9 +62,10 @@
         </ul>
     </aside>
 
+    
     <main class="main-content">
 
-   
+       
         <header class="page-header" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap;">
             <div class="header-info">
                 <span class="eyebrow">SONORA / VISÃO GERAL</span>
@@ -72,7 +73,7 @@
                 <p>Acompanhe os indicadores, eventos e desempenho dos artistas.</p>
             </div>
 
-            
+            <!-- FILTRO DE PERÍODO GLOBAL -->
             <div class="filter-container" style="display: flex; gap: 10px; align-items: center;">
                 <label for="filtroPeriodo" style="font-size: 14px; font-weight: 500; color: #555;">Período:</label>
                 <select id="filtroPeriodo" style="padding: 8px 12px; border-radius: 6px; border: 1px solid #ccc;" onchange="atualizarDashboard()">
@@ -84,7 +85,7 @@
             </div>
         </header>
 
-   
+
         <section class="summary">
 
             <!-- KPI 1: Show mais próximo -->
@@ -125,14 +126,14 @@
 
         </section>
 
-      
+     
         <div id="emptyState" class="empty-state" hidden>
             <i class="fa-solid fa-chart-simple"></i>
             <h2>Nenhum dado disponível</h2>
             <p>Não há informações suficientes para exibir os indicadores e gráficos.</p>
         </div>
 
-       
+   
         <section class="dashboard-grid">
 
             <!-- GRÁFICO 1: Artistas por Evento (Empilhado) -->
@@ -202,7 +203,7 @@
 
     </main>
 
-    
+    <!-- CONFIGURAÇÃO DOS GRÁFICOS E REQUISIÇÕES -->
     <script>
         const idEmpresa = sessionStorage.getItem("ID_EMPRESA") || 1;
 
@@ -223,10 +224,10 @@
             carregarGraficoAprovacoesMensais(periodo);
         }
 
-       
+        // CARREGAR KPIS
         function carregarKPIs(periodo) {
             // Show mais próximo
-            fetch(`http://localhost:3333/funcionario/show-proximo/${idEmpresa}`)
+            fetch(`http://localhost:3333/dashboardFuncionario/show-proximo/${idEmpresa}`)
                 .then(res => res.json())
                 .then(dados => {
                     if (dados && dados.length > 0) {
@@ -239,14 +240,14 @@
                 }).catch(() => document.getElementById("kpiShowProximo").textContent = "Indisponível");
 
             // Gênero predominante
-            fetch(`http://localhost:3333/funcionario/genero-predominante/${idEmpresa}`)
+            fetch(`http://localhost:3333/dashboardFuncionario/genero-predominante/${idEmpresa}`)
                 .then(res => res.json())
                 .then(dados => {
                     document.getElementById("topGenre").textContent = dados[0]?.genero || "N/A";
                 }).catch(() => document.getElementById("topGenre").textContent = "N/A");
 
             // Artistas pendentes de análise 
-            fetch(`http://localhost:3333/funcionario/artistas-pendentes-total/${idEmpresa}?periodo=${periodo}`)
+            fetch(`http://localhost:3333/dashboardFuncionario/artistas-pendentes-total/${idEmpresa}?periodo=${periodo}`)
                 .then(res => res.json())
                 .then(dados => {
                     const pendentes = dados.pendentes || 0;
@@ -257,7 +258,7 @@
 
         // GRÁFICO 1: Artistas por Evento (Empilhado)
         function carregarGraficoArtistasPorEvento(periodo) {
-            fetch(`http://localhost:3333/funcionario/artistas-por-evento/${idEmpresa}?periodo=${periodo}`)
+            fetch(`http://localhost:3333/dashboardFuncionario/artistas-por-evento/${idEmpresa}?periodo=${periodo}`)
                 .then(res => res.json())
                 .then(dados => {
                     const eventos = dados.map(item => item.evento);
@@ -291,7 +292,7 @@
 
         // GRÁFICO 2: Importância do Evento
         function carregarGraficoImportanciaEvento(periodo) {
-            fetch(`http://localhost:3333/funcionario/importancia-evento/${idEmpresa}?periodo=${periodo}`)
+            fetch(`http://localhost:3333/dashboardFuncionario/importancia-evento/${idEmpresa}?periodo=${periodo}`)
                 .then(res => res.json())
                 .then(dados => {
                     const eventos = dados.map(item => item.evento);
@@ -328,7 +329,7 @@
 
         // GRÁFICO 3: Aprovações Mensais
         function carregarGraficoAprovacoesMensais(periodo) {
-            fetch(`http://localhost:3333/funcionario/aprovacoes-mensais/${idEmpresa}?periodo=${periodo}`)
+            fetch(`http://localhost:3333/dashboardFuncionario/aprovacoes-mensais/${idEmpresa}?periodo=${periodo}`)
                 .then(res => res.json())
                 .then(dados => {
                     const meses = dados.map(item => item.mes);

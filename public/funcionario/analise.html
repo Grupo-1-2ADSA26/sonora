@@ -29,6 +29,7 @@
             <li><a href="dashboard.html"><i class="fa-solid fa-house"></i><span>Início</span></a></li>
             <li><a href="pesquisa.html"><i class="fa-solid fa-magnifying-glass"></i><span>Artistas</span></a></li>
             <li class="ativo"><a href="aprovados.html"><i class="fa-solid fa-bell"></i><span>Aprovados</span></a></li>
+            <li><a href="notificacoes.html"><i class="fa-solid fa-bell"></i><span>Notificações</span></a></li>
             <li><a href="perfil.html"><i class="fa-solid fa-user"></i><span>Perfil</span></a></li>
             <li class="box-sair">
                 <a class="botao-sair" href="../index.html"><i class="fa-solid fa-right-from-bracket"></i> Sair</a>
@@ -224,7 +225,6 @@
     </main>
 
     <script>
-
         let graficoRadar = null;
         let graficoBarras = null;
         let graficoLinha = null;
@@ -249,7 +249,7 @@
         async function buscarDadosAnalise(idArtista, idEmpresa) {
             try {
                 const resposta = await fetch(
-                    `/funcionario/analise-artista/${encodeURIComponent(idArtista)}/${encodeURIComponent(idEmpresa)}`
+                    `/analise/artista/${encodeURIComponent(idArtista)}/${encodeURIComponent(idEmpresa)}`
                 );
 
                 if (!resposta.ok) {
@@ -269,7 +269,6 @@
                 montarGraficoLinha(dados.graficoLinha);
 
                 preencherInterpretacao(dados.cabecalho || {}, dados.kpis || {});
-
             } catch (erro) {
                 console.error("Erro na análise:", erro);
                 mostrarErro("Não foi possível carregar a análise. Tente novamente.");
@@ -277,19 +276,17 @@
         }
 
         function preencherCabecalho(cabecalho) {
-            const nome = document.getElementById("nome-artista");
-            const genero = document.getElementById("genero-artista");
+            definirTexto(
+                "nome-artista",
+                cabecalho.nome || "Artista sem nome"
+            );
 
-            if (nome) {
-                nome.textContent = cabecalho.nome || "Artista sem nome";
-            }
-
-            if (genero) {
-                genero.textContent = cabecalho.genero || "Gênero não informado";
-            }
+            definirTexto(
+                "genero-artista",
+                cabecalho.genero || "Gênero não informado"
+            );
         }
 
-        // O botão só aparece enquanto a análise ainda está em andamento
         function atualizarAcaoAprovacao(cabecalho) {
             const bloco = document.getElementById("acao-aprovacao");
 
@@ -301,15 +298,22 @@
         async function aprovarArtista() {
             if (!idArtistaAtual || !idEmpresaAtual) return;
 
-            if (!confirm("Deseja aprovar este artista e concluir a análise?")) return;
+            if (!confirm("Deseja aprovar este artista e concluir a análise?")) {
+                return;
+            }
 
             const botao = document.getElementById("btn-aprovar-artista");
-            botao.disabled = true;
+
+            if (botao) {
+                botao.disabled = true;
+            }
 
             try {
                 const resposta = await fetch("/aprovados/atualizarStatus", {
                     method: "PUT",
-                    headers: { "Content-Type": "application/json" },
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
                     body: JSON.stringify({
                         idEmpresa: idEmpresaAtual,
                         idArtista: idArtistaAtual,
@@ -317,45 +321,74 @@
                     })
                 });
 
-                const dados = await resposta.json().catch(function () { return {}; });
+                const dados = await resposta.json().catch(function () {
+                    return {};
+                });
 
                 if (!resposta.ok) {
-                    throw new Error(dados.mensagem || `Erro ao aprovar o artista (status ${resposta.status}).`);
+                    throw new Error(
+                        dados.mensagem ||
+                        `Erro ao aprovar o artista (status ${resposta.status}).`
+                    );
                 }
 
                 alert("Análise concluída! A empresa já pode ver o resultado.");
                 window.location.href = "aprovados.html";
-
             } catch (erro) {
                 console.error("Erro ao aprovar artista:", erro);
                 alert(erro.message || "Não foi possível aprovar o artista.");
-                botao.disabled = false;
+
+                if (botao) {
+                    botao.disabled = false;
+                }
             }
         }
 
         function preencherKpis(kpis) {
-            definirTexto("kpi-popularidade", formatarIndice(kpis.popularidade));
-            definirTexto("kpi-energy", formatarPercentual(kpis.energy));
-            definirTexto("kpi-danceability", formatarPercentual(kpis.danceability));
-            definirTexto("kpi-bpm", kpis.bpm != null ? `${kpis.bpm} BPM` : "--");
+            definirTexto(
+                "kpi-popularidade",
+                formatarIndice(kpis.popularidade)
+            );
+
+            definirTexto(
+                "kpi-energy",
+                formatarPercentual(kpis.energy)
+            );
+
+            definirTexto(
+                "kpi-danceability",
+                formatarPercentual(kpis.danceability)
+            );
+
+            definirTexto(
+                "kpi-bpm",
+                kpis.bpm != null ? `${Number(kpis.bpm).toFixed(0)} BPM` : "--"
+            );
         }
 
         function formatarIndice(valor) {
-            if (valor == null || valor === "") return "--";
+            if (valor == null || valor === "") {
+                return "--";
+            }
 
             const numero = Number(valor);
 
-            return Number.isFinite(numero) ? `${numero}/100` : "--";
+            return Number.isFinite(numero)
+                ? `${numero.toFixed(0)}/100`
+                : "--";
         }
 
         function formatarPercentual(valor) {
-            if (valor == null || valor === "") return "--";
+            if (valor == null || valor === "") {
+                return "--";
+            }
 
             let numero = Number(valor);
 
-            if (!Number.isFinite(numero)) return "--";
+            if (!Number.isFinite(numero)) {
+                return "--";
+            }
 
-            // Energy e danceability normalmente vêm entre 0 e 1.
             if (numero >= 0 && numero <= 1) {
                 numero *= 100;
             }
@@ -375,6 +408,7 @@
             if (!dados) return;
 
             const canvas = document.getElementById("graficoRadar");
+
             if (!canvas) return;
 
             const labels = dados.labels || [
@@ -390,11 +424,12 @@
 
             if (!valores.length) return;
 
-            if (graficoRadar) graficoRadar.destroy();
+            if (graficoRadar) {
+                graficoRadar.destroy();
+            }
 
             graficoRadar = new Chart(canvas, {
                 type: "radar",
-
                 data: {
                     labels,
                     datasets: [{
@@ -408,11 +443,9 @@
                         borderWidth: 2
                     }]
                 },
-
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
-
                     scales: {
                         r: {
                             beginAtZero: true,
@@ -428,7 +461,6 @@
                             }
                         }
                     },
-
                     plugins: {
                         legend: {
                             display: false
@@ -442,6 +474,7 @@
             if (!dados) return;
 
             const canvas = document.getElementById("graficoBarras");
+
             if (!canvas) return;
 
             const labels = dados.labels || [];
@@ -449,11 +482,12 @@
 
             if (!labels.length || !valores.length) return;
 
-            if (graficoBarras) graficoBarras.destroy();
+            if (graficoBarras) {
+                graficoBarras.destroy();
+            }
 
             graficoBarras = new Chart(canvas, {
                 type: "bar",
-
                 data: {
                     labels,
                     datasets: [{
@@ -471,11 +505,9 @@
                         maxBarThickness: 42
                     }]
                 },
-
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
-
                     scales: {
                         y: {
                             beginAtZero: true,
@@ -484,7 +516,9 @@
                             },
                             ticks: {
                                 callback: function (valor) {
-                                    return Number(valor).toLocaleString("pt-BR", { notation: "compact" });
+                                    return Number(valor).toLocaleString("pt-BR", {
+                                        notation: "compact"
+                                    });
                                 }
                             }
                         },
@@ -494,7 +528,6 @@
                             }
                         }
                     },
-
                     plugins: {
                         legend: {
                             display: false
@@ -508,6 +541,7 @@
             if (!dados) return;
 
             const canvas = document.getElementById("graficoLinha");
+
             if (!canvas) return;
 
             const labels = dados.labels || [];
@@ -515,15 +549,16 @@
 
             if (!labels.length || !valores.length) return;
 
-            if (graficoLinha) graficoLinha.destroy();
+            if (graficoLinha) {
+                graficoLinha.destroy();
+            }
 
             graficoLinha = new Chart(canvas, {
                 type: "line",
-
                 data: {
                     labels,
                     datasets: [{
-                        label: dados.label || "Desempenho",
+                        label: dados.label || "BPM médio",
                         data: valores,
                         borderColor: "#333333",
                         backgroundColor: "rgba(51, 51, 51, 0.10)",
@@ -533,11 +568,9 @@
                         pointBackgroundColor: "#333333"
                     }]
                 },
-
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
-
                     scales: {
                         y: {
                             beginAtZero: true,
@@ -551,7 +584,6 @@
                             }
                         }
                     },
-
                     plugins: {
                         legend: {
                             display: false
@@ -572,15 +604,20 @@
             const energia = Number(kpis.energy);
             const dancabilidade = Number(kpis.danceability);
 
-            const partes = [`${nome} pertence ao gênero ${genero}.`];
+            const partes = [
+                `${nome} pertence ao gênero ${genero}.`
+            ];
 
             if (Number.isFinite(bpm) && bpm > 0) {
-                partes.push(`Suas faixas apresentam um andamento médio de ${bpm} BPM.`);
+                partes.push(
+                    `Suas faixas apresentam um andamento médio de ${bpm.toFixed(0)} BPM.`
+                );
             }
 
             if (Number.isFinite(energia) && kpis.energy != null) {
-                const percentualEnergia =
-                    energia <= 1 ? energia * 100 : energia;
+                const percentualEnergia = energia <= 1
+                    ? energia * 100
+                    : energia;
 
                 partes.push(
                     `O índice de energia é de ${percentualEnergia.toFixed(0)}%.`
@@ -588,8 +625,9 @@
             }
 
             if (Number.isFinite(dancabilidade) && kpis.danceability != null) {
-                const percentualDanca =
-                    dancabilidade <= 1 ? dancabilidade * 100 : dancabilidade;
+                const percentualDanca = dancabilidade <= 1
+                    ? dancabilidade * 100
+                    : dancabilidade;
 
                 partes.push(
                     `A dançabilidade registrada é de ${percentualDanca.toFixed(0)}%.`
@@ -600,15 +638,8 @@
         }
 
         function mostrarErro(mensagem) {
-            const texto = document.getElementById("texto-interpretacao");
-
-            if (texto) {
-                texto.textContent = mensagem;
-            }
+            definirTexto("texto-interpretacao", mensagem);
         }
-
     </script>
-
 </body>
-
 </html>

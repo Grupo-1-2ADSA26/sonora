@@ -25,6 +25,8 @@
     let eventoRouter = require("./src/routes/evento/evento");
     let aprovadosRouter = require("./src/routes/aprovados/aprovados");
     let artistaRouter = require("./src/routes/artista/artista");
+    let analiseRouter = require("./src/routes/analise/analise");
+    let notificacaoRouter = require("./src/routes/notificacao/notificacao");
 
     app.use(express.json());
     app.use(express.urlencoded({ extended: false }));
@@ -42,7 +44,8 @@
     app.use("/evento", eventoRouter);
     app.use("/aprovados", aprovadosRouter);
     app.use("/artista", artistaRouter);
-    
+    app.use("/analise", analiseRouter);    
+    app.use("/notificacao", notificacaoRouter);
 
 
     app.listen(PORTA_APP, function () {

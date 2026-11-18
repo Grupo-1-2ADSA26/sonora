@@ -23,12 +23,11 @@
         </div>
 
         <ul class="lista">
-            <li class="ativo"><a href="dashboard.html"><i class="fa-solid fa-house"></i>Início</a></li>
+            <li><a href="dashboard.html"><i class="fa-solid fa-house"></i>Início</a></li>
             <li><a href="pesquisaArtista.html"><i class="fa-solid fa-magnifying-glass"></i>Artistas</a></li>
             <li><a href="cadastroFuncionario.html"><i class="fa-solid fa-users"></i>Funcionários</a></li>
             <li><a href="aprovados.html"><i class="fa-solid fa-user-pen"></i>Aprovados</a></li>
             <li class="ativo"><a href="gerenciamentoEventos.html"><i class="fa-solid fa-music"></i>Eventos</a></li>
-
             <li><a href="notificacoes.html"><i class="fa-solid fa-bell"></i>Notificações</a></li>
             <li><a href="perfilEmpresa.html"><i class="fa-solid fa-building"></i>Perfil Empresa</a></li>
             <li><a href="perfil.html"><i class="fa-solid fa-user"></i>Perfil</a></li>
@@ -199,6 +198,63 @@
         </div>
     </div>
 
+    <div id="modal-detalhes-evento" class="modal-overlay">
+        <div class="modal-box modal-detalhes">
+
+            <div class="modal-header">
+                <h3>
+                    <i class="fa-solid fa-calendar-days"></i>
+                    Detalhes do Evento
+                </h3>
+
+                <button type="button" class="btn-close">
+                    &times;
+                </button>
+            </div>
+
+            <div id="detalhes-evento-conteudo">
+
+                <div class="info-evento-detalhes">
+                    <span class="status-evento" id="detalhes-status"></span>
+
+                    <h2 id="detalhes-nome"></h2>
+
+                    <p id="detalhes-descricao"></p>
+
+                    <div class="detalhes-evento">
+                        <span>
+                            <i class="fa-solid fa-calendar"></i>
+                            <span id="detalhes-data"></span>
+                        </span>
+
+                        <span>
+                            <i class="fa-solid fa-location-dot"></i>
+                            <span id="detalhes-local"></span>
+                        </span>
+                    </div>
+                </div>
+
+                <div class="artistas-evento">
+                    <div class="barra-titulo">
+                        <h3>
+                            <i class="fa-solid fa-microphone"></i>
+                            Artistas relacionados
+                        </h3>
+
+                        <span class="badge" id="quantidade-artistas-evento">
+                            0 Artistas
+                        </span>
+                    </div>
+
+                    <div id="lista-artistas-evento" class="artistas-grid">
+                        <!-- Artistas carregados dinamicamente -->
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
     <!-- TOAST -->
     <div id="toast"></div>
 
@@ -207,7 +263,7 @@
         let idEventoExcluir = null;
 
         // Pega o ID da empresa do sessionStorage de forma segura
-        const idEmpresa = sessionStorage.ID_EMPRESA;
+        const idEmpresa = sessionStorage.getItem("ID_EMPRESA");
 
         document.addEventListener("DOMContentLoaded", () => {
             if (!idEmpresa) {
@@ -274,9 +330,20 @@
                 else if (evento.status_evento === "Finalizado") classeStatus = "status-finalizado";
 
                 lista.innerHTML += `
-                    <div class="card-evento">
+                    <div class="card-evento" onclick="abrirDetalhesEvento(${evento.id_evento})">
                         <div class="conteudo-evento">
-                            <span class="status-evento ${classeStatus}">${evento.status_evento}</span>
+                            <div class="cabecalho-card-evento">
+                                <span class="status-evento ${classeStatus}">
+                                    ${evento.status_evento}
+                                </span>
+
+                                <span class="quantidade-artistas-evento">
+                                    <i class="fa-solid fa-microphone"></i>
+                                    ${evento.quantidade_artistas}
+                                    ${evento.quantidade_artistas == 1 ? "Artista" : "Artistas"}
+                                </span>
+                            </div>
+
                             <h3>${evento.nome}</h3>
                             <p class="descricao-evento">${evento.descricao}</p>
                             
@@ -292,10 +359,10 @@
                             </div>
 
                             <div class="acoes-evento">
-                                <button onclick="editarEvento(${evento.id_evento})" class="btn-card btn-editar">
+                                <button onclick="event.stopPropagation(); editarEvento(${evento.id_evento})" class="btn-card btn-editar">
                                     <i class="fa-solid fa-pen"></i> Editar
                                 </button>
-                                <button onclick="abrirModalExcluir(${evento.id_evento})" class="btn-card btn-excluir">
+                                <button onclick="event.stopPropagation(); abrirModalExcluir(${evento.id_evento})" class="btn-card btn-excluir">
                                     <i class="fa-solid fa-trash"></i> Excluir
                                 </button>
                             </div>
@@ -408,6 +475,89 @@
                 document.getElementById("nome-evento-exclusao").innerText = evento.nome;
             }
             document.getElementById("modal-exclusao").classList.add("ativo");
+        }
+
+        function abrirDetalhesEvento(idEvento) {
+            const evento = eventos.find(e => e.id_evento == idEvento);
+
+            if (!evento) return;
+
+            document.getElementById("detalhes-nome").innerText = evento.nome;
+            document.getElementById("detalhes-descricao").innerText = evento.descricao;
+            document.getElementById("detalhes-data").innerText = evento.data_evento;
+            document.getElementById("detalhes-local").innerText = evento.local_evento;
+
+            const status = document.getElementById("detalhes-status");
+            status.innerText = evento.status_evento;
+            status.className = `status-evento ${classeStatusEvento(evento.status_evento)}`;
+
+            const lista = document.getElementById("lista-artistas-evento");
+            lista.innerHTML = `
+                <p class="carregando-artistas">
+                    Carregando artistas...
+                </p>
+            `;
+
+            document.getElementById("modal-detalhes-evento").classList.add("ativo");
+
+            carregarArtistasEvento(idEvento);
+        }
+
+        function classeStatusEvento(status) {
+            if (status === "Confirmado") return "status-confirmado";
+            if (status === "Cancelado") return "status-cancelado";
+            if (status === "Finalizado") return "status-finalizado";
+
+            return "status-planejado";
+        }
+
+        function carregarArtistasEvento(idEvento) {
+            fetch(`/evento/artistas/${idEvento}/${idEmpresa}`)
+                .then(resposta => {
+                    if (!resposta.ok) {
+                        throw new Error("Erro ao buscar artistas do evento");
+                    }
+
+                    return resposta.json();
+                })
+                .then(artistas => {
+                    const lista = document.getElementById("lista-artistas-evento");
+
+                    document.getElementById("quantidade-artistas-evento").innerText =
+                        `${artistas.length} ${artistas.length === 1 ? "Artista" : "Artistas"}`;
+
+                    if (artistas.length === 0) {
+                        lista.innerHTML = `
+                            <div class="nenhum-artista-evento">
+                                <i class="fa-solid fa-microphone-slash"></i>
+                                <p>Nenhum artista relacionado a este evento.</p>
+                            </div>
+                        `;
+                        return;
+                    }
+
+                    lista.innerHTML = artistas.map(artista => `
+                        <div class="card-artista-evento">
+                            <div class="icone-artista">
+                                <i class="fa-solid fa-music"></i>
+                            </div>
+
+                            <div>
+                                <h4>${artista.nome_artista}</h4>
+                                <p>${artista.genero || "Gênero não informado"}</p>
+                            </div>
+                        </div>
+                    `).join("");
+                })
+                .catch(erro => {
+                    console.error(erro);
+
+                    document.getElementById("lista-artistas-evento").innerHTML = `
+                        <p class="erro-artistas">
+                            Não foi possível carregar os artistas deste evento.
+                        </p>
+                    `;
+                });
         }
 
         function excluirEvento() {

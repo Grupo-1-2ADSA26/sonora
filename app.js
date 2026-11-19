@@ -27,6 +27,9 @@
     let artistaRouter = require("./src/routes/artista/artista");
     let analiseRouter = require("./src/routes/analise/analise");
     let notificacaoRouter = require("./src/routes/notificacao/notificacao");
+    const springRouter = require("./src/routes/spring/spring");
+
+
 
     app.use(express.json());
     app.use(express.urlencoded({ extended: false }));
@@ -46,6 +49,7 @@
     app.use("/artista", artistaRouter);
     app.use("/analise", analiseRouter);    
     app.use("/notificacao", notificacaoRouter);
+    app.use("/spring", springRouter);
 
 
     app.listen(PORTA_APP, function () {

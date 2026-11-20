@@ -28,6 +28,8 @@
     let analiseRouter = require("./src/routes/analise/analise");
     let notificacaoRouter = require("./src/routes/notificacao/notificacao");
     let dashboardFuncionarioRouter = require("./src/routes/dashboardFuncionario/dashboardFuncionario.js");
+    let preferenciaRouter = require("./src/routes/preferencia/preferencia");
+    
 
     app.use(express.json());
     app.use(express.urlencoded({ extended: false }));
@@ -49,6 +51,7 @@
     app.use("/analise", analiseRouter);    
     app.use("/notificacao", notificacaoRouter);
     app.use("/dashboardFuncionario", dashboardFuncionarioRouter);
+    app.use("/preferencia", preferenciaRouter);
 
 
     app.listen(PORTA_APP, function () {

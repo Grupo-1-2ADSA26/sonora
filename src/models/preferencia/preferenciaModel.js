@@ -1,3 +1,4 @@
+const { bus } = require("nodemon/lib/utils");
 var database = require("../../database/config");
 
 function buscarGenerosArtistas() {
@@ -72,10 +73,32 @@ function salvarPreferencias(idEmpresa, idsGeneros) {
     ]);
 }
 
+function buscarArtistasRecomendados(idEmpresa) {
+    var instrucaoSql = `
+        SELECT DISTINCT
+            a.id_artista,
+            a.nome,
+            a.url_artista,
+            a.genero,
+            a.genero_status
+        FROM artista a
+        INNER JOIN empresa_genero eg
+            ON eg.id_empresa = ?
+        INNER JOIN genero g
+            ON g.id_genero = eg.id_genero
+        WHERE a.genero IS NOT NULL
+          AND LOWER(a.genero) LIKE CONCAT('%', LOWER(g.nome), '%')
+        ORDER BY a.nome ASC;
+    `;
+
+    return database.executar(instrucaoSql, [idEmpresa]);
+}
+
 module.exports = {
     buscarGenerosArtistas,
     cadastrarGenero,
     listarPorEmpresa,
     limparPreferencias,
-    salvarPreferencias
+    salvarPreferencias,
+    buscarArtistasRecomendados
 };

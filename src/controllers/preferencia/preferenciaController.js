@@ -103,7 +103,29 @@ async function salvar(req, res) {
     }
 }
 
+async function listarArtistasRecomendados(req, res) {
+    var idEmpresa = Number(req.params.idEmpresa);
+
+    if (!Number.isInteger(idEmpresa) || idEmpresa <= 0) {
+        return res.status(400).json({
+            mensagem: "ID da empresa inválido."
+        });
+    }
+
+    try {
+        var artistas = await preferenciaModel.buscarArtistasRecomendados(idEmpresa);
+        return res.status(200).json(artistas);
+    } catch (erro) {
+        console.log("Erro ao listar artistas recomendados:", erro);
+        return res.status(500).json({
+            mensagem: "Erro ao buscar artistas recomendados.",
+            erro: erro.sqlMessage || erro.message
+        });
+    }
+}
+
 module.exports = {
     listar,
-    salvar
+    salvar,
+    listarArtistasRecomendados
 };

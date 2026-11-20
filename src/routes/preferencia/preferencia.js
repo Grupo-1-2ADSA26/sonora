@@ -13,4 +13,8 @@ router.put("/:idEmpresa", function (req, res) {
     preferenciaController.salvar(req, res);
 });
 
+router.get("/artistas/:idEmpresa", function (req, res) {
+    preferenciaController.listarArtistasRecomendados(req, res);
+});
+
 module.exports = router;

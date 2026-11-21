@@ -75,11 +75,17 @@
                             Estabelecimento</label>
                         <select id="select_tipo_empresa" required>
                             <option value="">Selecione</option>
-                            <option value="Casa de Shows">Casa de Shows</option>
-                            <option value="Festival">Festival</option>
-                            <option value="Produtora de Eventos">Produtora de Eventos</option>
-                            <option value="Bar / Pub">Bar / Pub</option>
-                            <option value="Outro">Outro</option>
+                            <option value="1">Casa de Shows</option>
+                            <option value="2">Boate</option>
+                            <option value="3">Bar</option>
+                            <option value="4">Teatro</option>
+                            <option value="5">Centro Cultural</option>
+                            <option value="6">Festival</option>
+                            <option value="7">Arena</option>
+                            <option value="8">Restaurante</option>
+                            <option value="9">Pub</option>
+                            <option value="10">Clube</option>
+                            <option value="11">Outro</option>
                         </select>
                     </div>
 
@@ -130,7 +136,7 @@
                     if (dadosEmpresa) {
                         document.getElementById("ipt_nome_empresa").value = dadosEmpresa.razao_social || "";
                         document.getElementById("ipt_cnpj_empresa").value = dadosEmpresa.cnpj || "";
-                        document.getElementById("select_tipo_empresa").value = dadosEmpresa.tipo_estabelecimento || "";
+                        document.getElementById("select_tipo_empresa").value = dadosEmpresa.id_tipo_estabelecimento || "";
                     }
                 })
                 .catch(erro => console.error("Erro na requisição: ", erro));
@@ -154,7 +160,7 @@
                 body: JSON.stringify({
                     razaoSocial: razaoSocial,
                     cnpj: cnpj,
-                    tipoEstabelecimento: tipoEstabelecimento
+                    idTipoEstabelecimento: Number(tipoEstabelecimento)
                 })
             })
                 .then(resposta => {

@@ -135,10 +135,10 @@
                     </label>
                     <select id="status-evento">
                         <option value="">Selecione</option>
-                        <option value="Planejado">Planejado</option>
-                        <option value="Confirmado">Confirmado</option>
-                        <option value="Cancelado">Cancelado</option>
-                        <option value="Finalizado">Finalizado</option>
+                        <option value="1">Planejado</option>
+                        <option value="2">Confirmado</option>
+                        <option value="3">Cancelado</option>
+                        <option value="4">Finalizado</option>
                     </select>
                     <small id="erro-status"></small>
                 </div>
@@ -391,7 +391,7 @@
             document.getElementById("nome-evento").value = evento.nome;
             document.getElementById("descricao-evento").value = evento.descricao;
             document.getElementById("local-evento").value = evento.local_evento;
-            document.getElementById("status-evento").value = evento.status_evento;
+            document.getElementById("status-evento").value = evento.id_status_evento;
 
             // Converte data de DD/MM/YYYY para YYYY-MM-DD para exibir corretamente no input type="date"
             const partes = evento.data_evento.split("/");
@@ -418,7 +418,7 @@
                 descricao: document.getElementById("descricao-evento").value.trim(),
                 data_evento: document.getElementById("data-evento").value,
                 local_evento: document.getElementById("local-evento").value.trim(),
-                status_evento: document.getElementById("status-evento").value,
+                id_status_evento: Number(document.getElementById("status-evento").value),
                 id_empresa: idEmpresa
             };
 
@@ -427,7 +427,7 @@
                 !dados.descricao ||
                 !dados.data_evento ||
                 !dados.local_evento ||
-                !dados.status_evento
+                !dados.id_status_evento
             ) {
                 mostrarToast("Preencha todos os campos", true);
                 return;

@@ -133,6 +133,24 @@
         localStorage.getItem("ID_EMPRESA") ||
         localStorage.getItem("id_empresa");
 
+    async function registrarLog(tipo, mensagem, status) {
+        try {
+            await fetch("/suporte/registrar", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    tipo: tipo,
+                    mensagem: mensagem,
+                    status: status
+                })
+            });
+        } catch (erro) {
+            console.error("Erro ao registrar log:", erro);
+        }
+    }
+
     document.addEventListener("DOMContentLoaded", () => {
         if (!idEmpresa) {
             mostrarToast("Sessão expirada. Faça login novamente.", true);
@@ -163,12 +181,33 @@
 
     function carregarPreferencias() {
         const lista = document.getElementById("lista-generos");
+        const inicioRequisicao = performance.now();
 
         fetch(`/preferencia/${idEmpresa}`)
             .then(resposta => {
+                const tempoResposta =
+                    performance.now() - inicioRequisicao;
+
+                if (tempoResposta > 3000) {
+                    registrarLog(
+                        "Atraso",
+                        "Carregamento das preferências musicais demorou " +
+                        Math.round(tempoResposta) +
+                        "ms para responder.",
+                        "Atenção"
+                    );
+                }
+
                 if (!resposta.ok) {
+                    registrarLog(
+                        "Falha",
+                        "Não foi possível carregar as preferências musicais da empresa.",
+                        "Crítico"
+                    );
+
                     throw new Error("Erro ao carregar gêneros musicais");
                 }
+
                 return resposta.json();
             })
             .then(dados => {
@@ -181,6 +220,12 @@
                     }
                 });
 
+                registrarLog(
+                    "Sistema",
+                    "Preferências musicais da empresa carregadas com sucesso.",
+                    "Informação"
+                );
+
                 atualizarStatusSalvamento(true);
                 atualizarContador();
                 renderizarTagsAtivas();
@@ -188,6 +233,15 @@
             })
             .catch(erro => {
                 console.error(erro);
+
+                if (erro.message !== "Erro ao carregar gêneros musicais") {
+                    registrarLog(
+                        "Integração",
+                        "Falha na comunicação ao carregar as preferências musicais.",
+                        "Crítico"
+                    );
+                }
+
                 if (lista) {
                     lista.innerHTML = `
                     <p class="mensagem-lista">
@@ -195,6 +249,7 @@
                     </p>
                 `;
                 }
+
                 mostrarToast("Erro ao carregar preferências musicais", true);
             });
     }
@@ -339,6 +394,8 @@
         const textoOriginal = btnSalvar.innerHTML;
         btnSalvar.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Salvando...`;
 
+        const inicioRequisicao = performance.now();
+
         fetch(`/preferencia/${idEmpresa}`, {
             method: "PUT",
             headers: {
@@ -347,17 +404,52 @@
             body: JSON.stringify({ idsGeneros })
         })
             .then(resposta => {
+                const tempoResposta =
+                    performance.now() - inicioRequisicao;
+
+                if (tempoResposta > 3000) {
+                    registrarLog(
+                        "Atraso",
+                        "Salvamento das preferências musicais demorou " +
+                        Math.round(tempoResposta) +
+                        "ms para responder.",
+                        "Atenção"
+                    );
+                }
+
                 if (!resposta.ok) {
+                    registrarLog(
+                        "Falha",
+                        "Não foi possível salvar as preferências musicais da empresa.",
+                        "Crítico"
+                    );
+
                     throw new Error("Erro ao salvar preferências");
                 }
+
                 return resposta.json();
             })
             .then(dados => {
+                registrarLog(
+                    "Sistema",
+                    "Preferências musicais da empresa salvas com sucesso.",
+                    "Informação"
+                );
+
                 atualizarStatusSalvamento(true);
                 mostrarToast(dados.mensagem || "Preferências salvas com sucesso!");
             })
             .catch(erro => {
                 console.error(erro);
+
+                if (erro.message !== "Erro ao salvar preferências") {
+                    registrarLog(
+                        "Integração",
+                        "Falha na comunicação ao salvar as preferências musicais.",
+                        "Crítico"
+                    );
+                }
+
                 mostrarToast("Erro ao salvar preferências musicais", true);
             })
             .finally(() => {

@@ -2,12 +2,15 @@ var database = require("../../database/config");
 
 function registrarLog(tipo, mensagem, status) {
     var instrucaoSql = `
-        INSERT INTO log (tipo, mensagem, status) 
-        VALUES ('${tipo}', '${mensagem}', '${status}'); 
+        INSERT INTO log (tipo, mensagem, status)
+        VALUES (?, ?, ?);
     `;
 
-    console.log("Executando a instrução SQL: \n" + instrucaoSql);
-    return database.executar(instrucaoSql)
+    return database.executar(instrucaoSql, [
+        tipo,
+        mensagem,
+        status
+    ]);
 }
 
 function listarLogs() {
@@ -21,28 +24,34 @@ function listarLogs() {
 
 function buscarPorId(idLog) {
     var instrucaoSql = `
-        SELECT id_log, tipo, mensagem, data_hora, status 
-        FROM log 
-        WHERE id_log = ${idLog};
+        SELECT id_log, tipo, mensagem, data_hora, status
+        FROM log
+        WHERE id_log = ?;
     `;
-    return database.executar(instrucaoSql);
+
+    return database.executar(instrucaoSql, [idLog]);
 }
 
 function atualizarStatus(idLog, status) {
     var instrucaoSql = `
-        UPDATE log 
-        SET status = '${status}' 
-        WHERE id_log = ${idLog};
+        UPDATE log
+        SET status = ?
+        WHERE id_log = ?;
     `;
-    return database.executar(instrucaoSql);
+
+    return database.executar(instrucaoSql, [
+        status,
+        idLog
+    ]);
 }
 
 function deletar(idLog) {
     var instrucaoSql = `
-        DELETE FROM log 
-        WHERE id_log = ${idLog};
+        DELETE FROM log
+        WHERE id_log = ?;
     `;
-    return database.executar(instrucaoSql);
+
+    return database.executar(instrucaoSql, [idLog]);
 }
 
 module.exports = {

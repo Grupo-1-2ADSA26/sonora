@@ -169,12 +169,30 @@
             return null;
         }
 
-        
+        async function registrarLog(tipo, mensagem, status) {
+            try {
+                await fetch("/suporte/registrar", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        tipo: tipo,
+                        mensagem: mensagem,
+                        status: status
+                    })
+                });
+            } catch (erro) {
+                console.error("Erro ao registrar log:", erro);
+            }
+        }
+
+
         function cadastrar() {
             const razaoSocial = razao_social_input.value.trim();
-            const cnpj = cnpj_input.value.replace(/\D/g, ''); // sem máscara
+            const cnpj = cnpj_input.value.replace(/\D/g, '');
             const tipo = tipo_empresa_input.value;
-            const email = email_responsavel_input.value;
+            const email = email_responsavel_input.value.trim();
 
             const erro = validar(razaoSocial, cnpj, tipo, email);
 
@@ -185,6 +203,8 @@
 
             esconderMensagem();
             carregando(true);
+
+            const inicioRequisicao = performance.now();
 
             fetch("/empresa/cadastrar", {
                 method: "POST",
@@ -197,25 +217,79 @@
                     idTipoEstabelecimentoServer: Number(tipo),
                     emailResponsavelServer: email
                 }),
-            }).then(function (resposta) {
-                    console.log("Log: tela de cadastro, resposta: ", resposta);
+            })
+                .then(function (resposta) {
+                    const tempoResposta =
+                        performance.now() - inicioRequisicao;
+
+                    if (tempoResposta > 3000) {
+                        registrarLog(
+                            "Atraso",
+                            "Cadastro de empresa demorou " +
+                            Math.round(tempoResposta) +
+                            "ms para responder. Empresa: " +
+                            razaoSocial +
+                            ". E-mail: " +
+                            email,
+                            "Atenção"
+                        );
+                    }
+
+                    console.log(
+                        "Log: tela de cadastro, resposta: ",
+                        resposta
+                    );
+
                     if (resposta.ok) {
-                        mostrarMensagem("Cadastro realizado com sucesso! Verifique seu email para realizar o cadastro de seu primeiro administrador");
-                        return;
+                        registrarLog(
+                            "Sistema",
+                            "Cadastro de empresa realizado com sucesso. Empresa: " +
+                            razaoSocial +
+                            ". E-mail: " +
+                            email,
+                            "Informação"
+                        );
+
+                        mostrarMensagem(
+                            "Cadastro realizado com sucesso! Verifique seu email para realizar o cadastro de seu primeiro administrador"
+                        );
+
                     } else {
-                        throw new Error("Houve um erro ao tentar realizar o cadastro. Tente novamente.");
+                        registrarLog(
+                            "Falha",
+                            "Cadastro de empresa não foi concluído. Empresa: " +
+                            razaoSocial +
+                            ". E-mail: " +
+                            email,
+                            "Crítico"
+                        );
+
+                        mostrarMensagem(
+                            "Houve um erro ao tentar realizar o cadastro. Tente novamente."
+                        );
                     }
                 })
                 .catch(function (e) {
-                    
-                    console.log("Log Error: tela de cadastro, erro: ", e);
-                    mostrarMensagem("Não foi possível conectar ao servidor.");
-                    carregando(false);
+                    console.log(
+                        "Log Error: tela de cadastro, erro: ",
+                        e
+                    );
+
+                    registrarLog(
+                        "Integração",
+                        "Falha na comunicação com o serviço de cadastro de empresa. Empresa: " +
+                        razaoSocial +
+                        ". E-mail: " +
+                        email,
+                        "Crítico"
+                    );
+                    mostrarMensagem(
+                        "Não foi possível conectar ao servidor."
+                    );
                 })
                 .finally(function () {
                     carregando(false);
                 });
-
         }
     </script>
 </body>

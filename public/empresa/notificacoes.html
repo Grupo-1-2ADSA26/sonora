@@ -236,6 +236,24 @@
         const idUsuario = sessionStorage.getItem("ID_USUARIO");
         const idCargo = Number(sessionStorage.getItem("ID_CARGO"));
 
+        async function registrarLog(tipo, mensagem, status) {
+            try {
+                await fetch("/suporte/registrar", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        tipo: tipo,
+                        mensagem: mensagem,
+                        status: status
+                    })
+                });
+            } catch (erro) {
+                console.error("Erro ao registrar log:", erro);
+            }
+        }
+
         window.addEventListener("DOMContentLoaded", function() {
             if (!idUsuario) {
                 mostrarMensagem(
@@ -278,13 +296,41 @@
         }
 
         async function carregarConfiguracoes() {
+            const inicioRequisicao = performance.now();
+
             try {
                 const resposta = await fetch(`/notificacao/${idUsuario}`);
+
+                const tempoResposta =
+                    performance.now() - inicioRequisicao;
+
+                if (tempoResposta > 3000) {
+                    registrarLog(
+                        "Atraso",
+                        "Consulta das configurações de notificações demorou " +
+                        Math.round(tempoResposta) +
+                        "ms para responder.",
+                        "Atenção"
+                    );
+                }
+
                 if (!resposta.ok) {
+                    registrarLog(
+                        "Falha",
+                        "Não foi possível carregar as configurações de notificações.",
+                        "Crítico"
+                    );
+
                     throw new Error("Erro ao buscar configurações.");
                 }
 
                 const configuracoes = await resposta.json();
+
+                registrarLog(
+                    "Sistema",
+                    "Configurações de notificações carregadas com sucesso.",
+                    "Informação"
+                );
 
                 document.getElementById("evento-criado").checked =
                     Boolean(configuracoes.evento_criado);
@@ -312,6 +358,15 @@
 
             } catch (erro) {
                 console.error(erro);
+
+                if (erro.message !== "Erro ao buscar configurações.") {
+                    registrarLog(
+                        "Integração",
+                        "Falha na comunicação ao carregar as configurações de notificações.",
+                        "Crítico"
+                    );
+                }
+
                 mostrarMensagem(
                     "Não foi possível carregar as configurações.",
                     "erro"
@@ -351,6 +406,7 @@
                     document.getElementById("analise-concluida").checked
             };
 
+            const inicioRequisicao = performance.now();
 
             try {
 
@@ -362,9 +418,34 @@
                     body: JSON.stringify(configuracoes)
                 });
 
+                const tempoResposta =
+                    performance.now() - inicioRequisicao;
+
+                if (tempoResposta > 3000) {
+                    registrarLog(
+                        "Atraso",
+                        "Salvamento das configurações de notificações demorou " +
+                        Math.round(tempoResposta) +
+                        "ms para responder.",
+                        "Atenção"
+                    );
+                }
+
                 if (!resposta.ok) {
+                    registrarLog(
+                        "Falha",
+                        "Não foi possível salvar as configurações de notificações.",
+                        "Crítico"
+                    );
+
                     throw new Error("Erro ao salvar configurações.");
                 }
+
+                registrarLog(
+                    "Sistema",
+                    "Configurações de notificações salvas com sucesso.",
+                    "Informação"
+                );
 
                 mostrarMensagem(
                     "Configurações salvas com sucesso.",
@@ -373,6 +454,15 @@
 
             } catch (erro) {
                 console.error(erro);
+
+                if (erro.message !== "Erro ao salvar configurações.") {
+                    registrarLog(
+                        "Integração",
+                        "Falha na comunicação ao salvar as configurações de notificações.",
+                        "Crítico"
+                    );
+                }
+
                 mostrarMensagem(
                     "Não foi possível salvar as configurações.",
                     "erro"

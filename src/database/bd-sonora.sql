@@ -367,6 +367,21 @@ CREATE TABLE notificacao_mensagem (
         REFERENCES artista(id_artista)
 );
 
+-- =========================================================
+-- Tabela: Histórico Monitoramento
+-- =========================================================
+
+CREATE TABLE historico_monitoramento (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    servico VARCHAR(100) NOT NULL,
+    status VARCHAR(20) NOT NULL,
+    tempo_resposta_ms BIGINT NOT NULL,
+    data_hora DATETIME(3) NOT NULL
+);
+
+CREATE INDEX idx_monitoramento_servico_data
+ON historico_monitoramento (servico, data_hora);
+
 
 -- =========================================================
 -- INSERÇÕES DE DADOS INICIAIS

@@ -2,16 +2,26 @@ var empresaModel = require("../../models/empresa/empresaModel");
 var emailService = require("../../services/emailService");
 
 function cadastrar(req, res) {
-    var { razaoSocialServer, cnpjServer, tipoServer, emailResponsavelServer } = req.body;
+    var {
+        razaoSocialServer,
+        cnpjServer,
+        idTipoEstabelecimentoServer,
+        emailResponsavelServer
+    } = req.body;
 
-    if (!razaoSocialServer || !cnpjServer || !tipoServer || !emailResponsavelServer ) {
+    if (
+        !razaoSocialServer ||
+        !cnpjServer ||
+        !idTipoEstabelecimentoServer ||
+        !emailResponsavelServer
+    ) {
         return res.status(400).send("Todos os campos são obrigatórios!");
     }
 
     empresaModel.cadastrar(
         razaoSocialServer,
         cnpjServer,
-        tipoServer,
+        idTipoEstabelecimentoServer,
         emailResponsavelServer
     )
     .then(function (cadastro) {
@@ -48,7 +58,7 @@ function cadastrar(req, res) {
 
 function validar_codigo(req, res) {
     var codigo = req.body.codigo;
-    
+
     empresaModel.validar_codigo(codigo)
         .then((resultado) => {
             if (resultado.length > 0) {
@@ -85,22 +95,46 @@ function ativar_codigo(req, res) {
 
 function buscarPorId(req, res) {
     var idEmpresa = req.params.idEmpresa;
+
     empresaModel.buscarPorId(idEmpresa)
-        .then(resultado => res.status(200).json(resultado[0] || {}))
-        .catch(erro => res.status(500).json(erro.sqlMessage));
+        .then(resultado => {
+            res.status(200).json(resultado[0] || {});
+        })
+        .catch(erro => {
+            res.status(500).json(erro.sqlMessage);
+        });
 }
 
 function atualizar(req, res) {
     var idEmpresa = req.params.idEmpresa;
-    var { razaoSocial, cnpj, tipoEstabelecimento } = req.body;
 
-    empresaModel.atualizar(idEmpresa, razaoSocial, cnpj, tipoEstabelecimento)
-        .then(resultado => res.status(200).json(resultado))
-        .catch(erro => res.status(500).json(erro.sqlMessage));
+    var {
+        razaoSocial,
+        cnpj,
+        idTipoEstabelecimento
+    } = req.body;
+
+    if (!razaoSocial || !cnpj || !idTipoEstabelecimento) {
+        return res.status(400).send("Todos os campos são obrigatórios!");
+    }
+
+    empresaModel.atualizar(
+        idEmpresa,
+        razaoSocial,
+        cnpj,
+        idTipoEstabelecimento
+    )
+    .then(resultado => {
+        res.status(200).json(resultado);
+    })
+    .catch(erro => {
+        res.status(500).json(erro.sqlMessage);
+    });
 }
 
 function deletar(req, res) {
     var idEmpresa = req.params.idEmpresa;
+
     empresaModel.deletar(idEmpresa)
         .then(resultado => res.status(200).json(resultado))
         .catch(erro => res.status(500).json(erro.sqlMessage));

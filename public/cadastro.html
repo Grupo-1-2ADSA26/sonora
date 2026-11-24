@@ -49,12 +49,18 @@
                 <input id="cnpj_input" type="text" placeholder="00.000.000/0000-00" inputmode="numeric" maxlength="18" required class="input-escuro" oninput="mascaraCnpj(this)" />
                 <select id="tipo_empresa_input" required class="input-escuro">
                     <option value="" selected disabled>Selecione o tipo de estabelecimento</option>
-                    <option value="Casa de Shows">Casa de Shows</option>
-                    <option value="Festival">Festival</option>
-                    <option value="Teatro">Teatro</option>
-                    <option value="Balada / Casa Noturna">Balada / Casa Noturna</option>
-                    <option value="Bar com Música ao Vivo">Bar com Música ao Vivo</option>
-                </select> 
+                    <option value="1">Casa de Shows</option>
+                    <option value="2">Boate</option>
+                    <option value="3">Bar</option>
+                    <option value="4">Teatro</option>
+                    <option value="5">Centro Cultural</option>
+                    <option value="6">Festival</option>
+                    <option value="7">Arena</option>
+                    <option value="8">Restaurante</option>
+                    <option value="9">Pub</option>
+                    <option value="10">Clube</option>
+                    <option value="11">Outro</option>
+                </select>
                 <button id="btn_cadastrar" onclick="cadastrar()" class="btn-cadastrar">CADASTRAR</button>
                 <div id="div_aguardar" class="loading-div">
                     <img src="./assets/circle-loading.gif" id="loading-gif" />
@@ -100,11 +106,17 @@
 
     <script>
         const TIPOS_ESTABELECIMENTO = [
-            "Casa de Shows",
-            "Festival",
-            "Teatro",
-            "Balada / Casa Noturna",
-            "Bar com Música ao Vivo"
+            "1",
+            "2",
+            "3",
+            "4",
+            "5",
+            "6",
+            "7",
+            "8",
+            "9",
+            "10",
+            "11"
         ];
 
         function mascaraCnpj(input) {
@@ -157,12 +169,30 @@
             return null;
         }
 
-        
+        async function registrarLog(tipo, mensagem, status) {
+            try {
+                await fetch("/suporte/registrar", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        tipo: tipo,
+                        mensagem: mensagem,
+                        status: status
+                    })
+                });
+            } catch (erro) {
+                console.error("Erro ao registrar log:", erro);
+            }
+        }
+
+
         function cadastrar() {
             const razaoSocial = razao_social_input.value.trim();
-            const cnpj = cnpj_input.value.replace(/\D/g, ''); // sem máscara
+            const cnpj = cnpj_input.value.replace(/\D/g, '');
             const tipo = tipo_empresa_input.value;
-            const email = email_responsavel_input.value;
+            const email = email_responsavel_input.value.trim();
 
             const erro = validar(razaoSocial, cnpj, tipo, email);
 
@@ -174,6 +204,8 @@
             esconderMensagem();
             carregando(true);
 
+            const inicioRequisicao = performance.now();
+
             fetch("/empresa/cadastrar", {
                 method: "POST",
                 headers: {
@@ -182,28 +214,82 @@
                 body: JSON.stringify({
                     razaoSocialServer: razaoSocial,
                     cnpjServer: cnpj,
-                    tipoServer: tipo,
+                    idTipoEstabelecimentoServer: Number(tipo),
                     emailResponsavelServer: email
                 }),
-            }).then(function (resposta) {
-                    console.log("Log: tela de cadastro, resposta: ", resposta);
+            })
+                .then(function (resposta) {
+                    const tempoResposta =
+                        performance.now() - inicioRequisicao;
+
+                    if (tempoResposta > 3000) {
+                        registrarLog(
+                            "Atraso",
+                            "Cadastro de empresa demorou " +
+                            Math.round(tempoResposta) +
+                            "ms para responder. Empresa: " +
+                            razaoSocial +
+                            ". E-mail: " +
+                            email,
+                            "Atenção"
+                        );
+                    }
+
+                    console.log(
+                        "Log: tela de cadastro, resposta: ",
+                        resposta
+                    );
+
                     if (resposta.ok) {
-                        mostrarMensagem("Cadastro realizado com sucesso! Verifique seu email para realizar o cadastro de seu primeiro administrador");
-                        return;
+                        registrarLog(
+                            "Sistema",
+                            "Cadastro de empresa realizado com sucesso. Empresa: " +
+                            razaoSocial +
+                            ". E-mail: " +
+                            email,
+                            "Informação"
+                        );
+
+                        mostrarMensagem(
+                            "Cadastro realizado com sucesso! Verifique seu email para realizar o cadastro de seu primeiro administrador"
+                        );
+
                     } else {
-                        throw new Error("Houve um erro ao tentar realizar o cadastro. Tente novamente.");
+                        registrarLog(
+                            "Falha",
+                            "Cadastro de empresa não foi concluído. Empresa: " +
+                            razaoSocial +
+                            ". E-mail: " +
+                            email,
+                            "Crítico"
+                        );
+
+                        mostrarMensagem(
+                            "Houve um erro ao tentar realizar o cadastro. Tente novamente."
+                        );
                     }
                 })
                 .catch(function (e) {
-                    
-                    console.log("Log Error: tela de cadastro, erro: ", e);
-                    mostrarMensagem("Não foi possível conectar ao servidor.");
-                    carregando(false);
+                    console.log(
+                        "Log Error: tela de cadastro, erro: ",
+                        e
+                    );
+
+                    registrarLog(
+                        "Integração",
+                        "Falha na comunicação com o serviço de cadastro de empresa. Empresa: " +
+                        razaoSocial +
+                        ". E-mail: " +
+                        email,
+                        "Crítico"
+                    );
+                    mostrarMensagem(
+                        "Não foi possível conectar ao servidor."
+                    );
                 })
                 .finally(function () {
                     carregando(false);
                 });
-
         }
     </script>
 </body>

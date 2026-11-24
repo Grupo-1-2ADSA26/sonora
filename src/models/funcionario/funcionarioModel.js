@@ -107,6 +107,8 @@ function autenticar(email, senha) {
     return database.executar(instrucaoSql, [email, senha]);
 }
 
+
+
 module.exports = {
     cadastrar,
     listarPorEmpresa,

@@ -25,6 +25,7 @@
             <li><a href="aprovados.html"><i class="fa-solid fa-user-pen"></i>Aprovados</a></li>
             <li><a href="gerenciamentoEventos.html"><i class="fa-solid fa-music"></i>Eventos</a></li>
             <li><a href="notificacoes.html"><i class="fa-solid fa-bell"></i>Notificações</a></li>
+            <li><a href="preferencia.html"><i class="fa-solid fa-sliders"></i>Preferências</a></li>
             <li><a href="perfilEmpresa.html"><i class="fa-solid fa-building"></i>Perfil Empresa</a></li>
             <li><a href="perfil.html"><i class="fa-solid fa-user"></i>Perfil</a></li>
             <li class="box-sair">
@@ -174,6 +175,24 @@
         let artistaJaEnviado = false;
         let pesquisaAtual = 0;
         let enviando = false;
+
+        async function registrarLog(tipo, mensagem, status) {
+            try {
+                await fetch("/suporte/registrar", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        tipo: tipo,
+                        mensagem: mensagem,
+                        status: status
+                    })
+                });
+            } catch (erro) {
+                console.error("Erro ao registrar log:", erro);
+            }
+        }
 
         function iniciarTela() {
             formPesquisa.addEventListener('submit', function(event) {
@@ -327,28 +346,67 @@
                     ? `/artista/pesquisarPorId/${encodeURIComponent(idArtista)}`
                     : `/artista/pesquisar?nome=${encodeURIComponent(nome)}`;
 
+                const inicioPesquisa = performance.now();
                 const resposta = await fetch(url);
+                const tempoPesquisa =
+                    performance.now() - inicioPesquisa;
+
+                if (tempoPesquisa > 3000) {
+                    registrarLog(
+                        "Atraso",
+                        "Pesquisa de artista demorou " +
+                        Math.round(tempoPesquisa) +
+                        "ms para responder." +
+                        (nome ? " Artista pesquisado: " + nome : ""),
+                        "Atenção"
+                    );
+                }
 
                 if (pesquisa !== pesquisaAtual) return;
 
                 if (resposta.status === 404) {
+                    registrarLog(
+                        "Falha",
+                        "Artista não encontrado durante a pesquisa.",
+                        "Crítico"
+                    );
+
                     mostrarFeedback('Artista não encontrado.', 'error');
                     return;
                 }
 
                 if (!resposta.ok) {
+                    registrarLog(
+                        "Falha",
+                        "Não foi possível pesquisar o artista.",
+                        "Crítico"
+                    );
+
                     throw new Error('Erro ao pesquisar artista.');
                 }
 
                 const dados = await resposta.json();
 
                 if (!dados || !dados.id_artista) {
+                    registrarLog(
+                        "Falha",
+                        "A pesquisa de artista não retornou dados válidos.",
+                        "Crítico"
+                    );
+
                     mostrarFeedback(
                         'A pesquisa não retornou dados válidos para esse artista.',
                         'error'
                     );
                     return;
                 }
+
+                registrarLog(
+                    "Sistema",
+                    "Pesquisa de artista realizada com sucesso. Artista: " +
+                    (dados.nome || "Não informado"),
+                    "Informação"
+                );
 
                 idArtistaAtual = dados.id_artista;
                 inputPesquisa.value = dados.nome || '';
@@ -385,6 +443,15 @@
                 mostrarFeedback(`Resultado encontrado: ${dados.nome}.`, 'success');
             } catch (erro) {
                 console.error('Erro ao pesquisar artista:', erro);
+
+                if (erro.message !== 'Erro ao pesquisar artista.' &&
+                    erro.message !== 'Não foi possível verificar o envio do artista.') {
+                    registrarLog(
+                        "Integração",
+                        "Falha na comunicação ao pesquisar o artista.",
+                        "Crítico"
+                    );
+                }
 
                 if (pesquisa === pesquisaAtual) {
                     limparResultado();
@@ -473,6 +540,8 @@
             enviando = true;
             atualizarBotaoAprovacao();
 
+            const inicioRequisicao = performance.now();
+
             try {
                 const resposta = await fetch('/aprovados/enviar', {
                     method: 'POST',
@@ -487,9 +556,28 @@
                     })
                 });
 
+                const tempoResposta =
+                    performance.now() - inicioRequisicao;
+
+                if (tempoResposta > 3000) {
+                    registrarLog(
+                        "Atraso",
+                        "Envio de artista para análise demorou " +
+                        Math.round(tempoResposta) +
+                        "ms para responder.",
+                        "Atenção"
+                    );
+                }
+
                 const dados = await resposta.json();
 
                 if (resposta.status === 409) {
+                    registrarLog(
+                        "Falha",
+                        "Artista já havia sido enviado para aprovação.",
+                        "Atenção"
+                    );
+
                     artistaJaEnviado = true;
                     alert(dados.mensagem || 'Este artista já foi enviado.');
                     atualizarBotaoAprovacao();
@@ -497,8 +585,20 @@
                 }
 
                 if (!resposta.ok) {
+                    registrarLog(
+                        "Falha",
+                        "Não foi possível enviar o artista para análise.",
+                        "Crítico"
+                    );
+
                     throw new Error(dados.mensagem || 'Erro ao enviar artista.');
                 }
+
+                registrarLog(
+                    "Sistema",
+                    "Artista enviado para análise de aprovação com sucesso.",
+                    "Informação"
+                );
 
                 alert(
                     dados.mensagem ||
@@ -508,6 +608,16 @@
                 window.location.href = 'aprovados.html';
             } catch (erro) {
                 console.error('Erro ao enviar artista:', erro);
+
+                if (erro.message !== 'Erro ao enviar artista.' &&
+                    !erro.message.includes('já foi enviado')) {
+                    registrarLog(
+                        "Integração",
+                        "Falha na comunicação ao enviar o artista para análise.",
+                        "Crítico"
+                    );
+                }
+
                 alert(
                     erro.message ||
                     'Não foi possível enviar o artista. Tente novamente.'

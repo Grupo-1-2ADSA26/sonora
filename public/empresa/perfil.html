@@ -25,11 +25,11 @@
         <ul class="lista">
             <li class="ativo"><a href="dashboard.html"><i class="fa-solid fa-house"></i>Início</a></li>
             <li><a href="pesquisaArtista.html"><i class="fa-solid fa-magnifying-glass"></i>Artistas</a></li>
-
             <li><a href="cadastroFuncionario.html"><i class="fa-solid fa-users"></i>Funcionários</a></li>
             <li><a href="aprovados.html"><i class="fa-solid fa-user-pen"></i>Aprovados</a></li>
             <li><a href="gerenciamentoEventos.html"><i class="fa-solid fa-music"></i>Eventos</a></li>
             <li><a href="notificacoes.html"><i class="fa-solid fa-bell"></i>Notificações</a></li>
+            <li><a href="preferencia.html"><i class="fa-solid fa-sliders"></i>Preferências</a></li>
             <li><a href="perfilEmpresa.html"><i class="fa-solid fa-building"></i>Perfil Empresa</a></li>
             <li><a href="perfil.html"><i class="fa-solid fa-user"></i>Perfil</a></li>
 
@@ -101,6 +101,24 @@
         const inputSenha = document.getElementById("input-senha");
         const toggleSenha = document.getElementById("toggle-senha");
 
+        async function registrarLog(tipo, mensagem, status) {
+            try {
+                await fetch("/suporte/registrar", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        tipo: tipo,
+                        mensagem: mensagem,
+                        status: status
+                    })
+                });
+            } catch (erro) {
+                console.error("Erro ao registrar log:", erro);
+            }
+        }
+
         toggleSenha.addEventListener("click", () => {
 
             const isPassword = inputSenha.type === "password";
@@ -119,11 +137,31 @@
         function carregarPerfil() {
 
             const idUsuario = sessionStorage.ID_USUARIO || 2;
+            const inicioRequisicao = performance.now();
 
             fetch(`/funcionario/perfil/${idUsuario}`)
                 .then(resposta => {
 
+                    const tempoResposta =
+                        performance.now() - inicioRequisicao;
+
+                    if (tempoResposta > 3000) {
+                        registrarLog(
+                            "Atraso",
+                            "Consulta do perfil do funcionário demorou " +
+                            Math.round(tempoResposta) +
+                            "ms para responder.",
+                            "Atenção"
+                        );
+                    }
+
                     if (!resposta.ok) {
+                        registrarLog(
+                            "Falha",
+                            "Não foi possível carregar o perfil do funcionário.",
+                            "Crítico"
+                        );
+
                         throw new Error("Erro ao carregar perfil");
                     }
 
@@ -133,6 +171,12 @@
                 .then(usuario => {
 
                     console.log("Perfil carregado:", usuario);
+
+                    registrarLog(
+                        "Sistema",
+                        "Perfil do funcionário carregado com sucesso.",
+                        "Informação"
+                    );
 
                     inputNome.value = usuario.nome;
                     inputEmail.value = usuario.email;
@@ -144,6 +188,14 @@
                 })
                 .catch(erro => {
                     console.error(erro);
+
+                    if (erro.message !== "Erro ao carregar perfil") {
+                        registrarLog(
+                            "Integração",
+                            "Falha na comunicação ao carregar o perfil do funcionário.",
+                            "Crítico"
+                        );
+                    }
                 });
         }
 
@@ -233,6 +285,8 @@
             const senhaVar = inputSenha.value.trim();
             const idCargoVar = sessionStorage.ID_CARGO;
 
+            const inicioRequisicao = performance.now();
+
             fetch(`/funcionario/atualizar/${idUsuario}`, {
 
                 method: "PUT",
@@ -249,18 +303,56 @@
             })
                 .then(resposta => {
 
+                    const tempoResposta =
+                        performance.now() - inicioRequisicao;
+
+                    if (tempoResposta > 3000) {
+                        registrarLog(
+                            "Atraso",
+                            "Atualização do perfil do funcionário demorou " +
+                            Math.round(tempoResposta) +
+                            "ms para responder. E-mail: " +
+                            emailVar,
+                            "Atenção"
+                        );
+                    }
+
                     if (resposta.ok) {
+
+                        registrarLog(
+                            "Sistema",
+                            "Perfil do funcionário atualizado com sucesso. E-mail: " +
+                            emailVar,
+                            "Informação"
+                        );
+
                         sessionStorage.EMAIL_USUARIO = emailVar;
                         alert("Perfil atualizado com sucesso!");
                         window.location.reload();
 
                     } else {
+
+                        registrarLog(
+                            "Falha",
+                            "Não foi possível atualizar o perfil do funcionário. E-mail: " +
+                            emailVar,
+                            "Crítico"
+                        );
+
                         alert("Erro ao atualizar perfil.");
                     }
 
                 })
                 .catch(erro => {
                     console.log("Erro:", erro);
+
+                    registrarLog(
+                        "Integração",
+                        "Falha na comunicação ao atualizar o perfil do funcionário. E-mail: " +
+                        emailVar,
+                        "Crítico"
+                    );
+
                     alert("Erro de conexão com o servidor.");
 
                 });
@@ -279,6 +371,8 @@
                 return;
             }
 
+            const inicioRequisicao = performance.now();
+
             fetch(`/funcionario/deletar/${idUsuario}`, {
                 method: "DELETE",
                 headers: {
@@ -286,17 +380,53 @@
                 }
             })
                 .then(resposta => {
+
+                    const tempoResposta =
+                        performance.now() - inicioRequisicao;
+
+                    if (tempoResposta > 3000) {
+                        registrarLog(
+                            "Atraso",
+                            "Exclusão da conta do funcionário demorou " +
+                            Math.round(tempoResposta) +
+                            "ms para responder.",
+                            "Atenção"
+                        );
+                    }
+
                     if (resposta.ok) {
+
+                        registrarLog(
+                            "Sistema",
+                            "Conta do funcionário excluída com sucesso.",
+                            "Informação"
+                        );
+
                         alert("Conta excluída com sucesso!");
                         sessionStorage.clear();
                         window.location.href = "../index.html";
+
                     } else {
+
+                        registrarLog(
+                            "Falha",
+                            "Não foi possível excluir a conta do funcionário.",
+                            "Crítico"
+                        );
+
                         alert("Erro ao excluir a conta.");
                     }
 
                 })
                 .catch(erro => {
                     console.log("Erro:", erro);
+
+                    registrarLog(
+                        "Integração",
+                        "Falha na comunicação ao excluir a conta do funcionário.",
+                        "Crítico"
+                    );
+
                     alert("Erro de conexão com o servidor.");
                 });
 

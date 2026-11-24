@@ -30,6 +30,7 @@
             <li class="ativo"><a href="aprovados.html"><i class="fa-solid fa-user-pen"></i>Aprovados</a></li>
             <li><a href="gerenciamentoEventos.html"><i class="fa-solid fa-music"></i>Eventos</a></li>
             <li><a href="notificacoes.html"><i class="fa-solid fa-bell"></i>Notificações</a></li>
+            <li><a href="preferencia.html"><i class="fa-solid fa-sliders"></i>Preferências</a></li>
             <li><a href="perfilEmpresa.html"><i class="fa-solid fa-building"></i>Perfil Empresa</a></li>
             <li><a href="perfil.html"><i class="fa-solid fa-user"></i>Perfil</a></li>
 
@@ -198,9 +199,42 @@
     let listaArtistas = [];
     let artistaEditando = null;
 
+    async function registrarLog(tipo, mensagem, status) {
+        try {
+            await fetch("/suporte/registrar", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    tipo: tipo,
+                    mensagem: mensagem,
+                    status: status
+                })
+            });
+        } catch (erro) {
+            console.error("Erro ao registrar log:", erro);
+        }
+    }
+
     async function listarTodos() {
+        const inicioRequisicao = performance.now();
+
         try {
             const resposta = await fetch(`/aprovados/listarTodos/${idEmpresa}`);
+
+            const tempoResposta =
+                performance.now() - inicioRequisicao;
+
+            if (tempoResposta > 3000) {
+                registrarLog(
+                    "Atraso",
+                    "Consulta de artistas aprovados demorou " +
+                    Math.round(tempoResposta) +
+                    "ms para responder.",
+                    "Atenção"
+                );
+            }
 
             if (resposta.status === 204) {
                 feedAprovados.innerHTML = `
@@ -211,14 +245,33 @@
 
                 atualizarEstatisticas([]);
                 listaArtistas = [];
+
+                registrarLog(
+                    "Sistema",
+                    "Consulta de artistas aprovados realizada com sucesso.",
+                    "Informação"
+                );
+
                 return;
             }
 
             if (!resposta.ok) {
+                registrarLog(
+                    "Falha",
+                    "Não foi possível carregar os artistas aprovados da empresa.",
+                    "Crítico"
+                );
+
                 throw new Error("Erro ao buscar artistas.");
             }
 
             const artistas = await resposta.json();
+
+            registrarLog(
+                "Sistema",
+                "Artistas aprovados carregados com sucesso.",
+                "Informação"
+            );
 
             listaArtistas = artistas;
 
@@ -227,6 +280,14 @@
 
         } catch (erro) {
             console.error("Erro ao listar artistas:", erro);
+
+            if (erro.message !== "Erro ao buscar artistas.") {
+                registrarLog(
+                    "Integração",
+                    "Falha na comunicação ao carregar os artistas aprovados.",
+                    "Crítico"
+                );
+            }
 
             feedAprovados.innerHTML = `
                 <p class="mensagem-vazia">
@@ -387,21 +448,55 @@
             <option value="">Carregando eventos...</option>
         `;
 
+        const inicioRequisicao = performance.now();
+
         try {
             const resposta = await fetch(`/evento/listar/${idEmpresa}`);
+
+            const tempoResposta =
+                performance.now() - inicioRequisicao;
+
+            if (tempoResposta > 3000) {
+                registrarLog(
+                    "Atraso",
+                    "Consulta de eventos para edição demorou " +
+                    Math.round(tempoResposta) +
+                    "ms para responder.",
+                    "Atenção"
+                );
+            }
 
             if (resposta.status === 204) {
                 campoEvento.innerHTML = `
                     <option value="">Nenhum evento cadastrado</option>
                 `;
+
+                registrarLog(
+                    "Sistema",
+                    "Consulta de eventos para edição realizada com sucesso.",
+                    "Informação"
+                );
+
                 return;
             }
 
             if (!resposta.ok) {
+                registrarLog(
+                    "Falha",
+                    "Não foi possível carregar os eventos para edição.",
+                    "Crítico"
+                );
+
                 throw new Error("Erro ao carregar eventos.");
             }
 
             const eventos = await resposta.json();
+
+            registrarLog(
+                "Sistema",
+                "Eventos carregados com sucesso para edição do artista.",
+                "Informação"
+            );
 
             campoEvento.innerHTML = `
                 <option value="">Selecione um evento</option>
@@ -422,6 +517,14 @@
 
         } catch (erro) {
             console.error("Erro ao carregar eventos:", erro);
+
+            if (erro.message !== "Erro ao carregar eventos.") {
+                registrarLog(
+                    "Integração",
+                    "Falha na comunicação ao carregar os eventos para edição.",
+                    "Crítico"
+                );
+            }
 
             campoEvento.innerHTML = `
                 <option value="">Erro ao carregar eventos</option>
@@ -463,6 +566,8 @@
             return;
         }
 
+        const inicioRequisicao = performance.now();
+
         try {
             const resposta = await fetch("/aprovados/atualizarCard", {
                 method: "PUT",
@@ -477,13 +582,38 @@
                 })
             });
 
+            const tempoResposta =
+                performance.now() - inicioRequisicao;
+
+            if (tempoResposta > 3000) {
+                registrarLog(
+                    "Atraso",
+                    "Atualização do card do artista demorou " +
+                    Math.round(tempoResposta) +
+                    "ms para responder.",
+                    "Atenção"
+                );
+            }
+
             const dados = await resposta.json();
 
             if (!resposta.ok) {
+                registrarLog(
+                    "Falha",
+                    "Não foi possível atualizar o card do artista.",
+                    "Crítico"
+                );
+
                 throw new Error(
                     dados.mensagem || "Erro ao atualizar o card."
                 );
             }
+
+            registrarLog(
+                "Sistema",
+                "Card do artista atualizado com sucesso.",
+                "Informação"
+            );
 
             fecharModalEditar();
 
@@ -491,6 +621,14 @@
 
         } catch (erro) {
             console.error("Erro ao editar card:", erro);
+
+            if (!erro.message.includes("Erro ao atualizar o card.")) {
+                registrarLog(
+                    "Integração",
+                    "Falha na comunicação ao atualizar o card do artista.",
+                    "Crítico"
+                );
+            }
 
             alert(
                 erro.message || "Não foi possível atualizar o card."
@@ -504,6 +642,8 @@
 
         if (!confirm(`Deseja ${acao} este artista?`)) return;
 
+        const inicioRequisicao = performance.now();
+
         try {
             const resposta = await fetch("/aprovados/atualizarStatus", {
                 method: "PUT",
@@ -511,16 +651,50 @@
                 body: JSON.stringify({ idEmpresa, idArtista, status })
             });
 
+            const tempoResposta =
+                performance.now() - inicioRequisicao;
+
+            if (tempoResposta > 3000) {
+                registrarLog(
+                    "Atraso",
+                    "Atualização do status do artista demorou " +
+                    Math.round(tempoResposta) +
+                    "ms para responder.",
+                    "Atenção"
+                );
+            }
+
             const dados = await resposta.json();
 
             if (!resposta.ok) {
+                registrarLog(
+                    "Falha",
+                    "Não foi possível " + acao + " o artista.",
+                    "Crítico"
+                );
+
                 throw new Error(dados.mensagem || "Erro ao atualizar o status.");
             }
+
+            registrarLog(
+                "Sistema",
+                "Artista " + acao + "do com sucesso.",
+                "Informação"
+            );
 
             listarTodos();
 
         } catch (erro) {
             console.error("Erro ao decidir:", erro);
+
+            if (!erro.message.includes("Erro ao atualizar o status.")) {
+                registrarLog(
+                    "Integração",
+                    "Falha na comunicação ao atualizar o status do artista.",
+                    "Crítico"
+                );
+            }
+
             alert(erro.message || "Não foi possível atualizar o status.");
         }
     }
@@ -537,6 +711,8 @@
 
         if (!confirmar) return;
 
+        const inicioRequisicao = performance.now();
+
         try {
             const resposta = await fetch(
                 `/aprovados/excluir/${idEmpresa}/${artistaEditando}`,
@@ -545,13 +721,38 @@
                 }
             );
 
+            const tempoResposta =
+                performance.now() - inicioRequisicao;
+
+            if (tempoResposta > 3000) {
+                registrarLog(
+                    "Atraso",
+                    "Exclusão de artista demorou " +
+                    Math.round(tempoResposta) +
+                    "ms para responder.",
+                    "Atenção"
+                );
+            }
+
             const dados = await resposta.json();
 
             if (!resposta.ok) {
+                registrarLog(
+                    "Falha",
+                    "Não foi possível excluir o artista.",
+                    "Crítico"
+                );
+
                 throw new Error(
                     dados.mensagem || "Não foi possível excluir o artista."
                 );
             }
+
+            registrarLog(
+                "Sistema",
+                "Artista excluído com sucesso.",
+                "Informação"
+            );
 
             fecharModalEditar();
             await listarTodos();
@@ -560,6 +761,15 @@
 
         } catch (erro) {
             console.error("Erro ao excluir artista:", erro);
+
+            if (!erro.message.includes("Não foi possível excluir o artista.")) {
+                registrarLog(
+                    "Integração",
+                    "Falha na comunicação ao excluir o artista.",
+                    "Crítico"
+                );
+            }
+
             alert(erro.message || "Erro ao excluir artista.");
         }
     }

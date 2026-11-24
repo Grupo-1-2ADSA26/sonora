@@ -1,25 +1,26 @@
 var database = require("../../database/config");
 
-function cadastrar(nome, descricao, data_evento, local_evento, status_evento, id_empresa) {
+function cadastrar(nome, descricao, data_evento, local_evento, idStatusEvento, id_empresa) {
     const instrucaoSql = `
         INSERT INTO evento (
             nome,
             descricao,
             data_evento,
             local_evento,
-            status_evento,
+            id_status_evento,
             id_empresa
         )
-        VALUES (
-            '${nome}',
-            '${descricao}',
-            '${data_evento}',
-            '${local_evento}',
-            '${status_evento}',
-            ${id_empresa}
-        );
+        VALUES (?, ?, ?, ?, ?, ?);
     `;
-    return database.executar(instrucaoSql);
+
+    return database.executar(instrucaoSql, [
+        nome,
+        descricao,
+        data_evento,
+        local_evento,
+        idStatusEvento,
+        id_empresa
+    ]);
 }
 
 function listarPorEmpresa(id_empresa) {
@@ -30,9 +31,12 @@ function listarPorEmpresa(id_empresa) {
             e.descricao,
             DATE_FORMAT(e.data_evento, '%d/%m/%Y') AS data_evento,
             e.local_evento,
-            e.status_evento,
+            e.id_status_evento,
+            se.nome AS status_evento,
             COUNT(aa.id_artista) AS quantidade_artistas
         FROM evento e
+        JOIN status_evento se
+            ON e.id_status_evento = se.id_status_evento
         LEFT JOIN artista_aprovado aa
             ON aa.id_evento = e.id_evento
             AND aa.id_empresa = e.id_empresa
@@ -43,7 +47,8 @@ function listarPorEmpresa(id_empresa) {
             e.descricao,
             e.data_evento,
             e.local_evento,
-            e.status_evento
+            e.id_status_evento,
+            se.nome
         ORDER BY e.data_evento ASC;
     `;
 
@@ -68,28 +73,35 @@ function listarArtistasPorEvento(idEvento, idEmpresa) {
     return database.executar(instrucaoSql, [idEvento, idEmpresa]);
 }
 
-function atualizar(id_evento, nome, descricao, data_evento, local_evento, status_evento) {
+function atualizar(id_evento, nome, descricao, data_evento, local_evento, idStatusEvento) {
     const instrucaoSql = `
         UPDATE evento
         SET
-            nome = '${nome}',
-            descricao = '${descricao}',
-            data_evento = '${data_evento}',
-            local_evento = '${local_evento}',
-            status_evento = '${status_evento}'
-        WHERE id_evento = ${id_evento};
+            nome = ?,
+            descricao = ?,
+            data_evento = ?,
+            local_evento = ?,
+            id_status_evento = ?
+        WHERE id_evento = ?;
     `;
 
-    return database.executar(instrucaoSql);
+    return database.executar(instrucaoSql, [
+        nome,
+        descricao,
+        data_evento,
+        local_evento,
+        idStatusEvento,
+        id_evento
+    ]);
 }
 
 function excluir(id_evento) {
     const instrucaoSql = `
         DELETE FROM evento
-        WHERE id_evento = ${id_evento};
+        WHERE id_evento = ?;
     `;
 
-    return database.executar(instrucaoSql);
+    return database.executar(instrucaoSql, [id_evento]);
 }
 
 module.exports = {

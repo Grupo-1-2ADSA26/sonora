@@ -28,9 +28,9 @@
             <li><a href="pesquisaArtista.html"><i class="fa-solid fa-magnifying-glass"></i>Artistas</a></li>
             <li class="ativo"><a href="cadastroFuncionario.html"><i class="fa-solid fa-users"></i>Funcionários</a></li>
             <li><a href="aprovados.html"><i class="fa-solid fa-user-pen"></i>Aprovados</a></li>
-
             <li><a href="gerenciamentoEventos.html"><i class="fa-solid fa-music"></i>Eventos</a></li>
             <li><a href="notificacoes.html"><i class="fa-solid fa-bell"></i>Notificações</a></li>
+            <li><a href="preferencia.html"><i class="fa-solid fa-sliders"></i>Preferências</a></li>
             <li><a href="perfilEmpresa.html"><i class="fa-solid fa-building"></i>Perfil Empresa</a></li>
             <li><a href="perfil.html"><i class="fa-solid fa-user"></i>Perfil</a></li>
 
@@ -154,6 +154,25 @@
     </div>
 
     <script>
+
+        async function registrarLog(tipo, mensagem, status) {
+            try {
+                await fetch("/suporte/registrar", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        tipo: tipo,
+                        mensagem: mensagem,
+                        status: status
+                    })
+                });
+            } catch (erro) {
+                console.error("Erro ao registrar log:", erro);
+            }
+        }
+
         const idEmpresa = sessionStorage.ID_EMPRESA;
 
         // Se não estiver logado, volta para o login
@@ -185,46 +204,96 @@
             botao.addEventListener('click', fecharModais);
         });
 
-        function listarFuncionarios() {
-            fetch(`/funcionario/empresa/${idEmpresa}`)
-                .then(res => res.json())
-                .then(funcionarios => {
-                    listaFuncionarios = funcionarios;
+        async function listarFuncionarios() {
+            const inicioRequisicao = performance.now();
 
-                    document.getElementById('badge-total').textContent =
-                        `${funcionarios.length - 1} Funcionários Ativos`;
+            try {
+                const resposta = await fetch(`/funcionario/empresa/${idEmpresa}`);
 
-                    let linhas = '';
+                const tempoResposta =
+                    performance.now() - inicioRequisicao;
 
-                    funcionarios.forEach(func => {
-                        if (func.id_usuario == sessionStorage.getItem("ID_USUARIO")) {
-                            return;
-                        }
-                        linhas += `
-                            <tr>
-                                <td>
-                                    <div class="user-cell">
-                                        <div class="avatar"><i class="fa-solid fa-user"></i></div>
-                                        <strong>${func.nome}</strong>
-                                    </div>
-                                </td>
-                                <td class="user-email">${func.email}</td>
-                                <td><span class="role-tag">${func.cargo}</span></td>
-                                <td class="actions-cell">
-                                    <button class="btn-icon edit" onclick="abrirEdicao(${func.id_usuario})" title="Editar">
-                                        <i class="fa-solid fa-pen-to-square"></i>
-                                    </button>
-                                    <button class="btn-icon delete" onclick="abrirExclusao(${func.id_usuario})" title="Deletar">
-                                        <i class="fa-solid fa-trash-can"></i>
-                                    </button>
-                                </td>
-                            </tr>
-                        `;
-                    });
+                if (tempoResposta > 3000) {
+                    registrarLog(
+                        "Atraso",
+                        "Consulta de funcionários da empresa demorou " +
+                        Math.round(tempoResposta) +
+                        "ms para responder.",
+                        "Atenção"
+                    );
+                }
 
-                    document.getElementById('tabela-funcionarios').innerHTML = linhas;
-                })
-                .catch(err => console.error("Erro ao listar funcionários:", err));
+                if (!resposta.ok) {
+                    registrarLog(
+                        "Falha",
+                        "Não foi possível carregar os funcionários da empresa.",
+                        "Crítico"
+                    );
+
+                    throw new Error("Erro ao listar funcionários.");
+                }
+
+                const funcionarios = await resposta.json();
+
+                registrarLog(
+                    "Sistema",
+                    "Funcionários da empresa carregados com sucesso.",
+                    "Informação"
+                );
+
+                listaFuncionarios = funcionarios;
+
+                document.getElementById('badge-total').textContent =
+                    `${funcionarios.length - 1} Funcionários Ativos`;
+
+                let linhas = '';
+
+                funcionarios.forEach(func => {
+                    if (func.id_usuario == sessionStorage.getItem("ID_USUARIO")) {
+                        return;
+                    }
+
+                    linhas += `
+                        <tr>
+                            <td>
+                                <div class="user-cell">
+                                    <div class="avatar"><i class="fa-solid fa-user"></i></div>
+                                    <strong>${func.nome}</strong>
+                                </div>
+                            </td>
+                            <td class="user-email">${func.email}</td>
+                            <td><span class="role-tag">${func.cargo}</span></td>
+                            <td class="actions-cell">
+                                <button class="btn-icon edit" onclick="abrirEdicao(${func.id_usuario})" title="Editar">
+                                    <i class="fa-solid fa-pen-to-square"></i>
+                                </button>
+                                <button class="btn-icon delete" onclick="abrirExclusao(${func.id_usuario})" title="Deletar">
+                                    <i class="fa-solid fa-trash-can"></i>
+                                </button>
+                            </td>
+                        </tr>
+                    `;
+                });
+
+                document.getElementById('tabela-funcionarios').innerHTML = linhas;
+
+            } catch (erro) {
+                console.error("Erro ao listar funcionários:", erro);
+
+                if (erro.message !== "Erro ao listar funcionários.") {
+                    registrarLog(
+                        "Integração",
+                        "Falha na comunicação ao carregar os funcionários da empresa.",
+                        "Crítico"
+                    );
+                }
+
+                document.getElementById('tabela-funcionarios').innerHTML = `
+                    <tr>
+                        <td colspan="4">Não foi possível carregar os funcionários.</td>
+                    </tr>
+                `;
+            }
         }
 
         listarFuncionarios();
@@ -329,6 +398,8 @@
                 ? 'PUT'
                 : 'POST';
 
+            const inicioRequisicao = performance.now();
+
             fetch(url, {
                 method: metodo,
                 headers: {
@@ -337,10 +408,45 @@
                 body: JSON.stringify(dados)
             })
                 .then(res => {
+                    const tempoResposta =
+                        performance.now() - inicioRequisicao;
+
+                    if (tempoResposta > 3000) {
+                        registrarLog(
+                            "Atraso",
+                            (editando
+                                ? "Atualização de funcionário demorou "
+                                : "Cadastro de funcionário demorou ") +
+                            Math.round(tempoResposta) +
+                            "ms para responder. E-mail: " +
+                            email,
+                            "Atenção"
+                        );
+                    }
+
                     if (res.ok) {
+                        registrarLog(
+                            "Sistema",
+                            (editando
+                                ? "Funcionário atualizado com sucesso. E-mail: "
+                                : "Funcionário cadastrado com sucesso. E-mail: ") +
+                            email,
+                            "Informação"
+                        );
+
                         fecharModais();
                         listarFuncionarios();
+
                     } else {
+                        registrarLog(
+                            "Falha",
+                            (editando
+                                ? "Não foi possível atualizar o funcionário. E-mail: "
+                                : "Não foi possível cadastrar o funcionário. E-mail: ") +
+                            email,
+                            "Crítico"
+                        );
+
                         alert(
                             editando
                                 ? 'Erro ao atualizar funcionário.'
@@ -348,27 +454,80 @@
                         );
                     }
                 })
-                .catch(err =>
-                    console.error('Erro ao salvar funcionário:', err)
-                );
+                .catch(err => {
+                    console.error('Erro ao salvar funcionário:', err);
+
+                    registrarLog(
+                        "Integração",
+                        (editando
+                            ? "Falha na comunicação ao atualizar o funcionário. E-mail: "
+                            : "Falha na comunicação ao cadastrar o funcionário. E-mail: ") +
+                        email,
+                        "Crítico"
+                    );
+
+                    alert(
+                        editando
+                            ? 'Não foi possível conectar ao servidor.'
+                            : 'Não foi possível conectar ao servidor.'
+                    );
+                });
         });
 
         // ---------- EXCLUIR ----------
         document.getElementById('btn-confirmar-exclusao').addEventListener('click', () => {
+            const inicioRequisicao = performance.now();
+
             fetch(`/funcionario/deletar/${idFuncionarioExcluindo}`, {
                 method: 'DELETE',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ idEmpresa: idEmpresa })
             })
                 .then(res => {
+                    const tempoResposta =
+                        performance.now() - inicioRequisicao;
+
+                    if (tempoResposta > 3000) {
+                        registrarLog(
+                            "Atraso",
+                            "Exclusão de funcionário demorou " +
+                            Math.round(tempoResposta) +
+                            "ms para responder.",
+                            "Atenção"
+                        );
+                    }
+
                     if (res.ok) {
+                        registrarLog(
+                            "Sistema",
+                            "Funcionário excluído com sucesso.",
+                            "Informação"
+                        );
+
                         fecharModais();
                         listarFuncionarios();
+
                     } else {
+                        registrarLog(
+                            "Falha",
+                            "Não foi possível excluir o funcionário.",
+                            "Crítico"
+                        );
+
                         alert("Erro ao deletar funcionário.");
                     }
                 })
-                .catch(err => console.error("Erro ao deletar funcionário:", err));
+                .catch(err => {
+                    console.error("Erro ao deletar funcionário:", err);
+
+                    registrarLog(
+                        "Integração",
+                        "Falha na comunicação ao excluir o funcionário.",
+                        "Crítico"
+                    );
+
+                    alert("Não foi possível conectar ao servidor.");
+                });
         });
 
         // ---------- MOSTRAR / OCULTAR SENHA ----------

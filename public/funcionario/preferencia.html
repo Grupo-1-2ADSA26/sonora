@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Preferências da Empresa | Sonora</title>
+    <script src="https://kit.fontawesome.com/d840916580.js" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="../css/menu.css">
+    <link rel="stylesheet" href="../css/funcionario/preferencia.css">
+</head>
+
+<body>
+
+    <aside class="box-menu">
+        <input type="checkbox" id="menu-toggle" class="menu-toggle">
+        <div class="menu-top">
+            <label for="menu-toggle" class="btn-hamburguer">
+                <i class="fa-solid fa-bars"></i>
+            </label>
+            <p class="logo">sonora.</p>
+        </div>
+        <ul class="lista">
+            <li><a href="dashboard.html"><i class="fa-solid fa-house"></i><span>Início</span></a></li>
+            <li><a href="pesquisa.html"><i class="fa-solid fa-magnifying-glass"></i><span>Artistas</span></a></li>
+            <li><a href="aprovados.html"><i class="fa-solid fa-bell"></i><span>Aprovados</span></a></li>
+            <li class="ativo"><a href="preferencia.html"><i class="fa-solid fa-sliders"></i><span>Preferências</span></a></li>
+            <li><a href="notificacoes.html"><i class="fa-solid fa-bell"></i><span>Notificações</span></a></li>
+            <li><a href="perfil.html"><i class="fa-solid fa-user"></i><span>Perfil</span></a></li>
+
+            <li class="box-sair">
+                <a class="botao-sair" href="../index.html"><i class="fa-solid fa-right-from-bracket"></i> Sair</a>
+            </li>
+        </ul>
+    </aside>
+
+    <main class="main-content">
+
+        <header class="page-header">
+            <div class="header-info">
+                <span class="eyebrow">SONORA / DIRETRIZES DA EMPRESA</span>
+                <h1>Gêneros Recomendados</h1>
+                <p>Visualize em tempo real os estilos musicais priorizados pela empresa para prospecção de artistas.</p>
+            </div>
+
+            <div class="filter-container">
+                <label for="selectGeneroEmpresa">Filtrar preferência:</label>
+                <select id="selectGeneroEmpresa" class="filter-select" onchange="filtrarPorSelect()">
+                    <option value="todos">Todos os gêneros preferidos</option>
+                </select>
+
+                <button type="button" class="btn-sync" onclick="sincronizarTempoReal()">
+                    <i class="fa-solid fa-rotate"></i>
+                    Atualizar agora
+                </button>
+            </div>
+        </header>
+
+        <section class="summary">
+            <article class="summary-card">
+                <div class="summary-icon">
+                    <i class="fa-solid fa-star"></i>
+                </div>
+                <div class="summary-info">
+                    <span>Gêneros priorizados</span>
+                    <strong id="kpiTotalGeneros">0</strong>
+                    <small>Cadastrados pela empresa</small>
+                </div>
+            </article>
+
+            <article class="summary-card">
+                <div class="summary-icon">
+                    <i class="fa-solid fa-filter"></i>
+                </div>
+                <div class="summary-info">
+                    <span>Filtro selecionado</span>
+                    <strong id="kpiFiltroAtual">Todos</strong>
+                    <small>Seleção ativa no painel</small>
+                </div>
+            </article>
+
+            <article class="summary-card">
+                <div class="summary-icon">
+                    <i class="fa-solid fa-microphone-lines"></i>
+                </div>
+                <div class="summary-info">
+                    <span>Artistas compatíveis</span>
+                    <strong id="kpiArtistasCompativeis">0</strong>
+                    <small>No catálogo da plataforma</small>
+                </div>
+            </article>
+        </section>
+
+        <article class="dashboard-card">
+            <div class="card-header">
+                <div>
+                    <span class="card-label">PREFERÊNCIAS ATIVAS</span>
+                    <h2>Gêneros definidos pela empresa</h2>
+                    <p>Clique em um gênero abaixo ou utilize o seletor no topo para filtrar os artistas recomendados.</p>
+                </div>
+                <div class="card-icon">
+                    <i class="fa-solid fa-music"></i>
+                </div>
+            </div>
+
+            <div id="containerGenerosEmpresa" class="generos-chips">
+                <p class="empty-box">Carregando preferências da empresa...</p>
+            </div>
+
+            <div class="card-footer">
+                <span class="live-indicator">
+                    <span class="footer-dot"></span>
+                    Sincronização automática ativa (a cada 15s)
+                </span>
+                <span id="ultimaAtualizacao">Atualizado agora</span>
+            </div>
+        </article>
+
+        <article class="dashboard-card">
+            <div class="card-header">
+                <div>
+                    <span class="card-label">RECOMENDAÇÃO DE CATÁLOGO</span>
+                    <h2>Artistas compatíveis com a seleção</h2>
+                    <p>Artistas cadastrados cujos gêneros atendem às preferências escolhidas pela empresa.</p>
+                </div>
+                <div class="card-icon">
+                    <i class="fa-solid fa-users"></i>
+                </div>
+            </div>
+
+            <div id="containerArtistasRecomendados" class="artistas-grid">
+                <p class="empty-box">Carregando artistas compatíveis...</p>
+            </div>
+        </article>
+
+    </main>
+
+    <script>
+        const idEmpresa =
+            sessionStorage.getItem("ID_EMPRESA") ||
+            sessionStorage.getItem("id_empresa") ||
+            localStorage.getItem("ID_EMPRESA") ||
+            localStorage.getItem("id_empresa") ||
+            1;
+
+        let generosPreferidos = [];
+        let todosArtistasRecomendados = [];
+        let generoSelecionado = "todos";
+
+        document.addEventListener("DOMContentLoaded", () => {
+            sincronizarTempoReal();
+
+            // Atualização em tempo real a cada 15 segundos
+            setInterval(() => {
+                sincronizarTempoReal();
+            }, 15000);
+        });
+
+        async function sincronizarTempoReal() {
+            try {
+                const [respGeneros, respArtistas] = await Promise.all([
+                    fetch(`/preferencia/${idEmpresa}`),
+                    fetch(`/preferencia/artistas/${idEmpresa}`)
+                ]);
+
+                if (!respGeneros.ok || !respArtistas.ok) {
+                    throw new Error("Erro ao sincronizar dados");
+                }
+
+                const listaCompletaGeneros = await respGeneros.json();
+                generosPreferidos = listaCompletaGeneros.filter(g => Number(g.selecionado) === 1);
+                todosArtistasRecomendados = await respArtistas.json();
+
+                atualizarSelectGeneros();
+                renderizarChipsGeneros();
+                aplicarFiltroEAtualizarTela();
+
+                const agora = new Date();
+                document.getElementById("ultimaAtualizacao").textContent =
+                    `Última verificação às ${agora.toLocaleTimeString("pt-BR")}`;
+
+            } catch (erro) {
+                console.error("Erro na sincronização:", erro);
+            }
+        }
+
+        function atualizarSelectGeneros() {
+            const select = document.getElementById("selectGeneroEmpresa");
+            const valorAnterior = generoSelecionado;
+
+            select.innerHTML = `<option value="todos">Todos os gêneros preferidos (${generosPreferidos.length})</option>`;
+
+            generosPreferidos.forEach(genero => {
+                const option = document.createElement("option");
+                option.value = genero.nome;
+                option.textContent = genero.nome;
+                select.appendChild(option);
+            });
+
+            // Mantém a seleção anterior se o gênero ainda estiver ativo na empresa
+            const aindaExiste = generosPreferidos.some(g => g.nome === valorAnterior);
+            generoSelecionado = aindaExiste ? valorAnterior : "todos";
+            select.value = generoSelecionado;
+        }
+
+        function filtrarPorSelect() {
+            generoSelecionado = document.getElementById("selectGeneroEmpresa").value;
+            renderizarChipsGeneros();
+            aplicarFiltroEAtualizarTela();
+        }
+
+        function selecionarPeloChip(nomeGenero) {
+            generoSelecionado = (generoSelecionado === nomeGenero) ? "todos" : nomeGenero;
+            document.getElementById("selectGeneroEmpresa").value = generoSelecionado;
+            renderizarChipsGeneros();
+            aplicarFiltroEAtualizarTela();
+        }
+
+        function renderizarChipsGeneros() {
+            const container = document.getElementById("containerGenerosEmpresa");
+            document.getElementById("kpiTotalGeneros").textContent = generosPreferidos.length;
+
+            if (generosPreferidos.length === 0) {
+                container.innerHTML = `
+                    <p class="empty-box">
+                        A empresa ainda não definiu nenhum gênero musical como preferência.
+                    </p>
+                `;
+                return;
+            }
+
+            container.innerHTML = "";
+
+            generosPreferidos.forEach(genero => {
+                const chip = document.createElement("button");
+                chip.type = "button";
+                chip.className = `chip-genero ${generoSelecionado === genero.nome ? "ativo" : ""}`;
+                chip.innerHTML = `<i class="fa-solid fa-music"></i> ${genero.nome}`;
+                chip.onclick = () => selecionarPeloChip(genero.nome);
+                container.appendChild(chip);
+            });
+        }
+
+        function aplicarFiltroEAtualizarTela() {
+            document.getElementById("kpiFiltroAtual").textContent =
+                generoSelecionado === "todos" ? "Todos" : generoSelecionado;
+
+            let artistasFiltrados = todosArtistasRecomendados;
+
+            if (generoSelecionado !== "todos") {
+                const termo = generoSelecionado.toLowerCase();
+                artistasFiltrados = todosArtistasRecomendados.filter(artista =>
+                    artista.genero && artista.genero.toLowerCase().includes(termo)
+                );
+            }
+
+            document.getElementById("kpiArtistasCompativeis").textContent = artistasFiltrados.length;
+            renderizarArtistas(artistasFiltrados);
+        }
+
+        function renderizarArtistas(lista) {
+            const container = document.getElementById("containerArtistasRecomendados");
+
+            if (!lista || lista.length === 0) {
+                container.innerHTML = `
+                    <p class="empty-box">
+                        Nenhum artista encontrado no catálogo para o filtro selecionado.
+                    </p>
+                `;
+                return;
+            }
+
+            container.innerHTML = lista.map(artista => `
+                <div class="artista-card">
+                    <div>
+                        <div class="artista-topo">
+                            <div class="artista-avatar">
+                                <i class="fa-solid fa-microphone"></i>
+                            </div>
+                            <h3>${artista.nome}</h3>
+                        </div>
+                        <p class="artista-generos" style="margin-top: 10px;">
+                            <strong>Gêneros:</strong> ${artista.genero || "Não informado"}
+                        </p>
+                    </div>
+
+                    <div class="artista-rodape">
+                        <span class="status-badge">${artista.genero_status || "PENDENTE"}</span>
+                        ${artista.url_artista
+                            ? `<a href="${artista.url_artista}" target="_blank" class="link-artista">
+                                   Perfil <i class="fa-solid fa-arrow-up-right-from-square"></i>
+                               </a>`
+                            : `<span>Sem link</span>`
+                        }
+                    </div>
+                </div>
+            `).join("");
+        }
+    </script>
+
+</body>
+
+</html>

@@ -86,7 +86,6 @@
     </main>
 
     <script>
-
         function exibirMensagem(texto, tipo) {
             mensagem.innerHTML = texto;
             mensagem.className = `mensagem ${tipo}`;
@@ -159,6 +158,7 @@
                 );
                 return false;
             }
+
             if (!/[0-9]/.test(senhaUsuario)) {
                 exibirMensagem(
                     "A senha deve conter pelo menos um número!",
@@ -175,11 +175,31 @@
             return true
         }
 
+        async function registrarLog(tipo, mensagem, status) {
+            try {
+                await fetch("/suporte/registrar", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        tipo: tipo,
+                        mensagem: mensagem,
+                        status: status
+                    })
+                });
+            } catch (erro) {
+                console.error("Erro ao registrar log:", erro);
+            }
+        }
+
         formAtivacao.addEventListener("submit", function (event) {
             event.preventDefault();
 
             if (validar()) {
                 exibirMensagem("Validando código...", "sucesso");
+
+                const inicioValidacao = performance.now();
 
                 fetch("/empresa/validar-codigo", {
                     method: "POST",
@@ -191,13 +211,40 @@
                     })
                 })
                     .then(function (resposta) {
+                        const tempoResposta =
+                            performance.now() - inicioValidacao;
+
+                        if (tempoResposta > 3000) {
+                            registrarLog(
+                                "Atraso",
+                                "Validação do código de ativação demorou " +
+                                Math.round(tempoResposta) +
+                                "ms para responder.",
+                                "Atenção"
+                            );
+                        }
+
                         if (!resposta.ok) {
+                            registrarLog(
+                                "Falha",
+                                "Código de ativação rejeitado pelo servidor.",
+                                "Crítico"
+                            );
+
                             throw new Error("Código inválido");
                         }
+
+                        registrarLog(
+                            "Sistema",
+                            "Código de ativação validado com sucesso.",
+                            "Informação"
+                        );
+
                         return resposta.json();
                     })
                     .then(function (dados) {
                         const idEmpresa = dados.idEmpresa;
+                        const inicioCadastro = performance.now();
 
                         return fetch("/funcionario/cadastrar", {
                             method: "POST",
@@ -212,46 +259,114 @@
                                 idCargo: 1
                             })
                         })
-                        .then(resposta => {
-                            if (!resposta.ok) {
-                                throw new Error("Erro ao cadastrar usuário");
-                            }
+                            .then(function (resposta) {
+                                const tempoResposta =
+                                    performance.now() - inicioCadastro;
 
-                            return idEmpresa;
-                        });
+                                if (tempoResposta > 3000) {
+                                    registrarLog(
+                                        "Atraso",
+                                        "Cadastro do usuário administrador demorou " +
+                                        Math.round(tempoResposta) +
+                                        "ms para responder. E-mail: " +
+                                        input_emailUsuario.value,
+                                        "Atenção"
+                                    );
+                                }
+
+                                if (!resposta.ok) {
+                                    registrarLog(
+                                        "Falha",
+                                        "Não foi possível cadastrar o usuário administrador. E-mail: " +
+                                        input_emailUsuario.value,
+                                        "Crítico"
+                                    );
+
+                                    throw new Error("Erro ao cadastrar usuário");
+                                }
+
+                                registrarLog(
+                                    "Sistema",
+                                    "Usuário administrador cadastrado com sucesso. E-mail: " +
+                                    input_emailUsuario.value,
+                                    "Informação"
+                                );
+
+                                return idEmpresa;
+                            });
                     })
                     .then(function (idEmpresa) {
+                        const inicioAtivacao = performance.now();
 
                         return fetch(`/empresa/ativar-codigo/${idEmpresa}`, {
                             method: "PUT"
-                        });
+                        })
+                            .then(function (resposta) {
+                                const tempoResposta =
+                                    performance.now() - inicioAtivacao;
 
-                    })
-                    .then(function (resposta) {
+                                if (tempoResposta > 3000) {
+                                    registrarLog(
+                                        "Atraso",
+                                        "Ativação da empresa demorou " +
+                                        Math.round(tempoResposta) +
+                                        "ms para responder.",
+                                        "Atenção"
+                                    );
+                                }
 
-                        if (!resposta.ok) {
-                            throw new Error("Erro ao ativar empresa");
-                        }
+                                if (!resposta.ok) {
+                                    registrarLog(
+                                        "Falha",
+                                        "Não foi possível ativar a empresa após o cadastro do administrador.",
+                                        "Crítico"
+                                    );
 
-                        exibirMensagem(
-                            "Usuário administrador criado com sucesso!",
-                            "sucesso"
-                        );
+                                    throw new Error("Erro ao ativar empresa");
+                                }
 
-                        formAtivacao.reset();
+                                registrarLog(
+                                    "Sistema",
+                                    "Empresa ativada com sucesso após criação do usuário administrador.",
+                                    "Informação"
+                                );
+
+                                exibirMensagem(
+                                    "Usuário administrador criado com sucesso!",
+                                    "sucesso"
+                                );
+
+                                formAtivacao.reset();
+                            });
                     })
                     .catch(function (erro) {
-                        exibirMensagem(
-                            erro.message,
-                            "erro"
+                        console.error(erro);
+
+                        if (
+                            erro.message === "Código inválido" ||
+                            erro.message === "Erro ao cadastrar usuário" ||
+                            erro.message === "Erro ao ativar empresa"
+                        ) {
+                            exibirMensagem(
+                                erro.message,
+                                "erro"
+                            );
+                            return;
+                        }
+
+                        registrarLog(
+                            "Integração",
+                            "Falha na comunicação durante o processo de ativação da empresa.",
+                            "Crítico"
                         );
 
-                        console.error(erro);
+                        exibirMensagem(
+                            "Não foi possível conectar ao servidor.",
+                            "erro"
+                        );
                     });
             }
-
         })
-
     </script>
 </body>
 

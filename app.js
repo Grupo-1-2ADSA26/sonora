@@ -27,6 +27,9 @@
     let artistaRouter = require("./src/routes/artista/artista");
     let analiseRouter = require("./src/routes/analise/analise");
     let notificacaoRouter = require("./src/routes/notificacao/notificacao");
+    let dashboardFuncionarioRouter = require("./src/routes/dashboardFuncionario/dashboardFuncionario.js");
+    let preferenciaRouter = require("./src/routes/preferencia/preferencia");
+    
     const springRouter = require("./src/routes/spring/spring");
 
 
@@ -34,6 +37,7 @@
     app.use(express.json());
     app.use(express.urlencoded({ extended: false }));
     app.use(express.static(path.join(__dirname, "public")));
+
 
     app.use(cors());
 
@@ -49,6 +53,8 @@
     app.use("/artista", artistaRouter);
     app.use("/analise", analiseRouter);    
     app.use("/notificacao", notificacaoRouter);
+    app.use("/dashboardFuncionario", dashboardFuncionarioRouter);
+    app.use("/preferencia", preferenciaRouter);
     app.use("/spring", springRouter);
 
 

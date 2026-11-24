@@ -30,6 +30,7 @@
             <li><a href="aprovados.html"><i class="fa-solid fa-user-pen"></i>Aprovados</a></li>
             <li><a href="gerenciamentoEventos.html"><i class="fa-solid fa-music"></i>Eventos</a></li>
             <li><a href="notificacoes.html"><i class="fa-solid fa-bell"></i>Notificações</a></li>
+            <li><a href="preferencia.html"><i class="fa-solid fa-sliders"></i>Preferências</a></li>
             <li><a href="perfilEmpresa.html"><i class="fa-solid fa-building"></i>Perfil Empresa</a></li>
             <li><a href="perfil.html"><i class="fa-solid fa-user"></i>Perfil</a></li>
 
@@ -161,6 +162,24 @@
 
     <script>
 
+        async function registrarLog(tipo, mensagem, status) {
+            try {
+                await fetch("/suporte/registrar", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        tipo: tipo,
+                        mensagem: mensagem,
+                        status: status
+                    })
+                });
+            } catch (erro) {
+                console.error("Erro ao registrar log:", erro);
+            }
+        }
+
         const idEmpresa = sessionStorage.getItem('ID_EMPRESA');
 
         if (idEmpresa) {
@@ -172,15 +191,40 @@
 
         async function listarEventos() {
             const tabela = document.getElementById('lista-eventos');
+            const inicioRequisicao = performance.now();
 
             try {
                 const resposta = await fetch(`/evento/listar/${idEmpresa}`);
 
+                const tempoResposta = performance.now() - inicioRequisicao;
+
+                if (tempoResposta > 3000) {
+                    registrarLog(
+                        "Atraso",
+                        "Consulta de eventos da empresa demorou " +
+                        Math.round(tempoResposta) +
+                        "ms para responder.",
+                        "Atenção"
+                    );
+                }
+
                 if (!resposta.ok) {
+                    registrarLog(
+                        "Falha",
+                        "Não foi possível carregar os eventos da empresa.",
+                        "Crítico"
+                    );
+
                     throw new Error('Erro ao buscar eventos.');
                 }
 
                 const eventos = await resposta.json();
+
+                registrarLog(
+                    "Sistema",
+                    "Eventos da empresa carregados com sucesso.",
+                    "Informação"
+                );
 
                 tabela.replaceChildren();
 
@@ -253,6 +297,16 @@
 
             } catch (erro) {
                 console.error('Erro ao listar eventos:', erro);
+
+                if (
+                    erro.message !== 'Erro ao buscar eventos.'
+                ) {
+                    registrarLog(
+                        "Integração",
+                        "Falha na comunicação ao carregar os eventos da empresa.",
+                        "Crítico"
+                    );
+                }
 
                 tabela.replaceChildren();
 

@@ -32,6 +32,7 @@
             <li><a href="aprovados.html"><i class="fa-solid fa-user-pen"></i>Aprovados</a></li>
             <li><a href="gerenciamentoEventos.html"><i class="fa-solid fa-music"></i>Eventos</a></li>
             <li><a href="notificacoes.html"><i class="fa-solid fa-bell"></i>Notificações</a></li>
+            <li><a href="preferencia.html"><i class="fa-solid fa-sliders"></i>Preferências</a></li>
             <li><a href="perfilEmpresa.html"><i class="fa-solid fa-building"></i>Perfil Empresa</a></li>
             <li><a href="perfil.html"><i class="fa-solid fa-user"></i>Perfil</a></li>
 
@@ -74,11 +75,17 @@
                             Estabelecimento</label>
                         <select id="select_tipo_empresa" required>
                             <option value="">Selecione</option>
-                            <option value="Casa de Shows">Casa de Shows</option>
-                            <option value="Festival">Festival</option>
-                            <option value="Produtora de Eventos">Produtora de Eventos</option>
-                            <option value="Bar / Pub">Bar / Pub</option>
-                            <option value="Outro">Outro</option>
+                            <option value="1">Casa de Shows</option>
+                            <option value="2">Boate</option>
+                            <option value="3">Bar</option>
+                            <option value="4">Teatro</option>
+                            <option value="5">Centro Cultural</option>
+                            <option value="6">Festival</option>
+                            <option value="7">Arena</option>
+                            <option value="8">Restaurante</option>
+                            <option value="9">Pub</option>
+                            <option value="10">Clube</option>
+                            <option value="11">Outro</option>
                         </select>
                     </div>
 
@@ -101,6 +108,24 @@
     <script>
         const idEmpresa = sessionStorage.ID_EMPRESA || sessionStorage.id_empresa;
 
+        async function registrarLog(tipo, mensagem, status) {
+            try {
+                await fetch("/suporte/registrar", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        tipo: tipo,
+                        mensagem: mensagem,
+                        status: status
+                    })
+                });
+            } catch (erro) {
+                console.error("Erro ao registrar log:", erro);
+            }
+        }
+
         document.addEventListener("DOMContentLoaded", () => {
             if (!idEmpresa) {
                 alert("Houve um erro ao tentar identificar seu usuário, realize o login novamente");
@@ -118,21 +143,61 @@
         });
 
         function carregarDadosEmpresa() {
+            const inicioRequisicao = performance.now();
+
             fetch(`/empresa/buscar/${idEmpresa}`)
                 .then(resposta => {
+
+                    const tempoResposta =
+                        performance.now() - inicioRequisicao;
+
+                    if (tempoResposta > 3000) {
+                        registrarLog(
+                            "Atraso",
+                            "Consulta dos dados da empresa demorou " +
+                            Math.round(tempoResposta) +
+                            "ms para responder.",
+                            "Atenção"
+                        );
+                    }
+
                     if (resposta.ok) {
                         return resposta.json();
                     }
+
+                    registrarLog(
+                        "Falha",
+                        "Não foi possível carregar os dados da empresa.",
+                        "Crítico"
+                    );
+
                     throw new Error("Erro ao carregar dados da empresa");
                 })
                 .then(dadosEmpresa => {
+
+                    registrarLog(
+                        "Sistema",
+                        "Dados da empresa carregados com sucesso.",
+                        "Informação"
+                    );
+
                     if (dadosEmpresa) {
                         document.getElementById("ipt_nome_empresa").value = dadosEmpresa.razao_social || "";
                         document.getElementById("ipt_cnpj_empresa").value = dadosEmpresa.cnpj || "";
-                        document.getElementById("select_tipo_empresa").value = dadosEmpresa.tipo_estabelecimento || "";
+                        document.getElementById("select_tipo_empresa").value = dadosEmpresa.id_tipo_estabelecimento || "";
                     }
                 })
-                .catch(erro => console.error("Erro na requisição: ", erro));
+                .catch(erro => {
+                    console.error("Erro na requisição: ", erro);
+
+                    if (erro.message !== "Erro ao carregar dados da empresa") {
+                        registrarLog(
+                            "Integração",
+                            "Falha na comunicação ao carregar os dados da empresa.",
+                            "Crítico"
+                        );
+                    }
+                });
         }
 
         function salvarEmpresa(event) {
@@ -147,44 +212,128 @@
                 return;
             }
 
+            const inicioRequisicao = performance.now();
+
             fetch(`/empresa/atualizar/${idEmpresa}`, {
                 method: "PUT",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
                     razaoSocial: razaoSocial,
                     cnpj: cnpj,
-                    tipoEstabelecimento: tipoEstabelecimento
+                    idTipoEstabelecimento: Number(tipoEstabelecimento)
                 })
             })
                 .then(resposta => {
+
+                    const tempoResposta =
+                        performance.now() - inicioRequisicao;
+
+                    if (tempoResposta > 3000) {
+                        registrarLog(
+                            "Atraso",
+                            "Atualização do perfil da empresa demorou " +
+                            Math.round(tempoResposta) +
+                            "ms para responder. Empresa: " +
+                            razaoSocial,
+                            "Atenção"
+                        );
+                    }
+
                     if (resposta.ok) {
+
+                        registrarLog(
+                            "Sistema",
+                            "Perfil da empresa atualizado com sucesso. Empresa: " +
+                            razaoSocial,
+                            "Informação"
+                        );
+
                         alert('Dados atualizados com sucesso!');
+
                     } else {
+
+                        registrarLog(
+                            "Falha",
+                            "Não foi possível atualizar o perfil da empresa. Empresa: " +
+                            razaoSocial,
+                            "Crítico"
+                        );
+
                         throw new Error("Erro ao atualizar perfil da empresa");
                     }
                 })
                 .catch(erro => {
                     console.error("Erro: ", erro);
+
+                    if (erro.message !== "Erro ao atualizar perfil da empresa") {
+                        registrarLog(
+                            "Integração",
+                            "Falha na comunicação ao atualizar o perfil da empresa.",
+                            "Crítico"
+                        );
+                    }
+
                     alert("Erro ao atualizar dados.");
                 });
         }
 
         function excluirEmpresa() {
             if (confirm("Tem certeza que deseja excluir sua empresa? Esta ação não poderá ser desfeita.")) {
+
+                const inicioRequisicao = performance.now();
+
                 fetch(`/empresa/deletar/${idEmpresa}`, {
                     method: "DELETE"
                 })
                     .then(resposta => {
+
+                        const tempoResposta =
+                            performance.now() - inicioRequisicao;
+
+                        if (tempoResposta > 3000) {
+                            registrarLog(
+                                "Atraso",
+                                "Exclusão da empresa demorou " +
+                                Math.round(tempoResposta) +
+                                "ms para responder.",
+                                "Atenção"
+                            );
+                        }
+
                         if (resposta.ok) {
+
+                            registrarLog(
+                                "Sistema",
+                                "Empresa excluída com sucesso.",
+                                "Informação"
+                            );
+
                             alert("Conta excluída com sucesso.");
                             sessionStorage.clear();
                             window.location.href = "../index.html";
+
                         } else {
+
+                            registrarLog(
+                                "Falha",
+                                "Não foi possível excluir a empresa.",
+                                "Crítico"
+                            );
+
                             throw new Error("Erro ao excluir conta");
                         }
                     })
                     .catch(erro => {
                         console.error("Erro: ", erro);
+
+                        if (erro.message !== "Erro ao excluir conta") {
+                            registrarLog(
+                                "Integração",
+                                "Falha na comunicação ao excluir a empresa.",
+                                "Crítico"
+                            );
+                        }
+
                         alert("Não foi possível excluir a conta.");
                     });
             }

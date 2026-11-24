@@ -41,6 +41,13 @@
 
     app.use(cors());
 
+    app.get("/api/health", (req, res) => {
+    res.status(200).json({
+        status: "UP",
+        servico: "NODE_JS"
+    });
+});
+
     app.use("/", indexRouter);
 
     // do nosso projeto

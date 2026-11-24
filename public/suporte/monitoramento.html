@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Monitoramento | Sonora</title>
+    <link rel="stylesheet" href="../css/menu.css">
+    <link rel="stylesheet" href="../css/suporte/dashboard.css">
+    <link rel="stylesheet" href="../css/suporte/monitoramento.css">
+    <script defer src="https://kit.fontawesome.com/d840916580.js" crossorigin="anonymous"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script defer src="../js/suporte/monitoramento.js"></script>
+</head>
+
+<body>
+    <aside class="box-menu" aria-label="Menu do Suporte">
+        <input type="checkbox" id="menu-toggle" class="menu-toggle" aria-label="Abrir menu do Suporte">
+
+        <div class="menu-top">
+            <label for="menu-toggle" class="btn-hamburguer">
+                <i class="fa-solid fa-bars" aria-hidden="true"></i>
+            </label>
+            <p class="logo">sonora.</p>
+        </div>
+
+        <ul class="lista">
+            <li><a href="logs.html"><i class="fa-solid fa-house" aria-hidden="true"></i>Início</a></li>
+            <li><a href="logsEx.html"><i class="fa-solid fa-clipboard-list" aria-hidden="true"></i>Logs</a></li>
+            <li class="ativo"><a href="monitoramento.html" aria-current="page"><i class="fa-solid fa-heart-pulse" aria-hidden="true"></i>Monitoramento</a></li>
+            <li><a href="perfil.html"><i class="fa-solid fa-user" aria-hidden="true"></i>Perfil</a></li>
+            <li class="box-sair">
+                <a class="botao-sair" href="../index.html"><i class="fa-solid fa-right-from-bracket" aria-hidden="true"></i> Sair</a>
+            </li>
+        </ul>
+    </aside>
+
+    <main class="conteudo-principal">
+        <header class="cabecalho-pagina">
+            <div class="cabecalho-info">
+                <span class="sobretitulo">SONORA / SUPORTE</span>
+                <h1>Monitoramento</h1>
+                <p>Os resultados representam a última verificação armazenada de cada serviço.</p>
+            </div>
+            <div class="acoes-monitoramento">
+                <button class="botao-monitoramento" id="atualizar" type="button">
+                    <i class="fa-solid fa-rotate" aria-hidden="true"></i> Atualizar agora
+                </button>
+                <p id="ultima-atualizacao" role="status">Carregando dados…</p>
+            </div>
+        </header>
+
+        <div class="grade-painel">
+            <p id="aviso-api" class="aviso-monitoramento" role="alert" hidden></p>
+
+            <section aria-labelledby="titulo-servicos">
+                <h2 id="titulo-servicos" class="titulo-secao">Status dos serviços</h2>
+                <p id="estado-servicos" class="mensagem-monitoramento" role="status">Consultando as últimas verificações…</p>
+                <div id="servicos" class="grade-servicos"></div>
+            </section>
+
+            <section class="secao-kpis indicadores-monitoramento" aria-label="Indicadores">
+                <div class="cartao-kpi kpi-empresa">
+                    <span class="kpi-icone"><i class="fa-solid fa-circle-check" aria-hidden="true"></i></span>
+                    <div class="kpi-info">
+                        <p class="valor-kpi" id="kpi-saudaveis">—</p>
+                        <span class="kpi-rotulo">Serviços saudáveis</span>
+                    </div>
+                </div>
+                <div class="cartao-kpi kpi-ocorrencia">
+                    <span class="kpi-icone"><i class="fa-regular fa-clock" aria-hidden="true"></i></span>
+                    <div class="kpi-info">
+                        <p class="valor-kpi" id="kpi-media">—</p>
+                        <span class="kpi-rotulo">Tempo médio nas últimas verificações válidas</span>
+                    </div>
+                </div>
+                <div class="cartao-kpi kpi-critico">
+                    <span class="kpi-icone"><i class="fa-solid fa-triangle-exclamation" aria-hidden="true"></i></span>
+                    <div class="kpi-info">
+                        <p class="valor-kpi" id="kpi-falhas">—</p>
+                        <span class="kpi-rotulo">Falhas no histórico carregado</span>
+                    </div>
+                </div>
+            </section>
+
+            <section class="cartao painel-historico" aria-labelledby="titulo-historico">
+                <h2 id="titulo-historico" class="titulo-secao">Histórico de verificações</h2>
+                <form id="filtros" class="filtros-monitoramento" aria-describedby="erro-filtros">
+                    <label>Serviço
+                        <select name="servico" id="filtro-servico">
+                            <option value="">Todos</option>
+                            <option value="NODE_JS">Node.js</option>
+                            <option value="MYSQL">MySQL</option>
+                        </select>
+                    </label>
+                    <label>Início
+                        <input type="datetime-local" name="inicio">
+                    </label>
+                    <label>Fim
+                        <input type="datetime-local" name="fim">
+                    </label>
+                    <label>Quantidade
+                        <input type="number" name="limite" min="1" step="1" placeholder="Padrão da API">
+                    </label>
+                    <button class="botao-monitoramento" type="submit">Aplicar filtros</button>
+                </form>
+                <p id="erro-filtros" class="aviso-monitoramento" role="alert" hidden></p>
+                <p id="estado-historico" class="mensagem-monitoramento" role="status">Consultando o histórico…</p>
+
+                <div id="resultados-historico" hidden>
+                    <h3 class="titulo-secao">Tempo de resposta por serviço</h3>
+                    <p id="estado-grafico" class="mensagem-monitoramento" role="status" hidden></p>
+                    <div id="area-grafico" class="area-grafico grafico-monitoramento" hidden>
+                        <canvas id="grafico" role="img" aria-label="Evolução do tempo de resposta dos serviços em milissegundos. Os valores também estão na tabela de verificações."></canvas>
+                    </div>
+
+                    <div class="tabela-rolagem historico-rolagem" tabindex="0" role="region" aria-label="Tabela de verificações">
+                        <table class="tabela-ocorrencias tabela-monitoramento">
+                            <thead>
+                                <tr>
+                                    <th scope="col">Serviço</th>
+                                    <th scope="col">Status</th>
+                                    <th scope="col">Tempo de resposta</th>
+                                    <th scope="col">Data e hora</th>
+                                </tr>
+                            </thead>
+                            <tbody id="registros"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+</body>
+
+</html>

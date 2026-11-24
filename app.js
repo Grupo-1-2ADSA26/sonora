@@ -31,6 +31,7 @@
     let preferenciaRouter = require("./src/routes/preferencia/preferencia");
     
     const springRouter = require("./src/routes/spring/spring");
+    const monitoramentoRouter = require("./src/routes/spring/monitoramento");
 
 
 
@@ -63,6 +64,7 @@
     app.use("/dashboardFuncionario", dashboardFuncionarioRouter);
     app.use("/preferencia", preferenciaRouter);
     app.use("/spring", springRouter);
+    app.use("/api/monitoramento", monitoramentoRouter);
 
 
     app.listen(PORTA_APP, function () {

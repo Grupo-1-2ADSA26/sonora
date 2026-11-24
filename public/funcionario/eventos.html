@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shows e Eventos | Sonora</title>
+    <script src="https://kit.fontawesome.com/d840916580.js" crossorigin="anonymous"></script>
+
+    <link rel="stylesheet" href="../css/menu.css">
+    <link rel="stylesheet" href="../css/funcionario/eventos.css">
+</head>
+
+<body>
+    <aside class="box-menu">
+        <input type="checkbox" id="menu-toggle" class="menu-toggle">
+
+        <div class="menu-top">
+            <label for="menu-toggle" class="btn-hamburguer">
+                <i class="fa-solid fa-bars"></i>
+            </label>
+            <p class="logo">sonora.</p>
+        </div>
+
+        <ul class="lista">
+            <li><a href="dashboard.html"><i class="fa-solid fa-house"></i><span>Início</span></a></li>
+            <li><a href="pesquisa.html"><i class="fa-solid fa-magnifying-glass"></i><span>Artistas</span></a></li>
+            <li><a href="aprovados.html"><i class="fa-solid fa-bell"></i><span>Aprovados</span></a></li>
+            <li class="ativo"><a href="eventos.html"><i class="fa-solid fa-music"></i>Eventos</a></li>
+            <li><a href="preferencia.html"><i class="fa-solid fa-sliders"></i><span>Preferências</span></a></li>
+            <li><a href="notificacoes.html"><i class="fa-solid fa-bell"></i><span>Notificações</span></a></li>
+            <li class="ativo"><a href="perfil.html"><i class="fa-solid fa-user"></i><span>Perfil</span></a></li>
+            <li class="box-sair">
+                <a class="botao-sair" href="../index.html"><i class="fa-solid fa-right-from-bracket"></i> Sair</a>
+            </li>
+        </ul>
+    </aside>
+
+    <main class="conteudo-principal">
+
+        <header class="cabecalho-pagina">
+            <div class="cabecalho-info">
+                <span class="sobretitulo">SONORA / EVENTOS</span>
+
+                <h1>Shows e eventos</h1>
+
+                <p>
+                    Consulte os eventos cadastrados pela sua empresa e os artistas relacionados.
+                </p>
+            </div>
+        </header>
+
+        <section class="section-panel">
+            <div class="barra-titulo">
+                <h3>
+                    <i class="fa-solid fa-calendar-days"></i>
+                    Eventos Cadastrados
+                </h3>
+
+                <span class="badge" id="quantidade-eventos">
+                    0 Eventos
+                </span>
+            </div>
+
+            <div id="lista-eventos" class="events-grid">
+                <!-- Eventos gerados dinamicamente -->
+            </div>
+        </section>
+
+    </main>
+
+    <!-- MODAL DE DETALHES -->
+    <div id="modal-detalhes-evento" class="modal-overlay">
+        <div class="modal-box modal-detalhes">
+
+            <div class="modal-header">
+                <h3>
+                    <i class="fa-solid fa-calendar-days"></i>
+                    Detalhes do Evento
+                </h3>
+
+                <button type="button" class="btn-close">
+                    &times;
+                </button>
+            </div>
+
+            <div id="detalhes-evento-conteudo">
+
+                <div class="info-evento-detalhes">
+                    <span class="status-evento" id="detalhes-status"></span>
+
+                    <h2 id="detalhes-nome"></h2>
+
+                    <p id="detalhes-descricao"></p>
+
+                    <div class="detalhes-evento">
+                        <span>
+                            <i class="fa-solid fa-calendar"></i>
+                            <span id="detalhes-data"></span>
+                        </span>
+
+                        <span>
+                            <i class="fa-solid fa-location-dot"></i>
+                            <span id="detalhes-local"></span>
+                        </span>
+                    </div>
+                </div>
+
+                <div class="artistas-evento">
+                    <div class="barra-titulo">
+                        <h3>
+                            <i class="fa-solid fa-microphone"></i>
+                            Artistas relacionados
+                        </h3>
+
+                        <span class="badge" id="quantidade-artistas-evento">
+                            0 Artistas
+                        </span>
+                    </div>
+
+                    <div id="lista-artistas-evento" class="artistas-grid">
+                        <!-- Artistas carregados dinamicamente -->
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- TOAST -->
+    <div id="toast"></div>
+
+    <script>
+        let eventos = [];
+
+        const idEmpresa = sessionStorage.getItem("ID_EMPRESA");
+
+        async function registrarLog(tipo, mensagem, status) {
+            try {
+                await fetch("/suporte/registrar", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        tipo: tipo,
+                        mensagem: mensagem,
+                        status: status
+                    })
+                });
+            } catch (erro) {
+                console.error("Erro ao registrar log:", erro);
+            }
+        }
+
+        document.addEventListener("DOMContentLoaded", () => {
+            if (!idEmpresa) {
+                mostrarToast("Sessão expirada. Faça login novamente.", true);
+                alert("Houve um erro ao tentar identificar seu usuário, realize o login novamente");
+                window.location.href = "../login.html";
+                return;
+            }
+
+            listarEventos();
+
+            document.querySelectorAll(".btn-close").forEach(botao => {
+                botao.addEventListener("click", fecharModal);
+            });
+        });
+
+        function listarEventos() {
+            const inicioRequisicao = performance.now();
+
+            fetch(`/evento/listar/${idEmpresa}`)
+                .then(resposta => {
+                    const tempoResposta =
+                        performance.now() - inicioRequisicao;
+
+                    if (tempoResposta > 3000) {
+                        registrarLog(
+                            "Atraso",
+                            "Consulta de eventos demorou " +
+                            Math.round(tempoResposta) +
+                            "ms para responder.",
+                            "Atenção"
+                        );
+                    }
+
+                    if (!resposta.ok) {
+                        registrarLog(
+                            "Falha",
+                            "Não foi possível carregar os eventos da empresa.",
+                            "Crítico"
+                        );
+
+                        throw new Error("Erro ao buscar eventos");
+                    }
+
+                    return resposta.json();
+                })
+                .then(dados => {
+                    registrarLog(
+                        "Sistema",
+                        "Eventos carregados com sucesso para o funcionário.",
+                        "Informação"
+                    );
+
+                    eventos = dados;
+                    renderizarEventos();
+                })
+                .catch(erro => {
+                    console.error(erro);
+
+                    if (erro.message !== "Erro ao buscar eventos") {
+                        registrarLog(
+                            "Integração",
+                            "Falha na comunicação ao carregar os eventos.",
+                            "Crítico"
+                        );
+                    }
+
+                    mostrarToast("Erro ao carregar eventos", true);
+                });
+        }
+
+        function renderizarEventos() {
+            const lista = document.getElementById("lista-eventos");
+
+            lista.innerHTML = "";
+
+            document.getElementById("quantidade-eventos").innerText =
+                `${eventos.length} ${eventos.length === 1 ? "Evento" : "Eventos"}`;
+
+            if (eventos.length === 0) {
+                lista.innerHTML = `
+                    <div class="nenhum-evento">
+                        <i class="fa-solid fa-calendar-xmark"></i>
+                        <p>Nenhum evento cadastrado.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            eventos.forEach(evento => {
+                const classeStatus =
+                    classeStatusEvento(evento.status_evento);
+
+                lista.innerHTML += `
+                    <div class="card-evento" onclick="abrirDetalhesEvento(${evento.id_evento})">
+                        <div class="conteudo-evento">
+
+                            <div class="cabecalho-card-evento">
+                                <span class="status-evento ${classeStatus}">
+                                    ${evento.status_evento}
+                                </span>
+
+                                <span class="quantidade-artistas-evento">
+                                    <i class="fa-solid fa-microphone"></i>
+                                    ${evento.quantidade_artistas}
+                                    ${evento.quantidade_artistas == 1 ? "Artista" : "Artistas"}
+                                </span>
+                            </div>
+
+                            <h3>${evento.nome}</h3>
+
+                            <p class="descricao-evento">
+                                ${evento.descricao || "Sem descrição informada."}
+                            </p>
+
+                            <div class="detalhes-evento">
+                                <span>
+                                    <i class="fa-solid fa-calendar"></i>
+                                    ${evento.data_evento}
+                                </span>
+
+                                <span>
+                                    <i class="fa-solid fa-location-dot"></i>
+                                    ${evento.local_evento}
+                                </span>
+                            </div>
+
+                            <div class="acao-visualizar">
+                                <span>
+                                    <i class="fa-solid fa-eye"></i>
+                                    Ver detalhes
+                                </span>
+                            </div>
+
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        function abrirDetalhesEvento(idEvento) {
+            const evento = eventos.find(e => e.id_evento == idEvento);
+
+            if (!evento) return;
+
+            document.getElementById("detalhes-nome").innerText =
+                evento.nome;
+
+            document.getElementById("detalhes-descricao").innerText =
+                evento.descricao || "Sem descrição informada.";
+
+            document.getElementById("detalhes-data").innerText =
+                evento.data_evento;
+
+            document.getElementById("detalhes-local").innerText =
+                evento.local_evento;
+
+            const status =
+                document.getElementById("detalhes-status");
+
+            status.innerText = evento.status_evento;
+            status.className =
+                `status-evento ${classeStatusEvento(evento.status_evento)}`;
+
+            const lista =
+                document.getElementById("lista-artistas-evento");
+
+            lista.innerHTML = `
+                <p class="carregando-artistas">
+                    Carregando artistas...
+                </p>
+            `;
+
+            document.getElementById("modal-detalhes-evento")
+                .classList.add("ativo");
+
+            carregarArtistasEvento(idEvento);
+        }
+
+        function classeStatusEvento(status) {
+            if (status === "Confirmado") {
+                return "status-confirmado";
+            }
+
+            if (status === "Cancelado") {
+                return "status-cancelado";
+            }
+
+            if (status === "Finalizado") {
+                return "status-finalizado";
+            }
+
+            return "status-planejado";
+        }
+
+        function carregarArtistasEvento(idEvento) {
+            const inicioRequisicao = performance.now();
+
+            fetch(`/evento/artistas/${idEvento}/${idEmpresa}`)
+                .then(resposta => {
+                    const tempoResposta =
+                        performance.now() - inicioRequisicao;
+
+                    if (tempoResposta > 3000) {
+                        registrarLog(
+                            "Atraso",
+                            "Consulta de artistas do evento demorou " +
+                            Math.round(tempoResposta) +
+                            "ms para responder.",
+                            "Atenção"
+                        );
+                    }
+
+                    if (!resposta.ok) {
+                        registrarLog(
+                            "Falha",
+                            "Não foi possível carregar os artistas do evento.",
+                            "Crítico"
+                        );
+
+                        throw new Error("Erro ao buscar artistas do evento");
+                    }
+
+                    return resposta.json();
+                })
+                .then(artistas => {
+                    registrarLog(
+                        "Sistema",
+                        "Artistas do evento carregados com sucesso.",
+                        "Informação"
+                    );
+
+                    const lista =
+                        document.getElementById("lista-artistas-evento");
+
+                    document.getElementById("quantidade-artistas-evento").innerText =
+                        `${artistas.length} ${artistas.length === 1 ? "Artista" : "Artistas"}`;
+
+                    if (artistas.length === 0) {
+                        lista.innerHTML = `
+                            <div class="nenhum-artista-evento">
+                                <i class="fa-solid fa-microphone-slash"></i>
+                                <p>Nenhum artista relacionado a este evento.</p>
+                            </div>
+                        `;
+                        return;
+                    }
+
+                    lista.innerHTML = artistas.map(artista => `
+                        <div class="card-artista-evento">
+                            <div class="icone-artista">
+                                <i class="fa-solid fa-music"></i>
+                            </div>
+
+                            <div>
+                                <h4>${artista.nome_artista}</h4>
+                                <p>${artista.genero || "Gênero não informado"}</p>
+                            </div>
+                        </div>
+                    `).join("");
+                })
+                .catch(erro => {
+                    console.error(erro);
+
+                    if (erro.message !== "Erro ao buscar artistas do evento") {
+                        registrarLog(
+                            "Integração",
+                            "Falha na comunicação ao carregar os artistas do evento.",
+                            "Crítico"
+                        );
+                    }
+
+                    document.getElementById("lista-artistas-evento").innerHTML = `
+                        <p class="erro-artistas">
+                            Não foi possível carregar os artistas deste evento.
+                        </p>
+                    `;
+                });
+        }
+
+        function fecharModal() {
+            document.getElementById("modal-detalhes-evento")
+                .classList.remove("ativo");
+        }
+
+        function mostrarToast(mensagem, erro = false) {
+            const toast = document.getElementById("toast");
+
+            toast.innerText = mensagem;
+            toast.className = erro ? "erro" : "sucesso";
+
+            setTimeout(() => {
+                toast.className = "";
+            }, 3000);
+        }
+    </script>
+
+</body>
+
+</html>

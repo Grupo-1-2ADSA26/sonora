@@ -8,7 +8,6 @@ function buscarPorNome(nome) {
         ORDER BY (nome = ?) DESC, nome ASC
         LIMIT 1;
     `;
-
     return database.executar(instrucaoSql, [`%${nome}%`, nome]);
 }
 
@@ -18,10 +17,8 @@ function buscarPorId(idArtista) {
         FROM artista
         WHERE id_artista = ?;
     `;
-
     return database.executar(instrucaoSql, [idArtista]);
 }
-
 
 function buscarDadosArtista(idArtista) {
     var instrucaoSql = `
@@ -34,64 +31,35 @@ function buscarDadosArtista(idArtista) {
             AVG(ms.valence) AS valence,
             AVG(ms.speechiness) AS speechiness,
             COALESCE(SUM(ms.streams), 0) AS total_streams,
-
             CASE
                 WHEN COALESCE(SUM(ms.views), 0) > 0 THEN
                     ROUND(
-                        (
-                            (
-                                COALESCE(SUM(ms.likes), 0) +
-                                COALESCE(SUM(ms.comentarios), 0)
-                            ) / SUM(ms.views)
-                        ) * 100,
+                        ((COALESCE(SUM(ms.likes), 0) + COALESCE(SUM(ms.comentarios), 0)) / SUM(ms.views)) * 100,
                         2
                     )
                 ELSE NULL
             END AS engajamento,
-
             CASE
                 WHEN ranking.maior_total_streams > 0 THEN
-                    ROUND(
-                        (
-                            COALESCE(SUM(ms.streams), 0) /
-                            ranking.maior_total_streams
-                        ) * 100,
-                        2
-                    )
+                    ROUND((COALESCE(SUM(ms.streams), 0) / ranking.maior_total_streams) * 100, 2)
                 ELSE 0
             END AS popularidade
-
         FROM artista a
-
-        LEFT JOIN musica m
-            ON m.id_artista = a.id_artista
-
-        LEFT JOIN metrica_streaming ms
-            ON ms.id_musica = m.id_musica
-
+        LEFT JOIN musica m ON m.id_artista = a.id_artista
+        LEFT JOIN metrica_streaming ms ON ms.id_musica = m.id_musica
         CROSS JOIN (
             SELECT MAX(total_streams) AS maior_total_streams
             FROM (
-                SELECT
-                    a2.id_artista,
-                    COALESCE(SUM(ms2.streams), 0) AS total_streams
+                SELECT a2.id_artista, COALESCE(SUM(ms2.streams), 0) AS total_streams
                 FROM artista a2
-                LEFT JOIN musica m2
-                    ON m2.id_artista = a2.id_artista
-                LEFT JOIN metrica_streaming ms2
-                    ON ms2.id_musica = m2.id_musica
+                LEFT JOIN musica m2 ON m2.id_artista = a2.id_artista
+                LEFT JOIN metrica_streaming ms2 ON ms2.id_musica = m2.id_musica
                 GROUP BY a2.id_artista
             ) AS totais
         ) AS ranking
-
         WHERE a.id_artista = ?
-
-        GROUP BY
-            a.id_artista,
-            a.genero,
-            ranking.maior_total_streams;
+        GROUP BY a.id_artista, a.genero, ranking.maior_total_streams;
     `;
-
     return database.executar(instrucaoSql, [idArtista]);
 }
 
@@ -102,29 +70,188 @@ function buscarTop3Faixas(idArtista) {
             m.titulo,
             m.album,
             COALESCE(SUM(ms.streams), 0) AS total_streams
-
         FROM musica m
-
-        LEFT JOIN metrica_streaming ms
-            ON ms.id_musica = m.id_musica
-
+        LEFT JOIN metrica_streaming ms ON ms.id_musica = m.id_musica
         WHERE m.id_artista = ?
-
-        GROUP BY
-            m.id_musica,
-            m.titulo,
-            m.album
-
+        GROUP BY m.id_musica, m.titulo, m.album
         ORDER BY total_streams DESC
         LIMIT 3;
     `;
-
     return database.executar(instrucaoSql, [idArtista]);
+}
+
+function buscarKpiEngajamento(genero) {
+    let filtroSql = "";
+    let parametros = [];
+
+    if (genero && genero !== "todos") {
+        filtroSql = "WHERE a.genero = ?";
+        parametros.push(genero);
+    }
+
+    var instrucaoSql = `
+        SELECT 
+            a.nome,
+            CASE
+                WHEN COALESCE(SUM(ms.views), 0) > 0 THEN
+                    ROUND(((COALESCE(SUM(ms.likes), 0) + COALESCE(SUM(ms.comentarios), 0)) / SUM(ms.views)) * 100, 2)
+                ELSE 0
+            END AS engajamento
+        FROM artista a
+        LEFT JOIN musica m ON m.id_artista = a.id_artista
+        LEFT JOIN metrica_streaming ms ON ms.id_musica = m.id_musica
+        ${filtroSql}
+        GROUP BY a.id_artista, a.nome
+        ORDER BY engajamento DESC
+        LIMIT 1;
+    `;
+    return database.executar(instrucaoSql, parametros);
+}
+
+function buscarKpiGeneroDestaque(genero) {
+    let filtroSql = "WHERE a.genero IS NOT NULL AND a.genero != ''";
+    let parametros = [];
+
+    if (genero && genero !== "todos") {
+        filtroSql += " AND a.genero = ?";
+        parametros.push(genero);
+    }
+
+    var instrucaoSql = `
+        SELECT 
+            a.genero,
+            COALESCE(SUM(ms.streams), 0) AS total_streams
+        FROM artista a
+        LEFT JOIN musica m ON m.id_artista = a.id_artista
+        LEFT JOIN metrica_streaming ms ON ms.id_musica = m.id_musica
+        ${filtroSql}
+        GROUP BY a.genero
+        ORDER BY total_streams DESC
+        LIMIT 1;
+    `;
+    return database.executar(instrucaoSql, parametros);
+}
+
+function buscarKpiMaiorStreams(genero) {
+    let filtroSql = "";
+    let parametros = [];
+
+    if (genero && genero !== "todos") {
+        filtroSql = "WHERE a.genero = ?";
+        parametros.push(genero);
+    }
+
+    var instrucaoSql = `
+        SELECT 
+            a.nome,
+            COALESCE(SUM(ms.streams), 0) AS streams
+        FROM artista a
+        LEFT JOIN musica m ON m.id_artista = a.id_artista
+        LEFT JOIN metrica_streaming ms ON ms.id_musica = m.id_musica
+        ${filtroSql}
+        GROUP BY a.id_artista, a.nome
+        ORDER BY streams DESC
+        LIMIT 1;
+    `;
+    return database.executar(instrucaoSql, parametros);
+}
+
+function listarArtistasMaisOuvidos(genero) {
+    let filtroSql = "";
+    let parametros = [];
+
+    if (genero && genero !== "todos") {
+        filtroSql = "WHERE a.genero = ?";
+        parametros.push(genero);
+    }
+
+    var instrucaoSql = `
+        SELECT 
+            a.nome, 
+            COALESCE(SUM(ms.streams), 0) AS streams
+        FROM artista a
+        LEFT JOIN musica m ON m.id_artista = a.id_artista
+        LEFT JOIN metrica_streaming ms ON ms.id_musica = m.id_musica
+        ${filtroSql}
+        GROUP BY a.id_artista, a.nome
+        ORDER BY streams DESC
+        LIMIT 5;
+    `;
+    return database.executar(instrucaoSql, parametros);
+}
+
+function listarMusicasMaisOuvidas(genero) {
+    let filtroSql = "";
+    let parametros = [];
+
+    if (genero && genero !== "todos") {
+        filtroSql = "WHERE a.genero = ?";
+        parametros.push(genero);
+    }
+
+    var instrucaoSql = `
+        SELECT 
+            m.titulo, 
+            COALESCE(SUM(ms.streams), 0) AS streams
+        FROM musica m
+        LEFT JOIN artista a ON m.id_artista = a.id_artista
+        LEFT JOIN metrica_streaming ms ON ms.id_musica = m.id_musica
+        ${filtroSql}
+        GROUP BY m.id_musica, m.titulo
+        ORDER BY streams DESC
+        LIMIT 5;
+    `;
+    return database.executar(instrucaoSql, parametros);
+}
+
+function listarArtistasEngajamento(genero) {
+    let filtroSql = "";
+    let parametros = [];
+
+    if (genero && genero !== "todos") {
+        filtroSql = "WHERE a.genero = ?";
+        parametros.push(genero);
+    }
+
+    var instrucaoSql = `
+        SELECT 
+            a.nome,
+            CASE
+                WHEN COALESCE(SUM(ms.views), 0) > 0 THEN
+                    ROUND(((COALESCE(SUM(ms.likes), 0) + COALESCE(SUM(ms.comentarios), 0)) / SUM(ms.views)) * 100, 2)
+                ELSE 0
+            END AS engajamento
+        FROM artista a
+        LEFT JOIN musica m ON m.id_artista = a.id_artista
+        LEFT JOIN metrica_streaming ms ON ms.id_musica = m.id_musica
+        ${filtroSql}
+        GROUP BY a.id_artista, a.nome
+        ORDER BY engajamento DESC
+        LIMIT 5;
+    `;
+    return database.executar(instrucaoSql, parametros);
+}
+
+function listarGeneros() {
+    var instrucaoSql = `
+        SELECT DISTINCT genero 
+        FROM artista 
+        WHERE genero IS NOT NULL AND genero != ''
+        ORDER BY genero ASC;
+    `;
+    return database.executar(instrucaoSql);
 }
 
 module.exports = {
     buscarPorNome,
     buscarPorId,
     buscarDadosArtista,
-    buscarTop3Faixas
+    buscarTop3Faixas,
+    buscarKpiEngajamento,
+    buscarKpiGeneroDestaque,
+    buscarKpiMaiorStreams,
+    listarArtistasMaisOuvidos,
+    listarMusicasMaisOuvidas,
+    listarArtistasEngajamento,
+    listarGeneros
 };

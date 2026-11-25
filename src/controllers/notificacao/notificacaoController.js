@@ -107,7 +107,7 @@ async function enviar(req, res) {
                 `Olá, ${usuario.nome}!\n\n` +
                 `Temos uma nova atualização na Sonora.\n\n` +
                 `${mensagem}` +
-                `Acesse a plataforma para conferir todos os detalhes e acompanhar as novidades.\n\n` +
+                `\nAcesse a plataforma para conferir todos os detalhes e acompanhar as novidades.\n\n` +
                 `Atenciosamente,\n` +
                 `Equipe Sonora`;
 
@@ -116,6 +116,13 @@ async function enviar(req, res) {
                 assunto: assunto,
                 mensagem: mensagemPersonalizada
             });
+
+            await notificacaoModel.salvarMensagem(
+                usuario.id_usuario,
+                tipoNotificacao,
+                assunto,
+                mensagemPersonalizada
+            );
         }
 
         res.status(200).json({

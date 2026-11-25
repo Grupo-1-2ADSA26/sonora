@@ -642,6 +642,18 @@
 
         if (!confirm(`Deseja ${acao} este artista?`)) return;
 
+        const artista = listaArtistas.find(item => item.id_artista == idArtista);
+
+        if (!artista) {
+            alert("Não foi possível encontrar os dados do artista.");
+            return;
+        }
+
+        const tipoNotificacao =
+            status === "APROVADO"
+                ? "artista_aprovado"
+                : "artista_rejeitado";
+
         const inicioRequisicao = performance.now();
 
         try {
@@ -682,7 +694,33 @@
                 "Informação"
             );
 
-            listarTodos();
+            await listarTodos();
+
+            await fetch("/notificacao/enviar", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    idEmpresa,
+                    idArtista,
+                    tipoNotificacao,
+                    assunto:
+                        status === "APROVADO"
+                            ? "Artista aprovado na Sonora"
+                            : "Artista reprovado na Sonora",
+                    mensagem:
+                        status === "APROVADO"
+                            ? `O(a) ${sessionStorage.getItem("NOME_USUARIO")} aprovou o artista que você sugeriu para a empresa.\n\n` +
+                            `Artista aprovado: ${artista.nome_artista}\n` +
+                            `Evento relacionado: ${artista.nome_evento}\n\n` +
+                            `A sugestão foi aprovada e o artista poderá seguir para as próximas etapas do processo na Sonora.`
+                            : `O(a) ${sessionStorage.getItem("NOME_USUARIO")} reprovou o artista que você sugeriu para a empresa.\n\n` +
+                            `Artista reprovado: ${artista.nome_artista}\n` +
+                            `Evento relacionado: ${artista.nome_evento}\n\n` +
+                            `A sugestão não foi aprovada pela empresa para seguir para as próximas etapas do processo.`
+                })
+            });
 
         } catch (erro) {
             console.error("Erro ao decidir:", erro);
@@ -695,7 +733,10 @@
                 );
             }
 
-            alert(erro.message || "Não foi possível atualizar o status.");
+            alert(
+                erro.message ||
+                "Não foi possível atualizar o status."
+            );
         }
     }
 

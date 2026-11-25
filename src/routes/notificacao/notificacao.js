@@ -3,6 +3,10 @@ var router = express.Router();
 
 var notificacaoController = require("../../controllers/notificacao/notificacaoController");
 
+router.post("/enviar", function(req, res) {
+    notificacaoController.enviar(req, res);
+});
+
 router.get("/:idUsuario", function(req, res) {
     notificacaoController.buscarPorUsuario(req, res);
 });

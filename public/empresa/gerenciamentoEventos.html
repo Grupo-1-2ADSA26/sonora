@@ -284,6 +284,25 @@
             }
         }
 
+        async function enviarNotificacao(tipoNotificacao, assunto, mensagem) {
+            try {
+                await fetch("/notificacao/enviar", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        idEmpresa: Number(idEmpresa),
+                        tipoNotificacao: tipoNotificacao,
+                        assunto: assunto,
+                        mensagem: mensagem
+                    })
+                });
+            } catch (erro) {
+                console.error("Erro ao enviar notificação:", erro);
+            }
+        }
+
         document.addEventListener("DOMContentLoaded", () => {
             if (!idEmpresa) {
                 mostrarToast("Sessão expirada. Faça login novamente.", true);
@@ -546,6 +565,38 @@
                         dados.nome,
                         "Informação"
                     );
+
+                    if (!idEvento) {
+                        enviarNotificacao(
+                            "evento_criado",
+                            "Novo evento cadastrado na Sonora",
+                            "Um novo evento foi cadastrado na Sonora e já está disponível para acompanhamento na plataforma.\n\n" +
+                            "Evento: " + dados.nome + "\n" +
+                            "Data do evento: " + dados.data_evento + "\n" +
+                            "Local: " + dados.local_evento + "\n\n" +
+                            "O evento foi registrado com sucesso e já faz parte da programação da empresa."
+                        );
+                    } else if (dados.id_status_evento === 3) {
+                        enviarNotificacao(
+                            "evento_cancelado",
+                            "Evento cancelado na Sonora",
+                            "Um evento foi cancelado na Sonora e a alteração já foi registrada na plataforma.\n\n" +
+                            "Evento cancelado: " + dados.nome + "\n" +
+                            "Data prevista: " + dados.data_evento + "\n" +
+                            "Local: " + dados.local_evento + "\n\n" +
+                            "O evento não será realizado conforme a programação anteriormente registrada."
+                        );
+                    } else {
+                        enviarNotificacao(
+                            "evento_atualizado",
+                            "Evento atualizado na Sonora",
+                            "As informações de um evento foram atualizadas na Sonora.\n\n" +
+                            "Evento atualizado: " + dados.nome + "\n" +
+                            "Nova data: " + dados.data_evento + "\n" +
+                            "Novo local: " + dados.local_evento + "\n\n" +
+                            "As informações acima representam os dados atuais do evento na plataforma."
+                        );
+                    }
 
                     fecharModais();
                     listarEventos();

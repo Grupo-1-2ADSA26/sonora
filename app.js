@@ -34,6 +34,13 @@
     const monitoramentoRouter = require("./src/routes/spring/monitoramento");
 
 
+    var notificacaoController = require("./src/controllers/notificacao/notificacaoController");
+
+    notificacaoController.enviarEventosProximos();
+
+    setInterval(function() {
+        notificacaoController.enviarEventosProximos();
+    }, 24 * 60 * 60 * 1000);
 
     app.use(express.json());
     app.use(express.urlencoded({ extended: false }));

@@ -10,6 +10,27 @@ async function testarConexao() {
     return await resposta.json();
 }
 
+async function enviarNotificacao(dados) {
+    const resposta = await fetch(`${SPRING_URL}/api/notificacoes`,
+        {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(dados)
+        }
+    );
+
+    const resultado = await resposta.json();
+
+    if (!resposta.ok) {
+        throw new Error(resultado.mensagem || "Erro ao enviar notificação");
+    }
+
+    return resultado;
+}
+
 module.exports = {
-    testarConexao
+    testarConexao,
+    enviarNotificacao
 };

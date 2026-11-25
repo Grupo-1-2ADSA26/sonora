@@ -336,6 +336,28 @@
 
                 alert("Análise concluída! A empresa já pode ver o resultado.");
                 window.location.href = "aprovados.html";
+
+                const respostaNotificacao = await fetch("/notificacao/enviar", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        idEmpresa: idEmpresaAtual,
+                        idArtista: idArtistaAtual,
+                        tipoNotificacao: "analise_concluida",
+                        assunto: "Análise do artista concluída na Sonora",
+                        mensagem:
+                            `O(a) ${sessionStorage.getItem("NOME_USUARIO")} concluiu a análise do artista na Sonora.\n\n` +
+                            `Artista analisado: ${document.getElementById("nome-artista").textContent}\n\n` +
+                            `A análise foi concluída e o resultado já está disponível para consulta da empresa.`
+                    })
+                });
+
+                if (!respostaNotificacao.ok) {
+                    console.error("Falha ao enviar notificação de análise concluída.");
+                }
+
             } catch (erro) {
                 console.error("Erro ao aprovar artista:", erro);
                 alert(erro.message || "Não foi possível aprovar o artista.");

@@ -89,6 +89,8 @@ function autenticar(req, res) {
     }
 }
 
+
+
 module.exports = {
     cadastrar,
     listarPorEmpresa,

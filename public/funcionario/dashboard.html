@@ -4,31 +4,23 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
     <title>Painel | Sonora</title>
-
     <script src="https://kit.fontawesome.com/d840916580.js" crossorigin="anonymous"></script>
-
     <link rel="stylesheet" href="../css/menu.css">
     <link rel="stylesheet" href="../css/funcionario/dashboard.css">
-
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 
 <body>
 
-    <!-- MENU LATERAL -->
     <aside class="box-menu">
         <input type="checkbox" id="menu-toggle" class="menu-toggle">
-
         <div class="menu-top">
             <label for="menu-toggle" class="btn-hamburguer">
                 <i class="fa-solid fa-bars"></i>
             </label>
-
             <p class="logo">sonora.</p>
         </div>
-
         <ul class="lista">
             <li class="ativo">
                 <a href="dashboard.html">
@@ -36,36 +28,32 @@
                     <span>Início</span>
                 </a>
             </li>
-
             <li>
                 <a href="pesquisa.html">
                     <i class="fa-solid fa-magnifying-glass"></i>
                     <span>Artistas</span>
                 </a>
             </li>
-
-
             <li>
                 <a href="aprovados.html">
                     <i class="fa-solid fa-bell"></i>
                     <span>Aprovados</span>
                 </a>
             </li>
-
+            <li><a href="eventos.html"><i class="fa-solid fa-music"></i>Eventos</a></li>
+            <li><a href="preferencia.html"><i class="fa-solid fa-sliders"></i><span>Preferências</span></a></li>
             <li>
                 <a href="notificacoes.html">
                     <i class="fa-solid fa-bell"></i>
                     <span>Notificações</span>
                 </a>
             </li>
-
             <li>
                 <a href="perfil.html">
                     <i class="fa-solid fa-user"></i>
                     <span>Perfil</span>
                 </a>
             </li>
-
             <li class="box-sair">
                 <a class="botao-sair" href="../index.html">
                     <i class="fa-solid fa-right-from-bracket"></i>
@@ -75,398 +63,332 @@
         </ul>
     </aside>
 
-    <!-- CONTEÚDO PRINCIPAL -->
     <main class="main-content">
 
-        <!-- CABEÇALHO -->
-        <header class="page-header">
+        <header class="page-header"
+            style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap;">
             <div class="header-info">
                 <span class="eyebrow">SONORA / VISÃO GERAL</span>
+                <h1>Painel Operacional</h1>
+                <p>Acompanhe os indicadores, eventos e desempenho dos artistas.</p>
+            </div>
 
-                <h1>Painel</h1>
+            <!-- FILTRO DE PERÍODO GLOBAL -->
+            <div class="filter-container" style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
+                <label for="filtroPeriodo" style="font-size: 14px; font-weight: 500; color: #555;">Período:</label>
+                <select id="filtroPeriodo" style="padding: 8px 12px; border-radius: 6px; border: 1px solid #ccc;"
+                    onchange="verificarFiltroPersonalizado()">
+                    <option value="todos">Todo o período</option>
+                    <option value="mes_atual">Mês atual</option>
+                    <option value="3_meses">Últimos 3 meses</option>
+                    <option value="6_meses">Últimos 6 meses</option>
+                    <option value="futuros">Shows Futuros</option>
+                    <option value="personalizado">Personalizado (Calendário)</option>
+                </select>
 
-                <p>
-                    Acompanhe os indicadores e o desempenho dos artistas aprovados.
-                </p>
+                <!-- Campos de data personalizados -->
+                <div id="containerDatasPersonalizadas" style="display: none; align-items: center; gap: 6px;">
+                    <input type="date" id="dataInicio" style="padding: 6px; border-radius: 6px; border: 1px solid #ccc;"
+                        onchange="atualizarDashboard()">
+                    <span style="font-size: 13px; color: #666;">até</span>
+                    <input type="date" id="dataFim" style="padding: 6px; border-radius: 6px; border: 1px solid #ccc;"
+                        onchange="atualizarDashboard()">
+                </div>
             </div>
         </header>
 
-        <!-- INDICADORES -->
         <section class="summary">
-
+            <!-- KPI 1: Show mais próximo -->
             <article class="summary-card">
                 <div class="summary-icon">
-                    <i class="fa-solid fa-person-running"></i>
+                    <i class="fa-solid fa-calendar-days"></i>
                 </div>
-
                 <div class="summary-info">
-                    <span>Média de dançabilidade</span>
-                    <strong id="averageDanceability">—</strong>
-                    <small>Média dos artistas aprovados</small>
+                    <span>Show mais próximo</span>
+                    <strong id="kpiShowProximo" style="font-size: 16px;">Carregando...</strong>
+                    <small id="kpiDataProximo">Próximo evento</small>
                 </div>
             </article>
 
+            <!-- KPI 2: Gênero predominante -->
             <article class="summary-card">
                 <div class="summary-icon">
                     <i class="fa-solid fa-music"></i>
                 </div>
-
                 <div class="summary-info">
                     <span>Gênero predominante</span>
-                    <strong id="topGenre">Funk</strong>
-                    <small>Gênero mais frequente entre os artistas aprovados</small>
+                    <strong id="topGenre">Carregando...</strong>
+                    <small>Mais frequente entre artistas aprovados</small>
                 </div>
             </article>
 
+            <!-- KPI 3: Artistas pendentes de análise -->
             <article class="summary-card">
                 <div class="summary-icon">
-                    <i class="fa-solid fa-users"></i>
+                    <i class="fa-solid fa-users-clock"></i>
                 </div>
-
                 <div class="summary-info">
-                    <span>Artistas aprovados</span>
-                    <strong id="approvedArtists">—</strong>
-                    <small>Total de artistas aprovados</small>
+                    <span>Artistas pendentes</span>
+                    <strong id="kpiArtistasPendentes">—/—</strong>
+                    <small>Pendentes / Total</small>
                 </div>
             </article>
-
         </section>
 
-        <!-- AVISO QUANDO NÃO HOUVER RESULTADOS -->
         <div id="emptyState" class="empty-state" hidden>
             <i class="fa-solid fa-chart-simple"></i>
             <h2>Nenhum dado disponível</h2>
             <p>Não há informações suficientes para exibir os indicadores e gráficos.</p>
         </div>
 
-        <!-- GRÁFICOS -->
         <section class="dashboard-grid">
-
-            <!-- GRÁFICO DE ARTISTAS MAIS POPULARES -->
+            <!-- GRÁFICO 1: Artistas por Evento -->
             <article class="dashboard-card">
-
                 <div class="card-header">
                     <div>
-                        <span class="card-label">DESEMPENHO</span>
-
-                        <h2>Artistas mais populares</h2>
-
-                        <p>
-                            Ranking dos artistas aprovados por popularidade.
-                        </p>
+                        <span class="card-label">DISTRIBUIÇÃO</span>
+                        <h2>Artistas por Evento</h2>
+                        <p>Quantidade de artistas aprovados e pendentes por evento.</p>
                     </div>
-
                     <div class="card-icon">
                         <i class="fa-solid fa-chart-column"></i>
                     </div>
                 </div>
-
                 <div class="chart-container">
-                    <canvas id="popularArtistsChart"></canvas>
+                    <canvas id="artistsByEventChart"></canvas>
                 </div>
-
                 <div class="card-footer">
                     <span class="footer-dot"></span>
-                    <span>Índice de popularidade dos artistas aprovados (%)</span>
+                    <span>Empilhado por status</span>
                 </div>
-
             </article>
 
-            <!-- GRÁFICO DE APROVAÇÕES MENSAIS -->
+            <!-- GRÁFICO 2: Importância do Evento -->
             <article class="dashboard-card">
+                <div class="card-header">
+                    <div>
+                        <span class="card-label">RELEVÂNCIA</span>
+                        <h2>Importância do Evento</h2>
+                        <p>Baseado na popularidade/streams dos artistas envolvidos.</p>
+                    </div>
+                    <div class="card-icon">
+                        <i class="fa-solid fa-fire"></i>
+                    </div>
+                </div>
+                <div class="chart-container">
+                    <canvas id="eventImportanceChart"></canvas>
+                </div>
+                <div class="card-footer">
+                    <span class="footer-dot"></span>
+                    <span>Volume de engajamento por evento</span>
+                </div>
+            </article>
 
+            <!-- GRÁFICO 3: Aprovações mensais -->
+            <article class="dashboard-card" style="grid-column: span 2;">
                 <div class="card-header">
                     <div>
                         <span class="card-label">ACOMPANHAMENTO</span>
-
                         <h2>Aprovações mensais</h2>
-
-                        <p>
-                            Evolução mensal da quantidade de artistas aprovados.
-                        </p>
+                        <p>Evolução mensal da quantidade de artistas aprovados.</p>
                     </div>
-
                     <div class="card-icon">
                         <i class="fa-solid fa-chart-line"></i>
                     </div>
                 </div>
-
                 <div class="chart-container">
                     <canvas id="monthlyApprovalsChart"></canvas>
                 </div>
-
                 <div class="card-footer">
                     <span class="footer-dot"></span>
                     <span>Total de artistas aprovados por mês</span>
                 </div>
-
             </article>
-
         </section>
-
     </main>
 
-    <!-- CONFIGURAÇÃO DOS GRÁFICOS -->
     <script>
+        const idEmpresa = sessionStorage.getItem("ID_EMPRESA") || 1;
 
-        // Busca os artistas aprovados da empresa que iniciou a sessão.
-        const idEmpresa = sessionStorage.getItem("ID_EMPRESA");
+        let chartArtistasEvento = null;
+        let chartImportanciaEvento = null;
+        let chartAprovasMensais = null;
 
-        fetch(`./artistas-aprovados/${idEmpresa}`)
-            .then(resposta => {
-                if (!resposta.ok) {
-                    throw new Error("Erro ao buscar artistas aprovados");
-                }
+        document.addEventListener("DOMContentLoaded", () => {
+            atualizarDashboard();
+        });
 
-                return resposta.json();
-            })
-            .then(dados => {
-                console.log("Artistas aprovados:", dados);
+        function verificarFiltroPersonalizado() {
+            const periodo = document.getElementById("filtroPeriodo").value;
+            const containerDatas = document.getElementById("containerDatasPersonalizadas");
 
-                document.getElementById("approvedArtists").textContent = dados.length;
-            })
-            .catch(erro => {
-                console.error("Erro ao carregar artistas:", erro);
-            });
-
-
-        
-fetch(`http://localhost:3333/funcionario/media-dancabilidade/${idEmpresa}`)
-    .then(resposta => resposta.json())
-    .then(dados => {
-        console.log("Dados:", dados);
-        console.log("Primeiro registro:", dados[0]);
-
-        const media = dados[0]?.media_dancabilidade;
-
-        console.log("Média:", media);
-
-        document.getElementById("averageDanceability").textContent =
-            (Number(media) * 100).toFixed(1) + "%";
-    })
-    .catch(console.error);
-
-    fetch(`http://localhost:3333/funcionario/genero-predominante/${idEmpresa}`)
-    .then(resposta => {
-        if (!resposta.ok) {
-            throw new Error("Erro ao buscar gênero predominante");
+            if (periodo === "personalizado") {
+                containerDatas.style.display = "flex";
+            } else {
+                containerDatas.style.display = "none";
+                atualizarDashboard();
+            }
         }
 
-        return resposta.json();
-    })
-    .then(dados => {
-        console.log("Gênero predominante:", dados);
+        function atualizarDashboard() {
+            const periodoSelect = document.getElementById("filtroPeriodo").value;
+            let queryParams = `periodo=${periodoSelect}`;
 
-        const genero = dados[0]?.genero;
+            if (periodoSelect === "personalizado") {
+                const dataInicio = document.getElementById("dataInicio").value;
+                const dataFim = document.getElementById("dataFim").value;
 
-        document.getElementById("topGenre").textContent =
-            genero || "N/A";
-    })
-    .catch(erro => {
-        console.error("Erro ao carregar gênero predominante:", erro);
-        document.getElementById("topGenre").textContent = "N/A";
-    });
-
-
-        // Configurações visuais gerais dos gráficos
-        Chart.defaults.font.family = "system-ui, -apple-system, sans-serif";
-        Chart.defaults.color = "#858585";
-
-        Chart.defaults.plugins.tooltip.backgroundColor = "#242424";
-        Chart.defaults.plugins.tooltip.padding = 12;
-        Chart.defaults.plugins.tooltip.cornerRadius = 10;
-        Chart.defaults.plugins.tooltip.displayColors = false;
-
-
-        // GRÁFICO: ARTISTAS APROVADOS MAIS POPULARES
-        const popularArtistsChart = new Chart(
-            document.getElementById("popularArtistsChart"),
-            {
-                type: "bar",
-
-                data: {
-                    // Dados de exemplo: substituir pelos dados reais do sistema.
-                    labels: [
-                        "Anitta",
-                        "Jão",
-                        "BTS",
-                        "Michael Jackson",
-                        "Slipknot"
-                    ],
-
-                    datasets: [{
-                        label: "Índice de popularidade",
-                        data: [92, 85, 78, 70, 64],
-
-                        backgroundColor: [
-                            "#292929",
-                            "#444444",
-                            "#666666",
-                            "#888888",
-                            "#b8b8b8"
-                        ],
-
-                        borderRadius: 7,
-                        borderSkipped: false,
-                        barThickness: 25
-                    }]
-                },
-
-                options: {
-                    indexAxis: "y",
-                    responsive: true,
-                    maintainAspectRatio: false,
-
-                    animation: {
-                        duration: 700
-                    },
-
-                    plugins: {
-                        legend: {
-                            display: false
-                        },
-
-                        tooltip: {
-                            callbacks: {
-                                label: contexto => ` ${contexto.parsed.x}%`
-                            }
-                        }
-                    },
-
-                    scales: {
-                        x: {
-                            beginAtZero: true,
-                            max: 100,
-
-                            border: {
-                                display: false
-                            },
-
-                            grid: {
-                                color: "#eeeeee",
-                                drawTicks: false
-                            },
-
-                            ticks: {
-                                stepSize: 20,
-                                padding: 10,
-                                callback: valor => `${valor}%`
-                            }
-                        },
-
-                        y: {
-                            border: {
-                                display: false
-                            },
-
-                            grid: {
-                                display: false
-                            }
-                        }
-                    }
+                if (!dataInicio || !dataFim) {
+                    return; // Aguarda o usuário preencher ambas as datas do calendário
                 }
+                queryParams = `periodo=personalizado&inicio=${dataInicio}&fim=${dataFim}`;
             }
-        );
 
+            carregarKPIs(queryParams);
+            carregarGraficoArtistasPorEvento(queryParams);
+            carregarGraficoImportanciaEvento(queryParams);
+            carregarGraficoAprovacoesMensais(queryParams);
+        }
 
-        // GRÁFICO: QUANTIDADE MENSAL DE ARTISTAS APROVADOS
-        const monthlyApprovalsChart = new Chart(
-            document.getElementById("monthlyApprovalsChart"),
-            {
-                type: "line",
-
-                data: {
-                    // Dados de exemplo: substituir pelos dados reais do sistema.
-                    labels: [
-                        "Jan",
-                        "Fev",
-                        "Mar",
-                        "Abr",
-                        "Mai",
-                        "Jun"
-                    ],
-
-                    datasets: [{
-                        label: "Artistas aprovados",
-                        data: [3, 5, 4, 7, 6, 9],
-
-                        borderColor: "#292929",
-                        backgroundColor: "rgba(41, 41, 41, 0.08)",
-
-                        fill: true,
-                        tension: 0.4,
-                        borderWidth: 2.5,
-
-                        pointRadius: 4,
-                        pointHoverRadius: 6,
-
-                        pointBackgroundColor: "#292929",
-                        pointBorderColor: "#ffffff",
-                        pointBorderWidth: 2
-                    }]
-                },
-
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-
-                    animation: {
-                        duration: 700
-                    },
-
-                    plugins: {
-                        legend: {
-                            display: false
-                        },
-
-                        tooltip: {
-                            callbacks: {
-                                label: contexto =>
-                                    ` ${contexto.parsed.y} artistas`
-                            }
-                        }
-                    },
-
-                    scales: {
-                        x: {
-                            grid: {
-                                display: false
-                            },
-
-                            border: {
-                                display: false
-                            }
-                        },
-
-                        y: {
-                            beginAtZero: true,
-
-                            border: {
-                                display: false
-                            },
-
-                            grid: {
-                                color: "#eeeeee",
-                                drawTicks: false
-                            },
-
-                            ticks: {
-                                stepSize: 1,
-                                padding: 10,
-                                precision: 0
-                            }
-                        }
+        // CARREGAR KPIS COM SUPORTE A FILTROS
+        function carregarKPIs(queryString) {
+            // Show mais próximo
+            fetch(`/dashboardFuncionario/show-proximo/${idEmpresa}?${queryString}`)
+                .then(res => res.json())
+                .then(dados => {
+                    if (dados && dados.length > 0) {
+                        document.getElementById("kpiShowProximo").textContent = dados[0].nome_evento;
+                        document.getElementById("kpiDataProximo").textContent = `Data: ${dados[0].data_evento}`;
+                    } else {
+                        document.getElementById("kpiShowProximo").textContent = "Nenhum no período";
+                        document.getElementById("kpiDataProximo").textContent = "Sem eventos próximos";
                     }
-                }
-            }
-        );
+                }).catch(() => document.getElementById("kpiShowProximo").textContent = "Indisponível");
 
+            // Gênero predominante
+            fetch(`/dashboardFuncionario/genero-predominante/${idEmpresa}?${queryString}`)
+                .then(res => res.json())
+                .then(dados => {
+                    document.getElementById("topGenre").textContent = dados[0]?.genero || "N/A";
+                }).catch(() => document.getElementById("topGenre").textContent = "N/A");
 
-        /*
-         * Os indicadores e gráficos ainda possuem valores de exemplo.
-         * Os dados reais serão utilizados conforme as consultas da API forem implementadas.
-         */
+            // Artistas pendentes
+            fetch(`/dashboardFuncionario/artistas-pendentes-total/${idEmpresa}?${queryString}`)
+                .then(res => res.json())
+                .then(dados => {
+                    const pendentes = dados.pendentes || 0;
+                    const total = dados.total || 0;
+                    document.getElementById("kpiArtistasPendentes").textContent = `${pendentes}/${total}`;
+                }).catch(() => document.getElementById("kpiArtistasPendentes").textContent = "--/--");
+        }
 
+        function carregarGraficoArtistasPorEvento(queryString) {
+            fetch(`/dashboardFuncionario/artistas-por-evento/${idEmpresa}?${queryString}`)
+                .then(res => res.json())
+                .then(dados => {
+                    const eventos = dados.map(item => item.evento);
+                    const aprovados = dados.map(item => item.aprovados);
+                    const pendentes = dados.map(item => item.pendentes);
+
+                    const ctx = document.getElementById("artistsByEventChart").getContext("2d");
+                    if (chartArtistasEvento) chartArtistasEvento.destroy();
+
+                    chartArtistasEvento = new Chart(ctx, {
+                        type: 'bar',
+                        data: {
+                            labels: eventos.length ? eventos : ["Nenhum evento"],
+                            datasets: [
+                                { label: 'Aprovados', data: aprovados.length ? aprovados : [0], backgroundColor: '#292929', borderRadius: 4 },
+                                { label: 'Pendentes', data: pendentes.length ? pendentes : [0], backgroundColor: '#888888', borderRadius: 4 }
+                            ]
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            scales: {
+                                x: { stacked: true, grid: { display: false } },
+                                y: { stacked: true, beginAtZero: true, grid: { color: '#eee' }, ticks: { stepSize: 1 } }
+                            },
+                            plugins: { legend: { position: 'bottom' } }
+                        }
+                    });
+                });
+        }
+
+        function carregarGraficoImportanciaEvento(queryString) {
+            fetch(`/dashboardFuncionario/importancia-evento/${idEmpresa}?${queryString}`)
+                .then(res => res.json())
+                .then(dados => {
+                    const eventos = dados.map(item => item.evento);
+                    const importancia = dados.map(item => item.importancia);
+
+                    const ctx = document.getElementById("eventImportanceChart").getContext("2d");
+                    if (chartImportanciaEvento) chartImportanciaEvento.destroy();
+
+                    chartImportanciaEvento = new Chart(ctx, {
+                        type: 'bar',
+                        data: {
+                            labels: eventos.length ? eventos : ["Nenhum evento"],
+                            datasets: [{
+                                label: 'Importância (Streams)',
+                                data: importancia.length ? importancia : [0],
+                                backgroundColor: '#444444',
+                                borderRadius: 6,
+                                barThickness: 20
+                            }]
+                        },
+                        options: {
+                            indexAxis: 'y',
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            plugins: { legend: { display: false } },
+                            scales: {
+                                x: { beginAtZero: true, grid: { color: '#eee' } },
+                                y: { grid: { display: false } }
+                            }
+                        }
+                    });
+                });
+        }
+
+        function carregarGraficoAprovacoesMensais(queryString) {
+            fetch(`/dashboardFuncionario/aprovacoes-mensais/${idEmpresa}?${queryString}`)
+                .then(res => res.json())
+                .then(dados => {
+                    const meses = dados.map(item => item.mes);
+                    const totais = dados.map(item => item.total);
+
+                    const ctx = document.getElementById("monthlyApprovalsChart").getContext("2d");
+                    if (chartAprovasMensais) chartAprovasMensais.destroy();
+
+                    chartAprovasMensais = new Chart(ctx, {
+                        type: 'line',
+                        data: {
+                            labels: meses.length ? meses : ["Jan", "Fev", "Mar", "Abr", "Mai", "Jun"],
+                            datasets: [{
+                                label: "Artistas aprovados",
+                                data: totais.length ? totais : [0, 0, 0, 0, 0, 0],
+                                borderColor: "#292929",
+                                backgroundColor: "rgba(41, 41, 41, 0.08)",
+                                fill: true,
+                                tension: 0.4,
+                                borderWidth: 2.5,
+                                pointRadius: 4,
+                                pointBackgroundColor: "#292929"
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            plugins: { legend: { display: false } },
+                            scales: {
+                                x: { grid: { display: false } },
+                                y: { beginAtZero: true, grid: { color: '#eeeeee' }, ticks: { stepSize: 1, precision: 0 } }
+                            }
+                        }
+                    });
+                });
+        }
     </script>
 
 </body>

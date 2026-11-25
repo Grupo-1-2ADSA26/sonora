@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Preferências | Sonora</title>
+    <script src="https://kit.fontawesome.com/d840916580.js" crossorigin="anonymous"></script>
+
+   <link rel="stylesheet" href="../css/menu.css">
+   <link rel="stylesheet" href="../css/empresa/preferencias.css">
+</head>
+
+<body>
+    <aside class="box-menu">
+        <input type="checkbox" id="menu-toggle" class="menu-toggle">
+
+        <div class="menu-top">
+            <label for="menu-toggle" class="btn-hamburguer" aria-label="Abrir ou fechar menu">
+                <i class="fa-solid fa-bars"></i>
+            </label>
+            <p class="logo">sonora.</p>
+        </div>
+
+        <ul class="lista">
+            <li><a href="dashboard.html"><i class="fa-solid fa-house"></i>Início</a></li>
+            <li><a href="pesquisaArtista.html"><i class="fa-solid fa-magnifying-glass"></i>Artistas</a></li>
+            <li><a href="cadastroFuncionario.html"><i class="fa-solid fa-users"></i>Funcionários</a></li>
+            <li><a href="aprovados.html"><i class="fa-solid fa-user-pen"></i>Aprovados</a></li>
+            <li><a href="gerenciamentoEventos.html"><i class="fa-solid fa-music"></i>Eventos</a></li>
+            <li><a href="notificacoes.html"><i class="fa-solid fa-bell"></i>Notificações</a></li>
+            <li class="ativo"><a href="preferencia.html"><i class="fa-solid fa-sliders"></i>Preferências</a></li>
+            <li><a href="perfilEmpresa.html"><i class="fa-solid fa-building"></i>Perfil Empresa</a></li>
+            <li><a href="perfil.html"><i class="fa-solid fa-user"></i>Perfil</a></li>
+
+            <li class="box-sair">
+                <a class="botao-sair" href="../index.html"><i class="fa-solid fa-right-from-bracket"></i> Sair</a>
+            </li>
+        </ul>
+    </aside>
+
+    <main class="conteudo-principal">
+
+        <header class="cabecalho-pagina">
+            <div class="cabecalho-info">
+                <span class="sobretitulo">SONORA / PREFERÊNCIAS</span>
+
+                <h1>Preferências musicais</h1>
+
+                <p>
+                    Selecione os estilos musicais que combinam com o perfil da sua empresa para priorizar na busca e
+                    recomendação de artistas.
+                </p>
+            </div>
+        </header>
+
+        <!-- VISUALIZAÇÃO DAS PREFERÊNCIAS ATIVAS -->
+        <section class="section-panel painel-ativas">
+            <div class="barra-titulo">
+                <h3>
+                    <i class="fa-solid fa-star"></i>
+                    Suas Preferências Ativas
+                </h3>
+
+                <span class="badge" id="status-salvamento">
+                    Sincronizado com o banco
+                </span>
+            </div>
+
+            <div id="tags-selecionadas" class="tags-container">
+                <p class="texto-sem-tags">Nenhum gênero selecionado no momento.</p>
+            </div>
+        </section>
+
+        <!-- SELEÇÃO DE GÊNEROS -->
+        <section class="section-panel">
+            <div class="barra-titulo">
+                <h3>
+                    <i class="fa-solid fa-music"></i>
+                    Gêneros Musicais Disponíveis
+                </h3>
+
+                <span class="badge" id="contador-generos">
+                    0 Selecionados
+                </span>
+            </div>
+
+            <div class="busca-genero">
+                <i class="fa-solid fa-magnifying-glass"></i>
+                <input type="text" id="pesquisa-genero" placeholder="Pesquisar gênero musical...">
+            </div>
+
+            <div id="lista-generos" class="generos-grid">
+                <p class="mensagem-lista">
+                    Carregando gêneros musicais...
+                </p>
+            </div>
+
+            <div class="preferencia-footer">
+                <div class="informacao-rodape">
+                    <i class="fa-solid fa-circle-info"></i>
+                    <span>Suas escolhas podem ser alteradas e salvas sempre que necessário.</span>
+                </div>
+
+                <div class="acoes-rodape">
+                    <button type="button" id="btn-limpar" class="btn-secondary">
+                        <i class="fa-solid fa-eraser"></i>
+                        Limpar seleção
+                    </button>
+
+                    <button type="button" id="btn-salvar" class="btn-primary">
+                        <i class="fa-solid fa-check"></i>
+                        Salvar preferências
+                    </button>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <div id="toast"></div>
+</body>
+
+</html>
+
+<script>
+    let todosGeneros = [];
+    let generosSelecionados = new Set();
+
+    const idEmpresa =
+        sessionStorage.getItem("ID_EMPRESA") ||
+        sessionStorage.getItem("id_empresa") ||
+        localStorage.getItem("ID_EMPRESA") ||
+        localStorage.getItem("id_empresa");
+
+    async function registrarLog(tipo, mensagem, status) {
+        try {
+            await fetch("/suporte/registrar", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    tipo: tipo,
+                    mensagem: mensagem,
+                    status: status
+                })
+            });
+        } catch (erro) {
+            console.error("Erro ao registrar log:", erro);
+        }
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+        if (!idEmpresa) {
+            mostrarToast("Sessão expirada. Faça login novamente.", true);
+            alert("Houve um erro ao tentar identificar seu usuário, realize o login novamente");
+            window.location.href = "../login.html";
+            return;
+        }
+
+        carregarPreferencias();
+
+        const inputPesquisa = document.getElementById("pesquisa-genero");
+        if (inputPesquisa) {
+            inputPesquisa.addEventListener("input", (e) => {
+                filtrarGeneros(e.target.value);
+            });
+        }
+
+        const btnLimpar = document.getElementById("btn-limpar");
+        if (btnLimpar) {
+            btnLimpar.addEventListener("click", limparSelecao);
+        }
+
+        const btnSalvar = document.getElementById("btn-salvar");
+        if (btnSalvar) {
+            btnSalvar.addEventListener("click", salvarPreferencias);
+        }
+    });
+
+    function carregarPreferencias() {
+        const lista = document.getElementById("lista-generos");
+        const inicioRequisicao = performance.now();
+
+        fetch(`/preferencia/${idEmpresa}`)
+            .then(resposta => {
+                const tempoResposta =
+                    performance.now() - inicioRequisicao;
+
+                if (tempoResposta > 3000) {
+                    registrarLog(
+                        "Atraso",
+                        "Carregamento das preferências musicais demorou " +
+                        Math.round(tempoResposta) +
+                        "ms para responder.",
+                        "Atenção"
+                    );
+                }
+
+                if (!resposta.ok) {
+                    registrarLog(
+                        "Falha",
+                        "Não foi possível carregar as preferências musicais da empresa.",
+                        "Crítico"
+                    );
+
+                    throw new Error("Erro ao carregar gêneros musicais");
+                }
+
+                return resposta.json();
+            })
+            .then(dados => {
+                todosGeneros = dados;
+                generosSelecionados.clear();
+
+                dados.forEach(genero => {
+                    if (Number(genero.selecionado) === 1) {
+                        generosSelecionados.add(Number(genero.id_genero));
+                    }
+                });
+
+                registrarLog(
+                    "Sistema",
+                    "Preferências musicais da empresa carregadas com sucesso.",
+                    "Informação"
+                );
+
+                atualizarStatusSalvamento(true);
+                atualizarContador();
+                renderizarTagsAtivas();
+                renderizarGeneros(todosGeneros);
+            })
+            .catch(erro => {
+                console.error(erro);
+
+                if (erro.message !== "Erro ao carregar gêneros musicais") {
+                    registrarLog(
+                        "Integração",
+                        "Falha na comunicação ao carregar as preferências musicais.",
+                        "Crítico"
+                    );
+                }
+
+                if (lista) {
+                    lista.innerHTML = `
+                    <p class="mensagem-lista">
+                        Não foi possível carregar os gêneros musicais.
+                    </p>
+                `;
+                }
+
+                mostrarToast("Erro ao carregar preferências musicais", true);
+            });
+    }
+
+    function renderizarTagsAtivas() {
+        const container = document.getElementById("tags-selecionadas");
+        if (!container) return;
+
+        container.innerHTML = "";
+
+        const ativos = todosGeneros.filter(g => generosSelecionados.has(Number(g.id_genero)));
+
+        if (ativos.length === 0) {
+            container.innerHTML = `<p class="texto-sem-tags">Nenhum gênero selecionado no momento.</p>`;
+            return;
+        }
+
+        ativos.forEach(genero => {
+            const id = Number(genero.id_genero);
+
+            const tag = document.createElement("span");
+            tag.className = "tag-genero";
+            tag.textContent = genero.nome;
+
+            const btnRemover = document.createElement("button");
+            btnRemover.type = "button";
+            btnRemover.title = `Remover ${genero.nome}`;
+            btnRemover.innerHTML = "×";
+            btnRemover.addEventListener("click", () => {
+                generosSelecionados.delete(id);
+                atualizarStatusSalvamento(false);
+                atualizarContador();
+                renderizarTagsAtivas();
+                const campoBusca = document.getElementById("pesquisa-genero");
+                filtrarGeneros(campoBusca ? campoBusca.value : "");
+            });
+
+            tag.appendChild(btnRemover);
+            container.appendChild(tag);
+        });
+    }
+
+    function renderizarGeneros(listaGeneros) {
+        const lista = document.getElementById("lista-generos");
+        if (!lista) return;
+
+        lista.innerHTML = "";
+
+        if (!listaGeneros || listaGeneros.length === 0) {
+            lista.innerHTML = `
+            <p class="mensagem-lista">
+                Nenhum gênero musical encontrado.
+            </p>
+        `;
+            return;
+        }
+
+        listaGeneros.forEach(genero => {
+            const id = Number(genero.id_genero);
+            const marcado = generosSelecionados.has(id);
+
+            const label = document.createElement("label");
+            label.className = `card-genero ${marcado ? "selecionado" : ""}`;
+
+            const checkbox = document.createElement("input");
+            checkbox.type = "checkbox";
+            checkbox.value = id;
+            checkbox.checked = marcado;
+
+            checkbox.addEventListener("change", () => {
+                if (checkbox.checked) {
+                    generosSelecionados.add(id);
+                    label.classList.add("selecionado");
+                } else {
+                    generosSelecionados.delete(id);
+                    label.classList.remove("selecionado");
+                }
+                atualizarStatusSalvamento(false);
+                atualizarContador();
+                renderizarTagsAtivas();
+            });
+
+            const span = document.createElement("span");
+            span.textContent = genero.nome;
+
+            label.appendChild(checkbox);
+            label.appendChild(span);
+            lista.appendChild(label);
+        });
+    }
+
+    function filtrarGeneros(termo) {
+        const termoLimpo = termo.trim().toLowerCase();
+
+        if (termoLimpo === "") {
+            renderizarGeneros(todosGeneros);
+            return;
+        }
+
+        const filtrados = todosGeneros.filter(genero =>
+            genero.nome.toLowerCase().includes(termoLimpo)
+        );
+
+        renderizarGeneros(filtrados);
+    }
+
+    function atualizarContador() {
+        const contadorEl = document.getElementById("contador-generos");
+        if (!contadorEl) return;
+
+        const total = generosSelecionados.size;
+        contadorEl.innerText = `${total} ${total === 1 ? "Selecionado" : "Selecionados"}`;
+    }
+
+    function atualizarStatusSalvamento(salvo) {
+        const badge = document.getElementById("status-salvamento");
+        if (!badge) return;
+
+        if (salvo) {
+            badge.innerText = "Salvo no banco";
+            badge.className = "badge badge-salvo";
+        } else {
+            badge.innerText = "Alterações não salvas";
+            badge.className = "badge badge-pendente";
+        }
+    }
+
+    function limparSelecao() {
+        generosSelecionados.clear();
+        atualizarStatusSalvamento(false);
+        atualizarContador();
+        renderizarTagsAtivas();
+        const campoBusca = document.getElementById("pesquisa-genero");
+        filtrarGeneros(campoBusca ? campoBusca.value : "");
+    }
+
+    function salvarPreferencias() {
+        const btnSalvar = document.getElementById("btn-salvar");
+        const idsGeneros = Array.from(generosSelecionados);
+
+        btnSalvar.disabled = true;
+        const textoOriginal = btnSalvar.innerHTML;
+        btnSalvar.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Salvando...`;
+
+        const inicioRequisicao = performance.now();
+
+        fetch(`/preferencia/${idEmpresa}`, {
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({ idsGeneros })
+        })
+            .then(resposta => {
+                const tempoResposta =
+                    performance.now() - inicioRequisicao;
+
+                if (tempoResposta > 3000) {
+                    registrarLog(
+                        "Atraso",
+                        "Salvamento das preferências musicais demorou " +
+                        Math.round(tempoResposta) +
+                        "ms para responder.",
+                        "Atenção"
+                    );
+                }
+
+                if (!resposta.ok) {
+                    registrarLog(
+                        "Falha",
+                        "Não foi possível salvar as preferências musicais da empresa.",
+                        "Crítico"
+                    );
+
+                    throw new Error("Erro ao salvar preferências");
+                }
+
+                return resposta.json();
+            })
+            .then(dados => {
+                registrarLog(
+                    "Sistema",
+                    "Preferências musicais da empresa salvas com sucesso.",
+                    "Informação"
+                );
+
+                atualizarStatusSalvamento(true);
+                mostrarToast(dados.mensagem || "Preferências salvas com sucesso!");
+            })
+            .catch(erro => {
+                console.error(erro);
+
+                if (erro.message !== "Erro ao salvar preferências") {
+                    registrarLog(
+                        "Integração",
+                        "Falha na comunicação ao salvar as preferências musicais.",
+                        "Crítico"
+                    );
+                }
+
+                mostrarToast("Erro ao salvar preferências musicais", true);
+            })
+            .finally(() => {
+                btnSalvar.disabled = false;
+                btnSalvar.innerHTML = textoOriginal;
+            });
+    }
+
+    function mostrarToast(mensagem, erro = false) {
+        const toast = document.getElementById("toast");
+        if (!toast) return;
+
+        toast.innerText = mensagem;
+        toast.className = erro ? "erro" : "sucesso";
+        setTimeout(() => {
+            toast.className = "";
+        }, 3000);
+    }
+</script>

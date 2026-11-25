@@ -29,6 +29,7 @@
             <li><a href="aprovados.html"><i class="fa-solid fa-user-pen"></i>Aprovados</a></li>
             <li class="ativo"><a href="gerenciamentoEventos.html"><i class="fa-solid fa-music"></i>Eventos</a></li>
             <li><a href="notificacoes.html"><i class="fa-solid fa-bell"></i>Notificações</a></li>
+            <li><a href="preferencia.html"><i class="fa-solid fa-sliders"></i>Preferências</a></li>
             <li><a href="perfilEmpresa.html"><i class="fa-solid fa-building"></i>Perfil Empresa</a></li>
             <li><a href="perfil.html"><i class="fa-solid fa-user"></i>Perfil</a></li>
 
@@ -134,10 +135,10 @@
                     </label>
                     <select id="status-evento">
                         <option value="">Selecione</option>
-                        <option value="Planejado">Planejado</option>
-                        <option value="Confirmado">Confirmado</option>
-                        <option value="Cancelado">Cancelado</option>
-                        <option value="Finalizado">Finalizado</option>
+                        <option value="1">Planejado</option>
+                        <option value="2">Confirmado</option>
+                        <option value="3">Cancelado</option>
+                        <option value="4">Finalizado</option>
                     </select>
                     <small id="erro-status"></small>
                 </div>
@@ -265,6 +266,43 @@
         // Pega o ID da empresa do sessionStorage de forma segura
         const idEmpresa = sessionStorage.getItem("ID_EMPRESA");
 
+        async function registrarLog(tipo, mensagem, status) {
+            try {
+                await fetch("/suporte/registrar", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        tipo: tipo,
+                        mensagem: mensagem,
+                        status: status
+                    })
+                });
+            } catch (erro) {
+                console.error("Erro ao registrar log:", erro);
+            }
+        }
+
+        async function enviarNotificacao(tipoNotificacao, assunto, mensagem) {
+            try {
+                await fetch("/notificacao/enviar", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        idEmpresa: Number(idEmpresa),
+                        tipoNotificacao: tipoNotificacao,
+                        assunto: assunto,
+                        mensagem: mensagem
+                    })
+                });
+            } catch (erro) {
+                console.error("Erro ao enviar notificação:", erro);
+            }
+        }
+
         document.addEventListener("DOMContentLoaded", () => {
             if (!idEmpresa) {
                 mostrarToast("Sessão expirada. Faça login novamente.", true);
@@ -291,19 +329,56 @@
         });
 
         function listarEventos() {
+            const inicioRequisicao = performance.now();
+
             fetch(`/evento/listar/${idEmpresa}`)
                 .then(resposta => {
+                    const tempoResposta =
+                        performance.now() - inicioRequisicao;
+
+                    if (tempoResposta > 3000) {
+                        registrarLog(
+                            "Atraso",
+                            "Consulta de eventos demorou " +
+                            Math.round(tempoResposta) +
+                            "ms para responder.",
+                            "Atenção"
+                        );
+                    }
+
                     if (!resposta.ok) {
+                        registrarLog(
+                            "Falha",
+                            "Não foi possível carregar os eventos da empresa.",
+                            "Crítico"
+                        );
+
                         throw new Error("Erro ao buscar eventos");
                     }
+
                     return resposta.json();
                 })
                 .then(dados => {
+                    registrarLog(
+                        "Sistema",
+                        "Eventos carregados com sucesso.",
+                        "Informação"
+                    );
+
                     eventos = dados;
                     renderizarEventos();
                 })
                 .catch(erro => {
                     console.error(erro);
+
+                    if (erro.message !== "Erro ao buscar eventos") {
+                        registrarLog(
+                            "Integração",
+                            "Falha na comunicação ao carregar os eventos.",
+                            "Crítico"
+                        );
+                    }
+
                     mostrarToast("Erro ao carregar eventos", true);
                 });
         }
@@ -390,7 +465,7 @@
             document.getElementById("nome-evento").value = evento.nome;
             document.getElementById("descricao-evento").value = evento.descricao;
             document.getElementById("local-evento").value = evento.local_evento;
-            document.getElementById("status-evento").value = evento.status_evento;
+            document.getElementById("status-evento").value = evento.id_status_evento;
 
             // Converte data de DD/MM/YYYY para YYYY-MM-DD para exibir corretamente no input type="date"
             const partes = evento.data_evento.split("/");
@@ -417,7 +492,7 @@
                 descricao: document.getElementById("descricao-evento").value.trim(),
                 data_evento: document.getElementById("data-evento").value,
                 local_evento: document.getElementById("local-evento").value.trim(),
-                status_evento: document.getElementById("status-evento").value,
+                id_status_evento: Number(document.getElementById("status-evento").value),
                 id_empresa: idEmpresa
             };
 
@@ -426,7 +501,7 @@
                 !dados.descricao ||
                 !dados.data_evento ||
                 !dados.local_evento ||
-                !dados.status_evento
+                !dados.id_status_evento
             ) {
                 mostrarToast("Preencha todos os campos", true);
                 return;
@@ -440,6 +515,8 @@
                 metodo = "PUT";
             }
 
+            const inicioRequisicao = performance.now();
+
             fetch(url, {
                 method: metodo,
                 headers: {
@@ -448,12 +525,79 @@
                 body: JSON.stringify(dados)
             })
                 .then(resposta => {
+                    const tempoResposta =
+                        performance.now() - inicioRequisicao;
+
+                    if (tempoResposta > 3000) {
+                        registrarLog(
+                            "Atraso",
+                            (idEvento
+                                ? "Atualização do evento demorou "
+                                : "Cadastro do evento demorou ") +
+                            Math.round(tempoResposta) +
+                            "ms para responder. Evento: " +
+                            dados.nome,
+                            "Atenção"
+                        );
+                    }
+
                     if (!resposta.ok) {
+                        registrarLog(
+                            "Falha",
+                            (idEvento
+                                ? "Não foi possível atualizar o evento. Evento: "
+                                : "Não foi possível cadastrar o evento. Evento: ") +
+                            dados.nome,
+                            "Crítico"
+                        );
+
                         throw new Error("Erro ao salvar");
                     }
+
                     return resposta.json();
                 })
                 .then(() => {
+                    registrarLog(
+                        "Sistema",
+                        (idEvento
+                            ? "Evento atualizado com sucesso. Evento: "
+                            : "Evento cadastrado com sucesso. Evento: ") +
+                        dados.nome,
+                        "Informação"
+                    );
+
+                    if (!idEvento) {
+                        enviarNotificacao(
+                            "evento_criado",
+                            "Novo evento cadastrado na Sonora",
+                            "Um novo evento foi cadastrado na Sonora e já está disponível para acompanhamento na plataforma.\n\n" +
+                            "Evento: " + dados.nome + "\n" +
+                            "Data do evento: " + dados.data_evento + "\n" +
+                            "Local: " + dados.local_evento + "\n\n" +
+                            "O evento foi registrado com sucesso e já faz parte da programação da empresa."
+                        );
+                    } else if (dados.id_status_evento === 3) {
+                        enviarNotificacao(
+                            "evento_cancelado",
+                            "Evento cancelado na Sonora",
+                            "Um evento foi cancelado na Sonora e a alteração já foi registrada na plataforma.\n\n" +
+                            "Evento cancelado: " + dados.nome + "\n" +
+                            "Data prevista: " + dados.data_evento + "\n" +
+                            "Local: " + dados.local_evento + "\n\n" +
+                            "O evento não será realizado conforme a programação anteriormente registrada."
+                        );
+                    } else {
+                        enviarNotificacao(
+                            "evento_atualizado",
+                            "Evento atualizado na Sonora",
+                            "As informações de um evento foram atualizadas na Sonora.\n\n" +
+                            "Evento atualizado: " + dados.nome + "\n" +
+                            "Nova data: " + dados.data_evento + "\n" +
+                            "Novo local: " + dados.local_evento + "\n\n" +
+                            "As informações acima representam os dados atuais do evento na plataforma."
+                        );
+                    }
+
                     fecharModais();
                     listarEventos();
                     mostrarToast(
@@ -464,6 +608,18 @@
                 })
                 .catch(erro => {
                     console.error(erro);
+
+                    if (erro.message !== "Erro ao salvar") {
+                        registrarLog(
+                            "Integração",
+                            (idEvento
+                                ? "Falha na comunicação ao atualizar o evento. Evento: "
+                                : "Falha na comunicação ao cadastrar o evento. Evento: ") +
+                            dados.nome,
+                            "Crítico"
+                        );
+                    }
+
                     mostrarToast("Erro ao salvar evento", true);
                 });
         }
@@ -512,15 +668,42 @@
         }
 
         function carregarArtistasEvento(idEvento) {
+            const inicioRequisicao = performance.now();
+
             fetch(`/evento/artistas/${idEvento}/${idEmpresa}`)
                 .then(resposta => {
+                    const tempoResposta =
+                        performance.now() - inicioRequisicao;
+
+                    if (tempoResposta > 3000) {
+                        registrarLog(
+                            "Atraso",
+                            "Consulta de artistas do evento demorou " +
+                            Math.round(tempoResposta) +
+                            "ms para responder.",
+                            "Atenção"
+                        );
+                    }
+
                     if (!resposta.ok) {
+                        registrarLog(
+                            "Falha",
+                            "Não foi possível carregar os artistas do evento.",
+                            "Crítico"
+                        );
+
                         throw new Error("Erro ao buscar artistas do evento");
                     }
 
                     return resposta.json();
                 })
                 .then(artistas => {
+                    registrarLog(
+                        "Sistema",
+                        "Artistas do evento carregados com sucesso.",
+                        "Informação"
+                    );
+
                     const lista = document.getElementById("lista-artistas-evento");
 
                     document.getElementById("quantidade-artistas-evento").innerText =
@@ -552,6 +735,14 @@
                 .catch(erro => {
                     console.error(erro);
 
+                    if (erro.message !== "Erro ao buscar artistas do evento") {
+                        registrarLog(
+                            "Integração",
+                            "Falha na comunicação ao carregar os artistas do evento.",
+                            "Crítico"
+                        );
+                    }
+
                     document.getElementById("lista-artistas-evento").innerHTML = `
                         <p class="erro-artistas">
                             Não foi possível carregar os artistas deste evento.
@@ -563,22 +754,66 @@
         function excluirEvento() {
             if (!idEventoExcluir) return;
 
+            const evento = eventos.find(e => e.id_evento == idEventoExcluir);
+            const nomeEvento = evento ? evento.nome : "Evento";
+
+            const inicioRequisicao = performance.now();
+
             fetch(`/evento/excluir/${idEventoExcluir}`, {
                 method: "DELETE"
             })
                 .then(resposta => {
+                    const tempoResposta =
+                        performance.now() - inicioRequisicao;
+
+                    if (tempoResposta > 3000) {
+                        registrarLog(
+                            "Atraso",
+                            "Exclusão do evento demorou " +
+                            Math.round(tempoResposta) +
+                            "ms para responder. Evento: " +
+                            nomeEvento,
+                            "Atenção"
+                        );
+                    }
+
                     if (!resposta.ok) {
+                        registrarLog(
+                            "Falha",
+                            "Não foi possível excluir o evento. Evento: " +
+                            nomeEvento,
+                            "Crítico"
+                        );
+
                         throw new Error("Erro ao excluir");
                     }
+
                     return resposta.json();
                 })
                 .then(() => {
+                    registrarLog(
+                        "Sistema",
+                        "Evento excluído com sucesso. Evento: " +
+                        nomeEvento,
+                        "Informação"
+                    );
+
                     fecharModais();
                     listarEventos();
                     mostrarToast("Evento excluído com sucesso!");
                 })
                 .catch(erro => {
                     console.error(erro);
+
+                    if (erro.message !== "Erro ao excluir") {
+                        registrarLog(
+                            "Integração",
+                            "Falha na comunicação ao excluir o evento. Evento: " +
+                            nomeEvento,
+                            "Crítico"
+                        );
+                    }
+
                     mostrarToast("Erro ao excluir evento, verifique se todos artistas foram descorrelacionado ao evento", true);
                 });
         }

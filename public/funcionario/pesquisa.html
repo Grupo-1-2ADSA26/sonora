@@ -27,9 +27,10 @@
 
         <ul class="lista">
             <li><a href="dashboard.html"><i class="fa-solid fa-house"></i><span>Início</span></a></li>
-            <li class="ativo"><a href="pesquisa.html"><i
-                        class="fa-solid fa-magnifying-glass"></i><span>Artistas</span></a></li>
+            <li class="ativo"><a href="pesquisa.html"><i class="fa-solid fa-magnifying-glass"></i><span>Artistas</span></a></li>
             <li><a href="aprovados.html"><i class="fa-solid fa-bell"></i><span>Aprovados</span></a></li>
+            <li><a href="eventos.html"><i class="fa-solid fa-music"></i>Eventos</a></li>
+            <li><a href="preferencia.html"><i class="fa-solid fa-sliders"></i><span>Preferências</span></a></li>
             <li><a href="notificacoes.html"><i class="fa-solid fa-bell"></i><span>Notificações</span></a></li>
             <li><a href="perfil.html"><i class="fa-solid fa-user"></i><span>Perfil</span></a></li>
 
@@ -642,6 +643,12 @@
             const idEvento =
                 document.getElementById('select-evento').value;
 
+            const nomeArtista =
+                document.getElementById('nome-artista').textContent.replace(' ✓', '').trim();
+
+            const nomeEvento =
+                document.getElementById('select-evento').selectedOptions[0].textContent;
+
             if (!idArtistaAtual || !idEvento) return;
 
             try {
@@ -664,7 +671,7 @@
                         return {};
                     });
 
-                if (!resposta.ok && resposta.status !== 409) {
+                if (!resposta.ok) {
                     throw new Error(
                         dados.mensagem ||
                         `Erro ao sugerir artista (status ${resposta.status}).`
@@ -679,6 +686,25 @@
                 );
 
                 atualizarBotaoSugestao();
+
+                const nomeFuncionario = sessionStorage.getItem('NOME_USUARIO');
+
+                await fetch('/notificacao/enviar', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        idEmpresa,
+                        tipoNotificacao: 'artista_sugerido',
+                        assunto: 'Novo artista sugerido na Sonora',
+                        mensagem:
+                            `O funcionário ${nomeFuncionario} enviou uma sugestão de artista para avaliação da empresa.\n\n` +
+                            `Artista sugerido: ${nomeArtista}\n` +
+                            `Evento relacionado: ${nomeEvento}\n\n` +
+                            `A sugestão foi encaminhada para análise e aprovação da empresa.`
+                    })
+                });
 
             } catch (erro) {
                 console.error(

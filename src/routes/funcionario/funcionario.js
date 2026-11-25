@@ -26,4 +26,6 @@ router.delete("/deletar/:idUsuario", function(req, res) {
     funcionarioController.deletar(req, res);
 });
 
+
+
 module.exports = router;

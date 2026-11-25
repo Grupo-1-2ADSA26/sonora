@@ -29,6 +29,8 @@
             <li><a href="dashboard.html"><i class="fa-solid fa-house"></i><span>Início</span></a></li>
             <li><a href="pesquisa.html"><i class="fa-solid fa-magnifying-glass"></i><span>Artistas</span></a></li>
             <li class="ativo"><a href="aprovados.html"><i class="fa-solid fa-bell"></i><span>Aprovados</span></a></li>
+            <li><a href="eventos.html"><i class="fa-solid fa-music"></i>Eventos</a></li>
+             <li><a href="preferencia.html"><i class="fa-solid fa-sliders"></i><span>Preferências</span></a></li>
             <li><a href="notificacoes.html"><i class="fa-solid fa-bell"></i><span>Notificações</span></a></li>
             <li><a href="perfil.html"><i class="fa-solid fa-user"></i><span>Perfil</span></a></li>
             <li class="box-sair">
@@ -334,6 +336,28 @@
 
                 alert("Análise concluída! A empresa já pode ver o resultado.");
                 window.location.href = "aprovados.html";
+
+                const respostaNotificacao = await fetch("/notificacao/enviar", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        idEmpresa: idEmpresaAtual,
+                        idArtista: idArtistaAtual,
+                        tipoNotificacao: "analise_concluida",
+                        assunto: "Análise do artista concluída na Sonora",
+                        mensagem:
+                            `O(a) ${sessionStorage.getItem("NOME_USUARIO")} concluiu a análise do artista na Sonora.\n\n` +
+                            `Artista analisado: ${document.getElementById("nome-artista").textContent}\n\n` +
+                            `A análise foi concluída e o resultado já está disponível para consulta da empresa.`
+                    })
+                });
+
+                if (!respostaNotificacao.ok) {
+                    console.error("Falha ao enviar notificação de análise concluída.");
+                }
+
             } catch (erro) {
                 console.error("Erro ao aprovar artista:", erro);
                 alert(erro.message || "Não foi possível aprovar o artista.");

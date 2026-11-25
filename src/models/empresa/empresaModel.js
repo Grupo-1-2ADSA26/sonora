@@ -1,19 +1,29 @@
 var database = require("../../database/config");
 var gerarCodigoAtivacao = require("../../utils/gerarCodigoAtivacao");
 
-
-function cadastrar(razaoSocial, cnpj, tipoEstabelecimento, email) {
+function cadastrar(razaoSocial, cnpj, idTipoEstabelecimento, email) {
     const codigo = gerarCodigoAtivacao.gerarCodigoAtivacao();
+
     const instrucaoSql = `
         INSERT INTO empresa (
             razao_social,
             email_responsavel,
             cnpj,
-            tipo_estabelecimento,
-            codigo_ativacao
+            id_tipo_estabelecimento,
+            codigo_ativacao,
+            id_status_empresa
         )
-        VALUES ('${razaoSocial}', '${email}', '${cnpj}', '${tipoEstabelecimento}', '${codigo}');`;
-    return database.executar(instrucaoSql).then(resultado => { 
+        VALUES (?, ?, ?, ?, ?, ?);
+    `;
+
+    return database.executar(instrucaoSql, [
+        razaoSocial,
+        email,
+        cnpj,
+        idTipoEstabelecimento,
+        codigo,
+        2
+    ]).then(resultado => {
         return {
             resultado: resultado,
             codigoAtivacao: codigo
@@ -23,46 +33,76 @@ function cadastrar(razaoSocial, cnpj, tipoEstabelecimento, email) {
 
 function validar_codigo(codigo) {
     const instrucaoSql = `
-        SELECT id_empresa FROM empresa
-        WHERE codigo_ativacao = '${codigo}' AND status_codigo = 'PENDENTE';
-    `
-    return database.executar(instrucaoSql);
+        SELECT e.id_empresa
+        FROM empresa e
+        JOIN status_empresa se
+            ON e.id_status_empresa = se.id_status_empresa
+        WHERE e.codigo_ativacao = ?
+          AND se.nome = 'PENDENTE';
+    `;
+
+    return database.executar(instrucaoSql, [codigo]);
 }
 
 function ativar_codigo(idEmpresa) {
     const instrucaoSql = `
-        UPDATE empresa
-        SET status_codigo = 'ATIVA'
-        WHERE id_empresa = ${idEmpresa};
+        UPDATE empresa e
+        JOIN status_empresa se
+            ON se.nome = 'ATIVA'
+        SET e.id_status_empresa = se.id_status_empresa
+        WHERE e.id_empresa = ?;
     `;
 
-    return database.executar(instrucaoSql);
+    return database.executar(instrucaoSql, [idEmpresa]);
 }
 
 function buscarPorId(idEmpresa) {
-    var instrucaoSql = `
-        SELECT id_empresa, razao_social, email_responsavel, cnpj, tipo_estabelecimento 
-        FROM empresa 
-        WHERE id_empresa = ${idEmpresa};
+    const instrucaoSql = `
+        SELECT
+            e.id_empresa,
+            e.razao_social,
+            e.email_responsavel,
+            e.cnpj,
+            e.id_tipo_estabelecimento,
+            te.nome AS tipo_estabelecimento,
+            e.id_status_empresa,
+            se.nome AS status_empresa
+        FROM empresa e
+        JOIN tipo_estabelecimento te
+            ON e.id_tipo_estabelecimento = te.id_tipo_estabelecimento
+        JOIN status_empresa se
+            ON e.id_status_empresa = se.id_status_empresa
+        WHERE e.id_empresa = ?;
     `;
-    return database.executar(instrucaoSql);
+
+    return database.executar(instrucaoSql, [idEmpresa]);
 }
 
-function atualizar(idEmpresa, razaoSocial, cnpj, tipoEstabelecimento) {
-    var instrucaoSql = `
-        UPDATE empresa 
-        SET razao_social = '${razaoSocial}', cnpj = '${cnpj}', tipo_estabelecimento = '${tipoEstabelecimento}' 
-        WHERE id_empresa = ${idEmpresa};
+function atualizar(idEmpresa, razaoSocial, cnpj, idTipoEstabelecimento) {
+    const instrucaoSql = `
+        UPDATE empresa
+        SET
+            razao_social = ?,
+            cnpj = ?,
+            id_tipo_estabelecimento = ?
+        WHERE id_empresa = ?;
     `;
-    return database.executar(instrucaoSql);
+
+    return database.executar(instrucaoSql, [
+        razaoSocial,
+        cnpj,
+        idTipoEstabelecimento,
+        idEmpresa
+    ]);
 }
 
 function deletar(idEmpresa) {
-    var instrucaoSql = `
-        DELETE FROM empresa 
-        WHERE id_empresa = ${idEmpresa};
+    const instrucaoSql = `
+        DELETE FROM empresa
+        WHERE id_empresa = ?;
     `;
-    return database.executar(instrucaoSql);
+
+    return database.executar(instrucaoSql, [idEmpresa]);
 }
 
 module.exports = {

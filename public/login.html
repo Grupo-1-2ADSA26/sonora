@@ -101,17 +101,43 @@
 
 <script>
 
+    async function registrarLog(tipo, mensagem, status) {
+        try {
+            await fetch("/suporte/registrar", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    tipo: tipo,
+                    mensagem: mensagem,
+                    status: status
+                })
+            });
+        } catch (erro) {
+            console.error("Erro ao registrar log:", erro);
+        }
+    }
+
+
     function entrar() {
-        var email = email_input.value;
+        var email = email_input.value.trim();
         var senha = senha_input.value;
 
         if (email == "" || senha == "") {
             cardErro.style.display = "block";
             mensagem_erro.innerHTML = "Preencha todos os campos para prosseguir!";
+            registrarLog(
+                "Falha",
+                "Tentativa de login sem preenchimento de todos os campos. E-mail informado: " + (email || "não informado"),
+                "Crítico"
+            );
             return false;
         }
 
         console.log("FORM LOGIN: ", email);
+        
+        var inicioRequisicao = performance.now();
 
         fetch("/funcionario/autenticar", {
             method: "POST",
@@ -124,38 +150,63 @@
             })
         }).then(function (resposta) {
 
+            var tempoResposta = performance.now() - inicioRequisicao;
+
+            if (tempoResposta > 3000) {
+                registrarLog(
+                    "Atraso",
+                    "Login demorou " + Math.round(tempoResposta) + "ms para responder. E-mail: " + email,
+                    "Atenção"
+                );
+            }
+
             if (resposta.ok) {
                 resposta.json().then(json => {
                     console.log("Login realizado com sucesso:", json);
+                    registrarLog(
+                        "Sistema",
+                        "Login realizado com sucesso. E-mail: " + email + ". Usuário: " + json.id_usuario,
+                        "Informação"
+                    );
 
                     // Armazena as informações no sessionStorage
                     sessionStorage.ID_USUARIO = json.id_usuario;
-                    sessionStorage.NOME_USUARIO = json.nome_usuario; // Ajustado para coincidir com a query SQL
+                    sessionStorage.NOME_USUARIO = json.nome_usuario;
                     sessionStorage.EMAIL_USUARIO = json.email;
                     sessionStorage.ID_EMPRESA = json.id_empresa;
                     sessionStorage.NOME_EMPRESA = json.nome_empresa;
                     sessionStorage.ID_CARGO = json.id_cargo;
                     sessionStorage.NOME_CARGO = json.nome_cargo;
 
-                    // Redirecionamento baseado no perfil (cargo)
+                    // Redirecionamento baseado no perfil
                     setTimeout(function () {
+
                         if (json.id_cargo == 1) {
                             window.location.href = "./empresa/dashboard.html";
+
                         } else if (json.id_cargo == 2) {
                             window.location.href = "./funcionario/dashboard.html";
+
                         } else if (json.id_cargo == 3) {
                             window.location.href = "./suporte/logs.html";
+
                         } else {
                             window.location.href = "index.html";
                         }
+
                     }, 1000);
                 });
 
             } else {
                 console.log("Houve um erro ao tentar realizar o login!");
-                
+
                 resposta.text().then(texto => {
                     console.error(texto);
+                    registrarLog(
+                        "Falha",
+                        "Tentativa de login com credenciais inválidas. E-mail informado: " + email,
+                        "Crítico"
+                    );
                     cardErro.style.display = "block";
                     mensagem_erro.innerHTML = texto || "E-mail ou senha inválidos!";
                 });
@@ -163,13 +214,17 @@
 
         }).catch(function (erro) {
             console.error("Erro na requisição Fetch: ", erro);
+            registrarLog(
+                "Integração",
+                "Falha na comunicação com o serviço de autenticação. E-mail: " + email,
+                "Crítico"
+            );
+
             cardErro.style.display = "block";
             mensagem_erro.innerHTML = "Erro de conexão com o servidor!";
-            
         });
 
         return false;
     }
-
 
 </script>

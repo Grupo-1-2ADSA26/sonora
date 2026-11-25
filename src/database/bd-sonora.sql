@@ -336,35 +336,14 @@ CREATE TABLE notificacao (
 CREATE TABLE notificacao_mensagem (
     id_notificacao INT PRIMARY KEY AUTO_INCREMENT,
 
-    id_empresa INT NOT NULL,
-
-    id_usuario_origem INT NOT NULL,
-    id_usuario_destino INT NOT NULL,
+    id_usuario INT NOT NULL,
 
     tipo VARCHAR(50) NOT NULL,
     titulo VARCHAR(150) NOT NULL,
     mensagem VARCHAR(500) NOT NULL,
 
-    lida BOOLEAN DEFAULT FALSE,
-    data_hora DATETIME DEFAULT CURRENT_TIMESTAMP,
-
-    id_evento INT NULL,
-    id_artista INT NULL,
-
-    FOREIGN KEY (id_empresa)
-        REFERENCES empresa(id_empresa),
-
-    FOREIGN KEY (id_usuario_origem)
-        REFERENCES usuario(id_usuario),
-
-    FOREIGN KEY (id_usuario_destino)
-        REFERENCES usuario(id_usuario),
-
-    FOREIGN KEY (id_evento)
-        REFERENCES evento(id_evento),
-
-    FOREIGN KEY (id_artista)
-        REFERENCES artista(id_artista)
+    FOREIGN KEY (id_usuario)
+        REFERENCES usuario(id_usuario)
 );
 
 -- =========================================================

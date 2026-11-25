@@ -181,11 +181,36 @@ function buscarFuncionarioSugestao(idEmpresa, idArtista, tipoNotificacao) {
     ]);
 }
 
+function salvarMensagem(
+    idUsuario,
+    tipo,
+    titulo,
+    mensagem
+) {
+    var instrucaoSql = `
+        INSERT INTO notificacao_mensagem (
+            id_usuario,
+            tipo,
+            titulo,
+            mensagem
+        )
+        VALUES (?, ?, ?, ?);
+    `;
+
+    return database.executar(instrucaoSql, [
+        idUsuario,
+        tipo,
+        titulo,
+        mensagem
+    ]);
+}
+
 module.exports = {
     buscarPorUsuario,
     salvar,
     buscarDestinatarios,
     buscarEventosProximos,
     buscarAdministradores,
-    buscarFuncionarioSugestao
+    buscarFuncionarioSugestao,
+    salvarMensagem
 };

@@ -4,19 +4,14 @@ function pesquisarArtista(req, res) {
     var termo = req.query.nome;
 
     if (!termo || termo.trim() === "") {
-        return res.status(400).json({
-            mensagem: "Nome do artista não informado."
-        });
+        return res.status(400).json({ mensagem: "Nome do artista não informado." });
     }
 
     artistaModel.buscarPorNome(termo.trim())
         .then(function(resultadoArtista) {
             if (resultadoArtista.length === 0) {
-                return res.status(404).json({
-                    mensagem: "Artista não encontrado."
-                });
+                return res.status(404).json({ mensagem: "Artista não encontrado." });
             }
-
             montarDadosArtista(resultadoArtista[0], res);
         })
         .catch(function(erro) {
@@ -29,19 +24,14 @@ function pesquisarArtistaPorId(req, res) {
     var idArtista = Number(req.params.idArtista);
 
     if (!idArtista || isNaN(idArtista)) {
-        return res.status(400).json({
-            mensagem: "ID do artista inválido."
-        });
+        return res.status(400).json({ mensagem: "ID do artista inválido." });
     }
 
     artistaModel.buscarPorId(idArtista)
         .then(function(resultadoArtista) {
             if (resultadoArtista.length === 0) {
-                return res.status(404).json({
-                    mensagem: "Artista não encontrado."
-                });
+                return res.status(404).json({ mensagem: "Artista não encontrado." });
             }
-
             montarDadosArtista(resultadoArtista[0], res);
         })
         .catch(function(erro) {
@@ -83,7 +73,65 @@ function montarDadosArtista(artista, res) {
         });
 }
 
+function obterKpis(req, res) {
+    const genero = req.query.genero; // Pega o gênero da URL
+
+    Promise.all([
+        artistaModel.buscarKpiEngajamento(genero),
+        artistaModel.buscarKpiGeneroDestaque(genero),
+        artistaModel.buscarKpiMaiorStreams(genero)
+    ])
+    .then(function(resultados) {
+        res.status(200).json({
+            maiorEngajamento: resultados[0][0] || { nome: "N/A", engajamento: 0 },
+            generoDestaque: resultados[1][0] || { genero: genero && genero !== 'todos' ? genero : "N/A", total_streams: 0 },
+            maiorStreams: resultados[2][0] || { nome: "N/A", streams: 0 }
+        });
+    })
+    .catch(function(erro) {
+        console.log(erro);
+        res.status(500).json(erro.sqlMessage);
+    });
+}
+
+function obterArtistasMaisOuvidos(req, res) {
+    const genero = req.query.genero;
+    artistaModel.listarArtistasMaisOuvidos(genero)
+        .then(function(resultado) { res.status(200).json(resultado); })
+        .catch(function(erro) { res.status(500).json(erro.sqlMessage); });
+}
+
+function obterMusicasMaisOuvidas(req, res) {
+    const genero = req.query.genero;
+    artistaModel.listarMusicasMaisOuvidas(genero)
+        .then(function(resultado) { res.status(200).json(resultado); })
+        .catch(function(erro) { res.status(500).json(erro.sqlMessage); });
+}
+
+function obterArtistasEngajamento(req, res) {
+    const genero = req.query.genero;
+    artistaModel.listarArtistasEngajamento(genero)
+        .then(function(resultado) { res.status(200).json(resultado); })
+        .catch(function(erro) { res.status(500).json(erro.sqlMessage); });
+}
+
+function obterGeneros(req, res) {
+    artistaModel.listarGeneros()
+        .then(function(resultado) {
+            res.status(200).json(resultado);
+        })
+        .catch(function(erro) {
+            console.log(erro);
+            res.status(500).json(erro.sqlMessage);
+        });
+}
+
 module.exports = {
     pesquisarArtista,
-    pesquisarArtistaPorId
+    pesquisarArtistaPorId,
+    obterKpis,
+    obterArtistasMaisOuvidos,
+    obterMusicasMaisOuvidas,
+    obterArtistasEngajamento,
+    obterGeneros
 };

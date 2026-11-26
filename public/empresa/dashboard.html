@@ -41,7 +41,7 @@
     </aside>
 
     <main class="main-content">
-        <header class="cabecalho-pagina">
+        <header class="cabecalho-pagina" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px;">
             <div class="cabecalho-info">
                 <span class="sobretitulo">SONORA / VISÃO GERAL</span>
 
@@ -51,34 +51,42 @@
                     Acompanhe tendências de artistas, gêneros em alta e recomendações para seus eventos.
                 </p>
             </div>
+
+            <!-- FILTRO DE GÊNERO DINÂMICO -->
+            <div class="filter-container" style="display: flex; gap: 10px; align-items: center;">
+                <div style="display: flex; flex-direction: column; gap: 4px;">
+                    <label for="filtroGenero" style="font-size: 12px; font-weight: 500; color: #555;">Filtrar por Gênero:</label>
+                    <select id="filtroGenero" style="padding: 8px 12px; border-radius: 6px; border: 1px solid #ccc;" onchange="atualizarDashboard()">
+                        <option value="todos">Todos os Gêneros</option>
+                    </select>
+                </div>
+            </div>
         </header>
 
         <div class="dashboard-grid">
 
             <!-- KPIs -->
             <section class="secao-kpis">
-
                 <div class="card-kpi">
                     <span class="titulo-kpi">Artista com maior engajamento</span>
-                    <h2>Ludmilla</h2>
-                    <p>8,4% de Engajamento</p>
+                    <h2 id="kpi-engajamento-nome">Carregando...</h2>
+                    <p id="kpi-engajamento-val">-</p>
                     <span class="descricao-kpi">Engajamento = interações (curtidas, salvamentos e compartilhamentos) ÷ ouvintes × 100.</span>
                 </div>
 
                 <div class="card-kpi">
                     <span class="titulo-kpi">Gênero em destaque</span>
-                    <h2>Funk</h2>
-                    <p>1,21 bi de Streams · 28,0% do total</p>
+                    <h2 id="kpi-genero-nome">Carregando...</h2>
+                    <p id="kpi-genero-val">-</p>
                     <span class="descricao-kpi">Gênero com mais streams no período. % do total = streams do gênero ÷ streams de todos os gêneros.</span>
                 </div>
 
                 <div class="card-kpi">
                     <span class="titulo-kpi">Artista com maior número de streams</span>
-                    <h2>Anitta</h2>
-                    <p>487,3 mi de Streams</p>
+                    <h2 id="kpi-streams-nome">Carregando...</h2>
+                    <p id="kpi-streams-val">-</p>
                     <span class="descricao-kpi">Artista com mais reproduções no período, somando todas as suas músicas.</span>
                 </div>
-
             </section>
 
             <!-- Gráficos -->
@@ -87,7 +95,6 @@
                     <div class="card-header">
                         <div>
                             <h3>Artistas Mais Ouvidos</h3>
-                            <p class="card-subtitulo">Últimos 30 dias · streams em milhões</p>
                             <p class="card-descricao">Artistas com mais streams (reproduções) no período.</p>
                         </div>
                     </div>
@@ -99,7 +106,7 @@
                     <div class="card-header">
                         <div>
                             <h3>Músicas Mais Ouvidas</h3>
-                            <p class="card-subtitulo">Últimos 30 dias · reproduções em milhões</p>
+                            <p class="card-subtitulo">Reproduções em milhões</p>
                             <p class="card-descricao">Músicas com mais reproduções no período.</p>
                         </div>
                     </div>
@@ -111,7 +118,7 @@
                     <div class="card-header">
                         <div>
                             <h3>Top 5 Artistas com Maior Engajamento</h3>
-                            <p class="card-subtitulo">Últimos 30 dias · média da plataforma: 7%</p>
+                            <p class="card-subtitulo">Média da plataforma: 7%</p>
                             <p class="card-descricao">Engajamento = interações ÷ ouvintes × 100.</p>
                         </div>
                     </div>
@@ -161,7 +168,6 @@
     </main>
 
     <script>
-
         async function registrarLog(tipo, mensagem, status) {
             try {
                 await fetch("/suporte/registrar", {
@@ -182,62 +188,100 @@
 
         const idEmpresa = sessionStorage.getItem('ID_EMPRESA');
 
-        if (idEmpresa) {
-            listarEventos();
-        } else {
-            const tabela = document.getElementById('lista-eventos');
-            tabela.innerHTML = '<tr><td colspan="4">Empresa não identificada.</td></tr>';
+        document.addEventListener("DOMContentLoaded", () => {
+            if (idEmpresa) {
+                carregarGenerosFiltro();
+                atualizarDashboard();
+            } else {
+                const tabela = document.getElementById('lista-eventos');
+                tabela.innerHTML = '<tr><td colspan="4">Empresa não identificada.</td></tr>';
+            }
+        });
+
+        // 1. FUNÇÃO PARA CARREGAR OS GÊNEROS DINAMICAMENTE NO SELECT
+        async function carregarGenerosFiltro() {
+            try {
+                const resposta = await fetch('/artista/generos');
+                if (!resposta.ok) throw new Error("Erro ao carregar gêneros");
+                const generos = await resposta.json();
+
+                const selectGenero = document.getElementById('filtroGenero');
+                
+                generos.forEach(g => {
+                    if (g.genero && g.genero.trim() !== "") {
+                        const option = document.createElement('option');
+                        option.value = g.genero;
+                        option.textContent = g.genero;
+                        selectGenero.appendChild(option);
+                    }
+                });
+            } catch (erro) {
+                console.error("Erro ao buscar lista de gêneros:", erro);
+            }
         }
 
-        async function listarEventos() {
+        function atualizarDashboard() {
+            const generoSelecionado = document.getElementById('filtroGenero').value;
+            const queryString = `genero=${encodeURIComponent(generoSelecionado)}`;
+
+            listarEventos(queryString);
+            carregarKpis(queryString);
+            carregarGraficos(queryString);
+        }
+
+        async function carregarKpis(queryString = '') {
+            try {
+                const resposta = await fetch(`/artista/kpis?${queryString}`);
+                if (!resposta.ok) throw new Error("Erro ao buscar KPIs");
+                const dados = await resposta.json();
+
+                document.getElementById('kpi-engajamento-nome').textContent = dados.maiorEngajamento.nome || 'N/A';
+                document.getElementById('kpi-engajamento-val').textContent = `${dados.maiorEngajamento.engajamento || 0}% de Engajamento`;
+
+                const streamsGenero = Number(dados.generoDestaque.total_streams || 0);
+                let textoGeneroVal = streamsGenero >= 1000000000 
+                    ? `${(streamsGenero / 1000000000).toFixed(2)} bi de Streams` 
+                    : `${(streamsGenero / 1000000).toFixed(1)} mi de Streams`;
+
+                document.getElementById('kpi-genero-nome').textContent = dados.generoDestaque.genero || 'N/A';
+                document.getElementById('kpi-genero-val').textContent = textoGeneroVal;
+
+                const totalStreamsMi = (Number(dados.maiorStreams.streams || 0) / 1000000).toFixed(1);
+                document.getElementById('kpi-streams-nome').textContent = dados.maiorStreams.nome || 'N/A';
+                document.getElementById('kpi-streams-val').textContent = `${totalStreamsMi} mi de Streams`;
+
+            } catch (erro) {
+                console.error("Erro ao carregar KPIs:", erro);
+            }
+        }
+
+        async function listarEventos(queryString = '') {
             const tabela = document.getElementById('lista-eventos');
             const inicioRequisicao = performance.now();
 
             try {
-                const resposta = await fetch(`/evento/listar/${idEmpresa}`);
-
+                const resposta = await fetch(`/evento/listar/${idEmpresa}?${queryString}`);
                 const tempoResposta = performance.now() - inicioRequisicao;
 
                 if (tempoResposta > 3000) {
-                    registrarLog(
-                        "Atraso",
-                        "Consulta de eventos da empresa demorou " +
-                        Math.round(tempoResposta) +
-                        "ms para responder.",
-                        "Atenção"
-                    );
+                    registrarLog("Atraso", "Consulta de eventos demorou " + Math.round(tempoResposta) + "ms.", "Atenção");
                 }
 
                 if (!resposta.ok) {
-                    registrarLog(
-                        "Falha",
-                        "Não foi possível carregar os eventos da empresa.",
-                        "Crítico"
-                    );
-
+                    registrarLog("Falha", "Não foi possível carregar os eventos.", "Crítico");
                     throw new Error('Erro ao buscar eventos.');
                 }
 
                 const eventos = await resposta.json();
-
-                registrarLog(
-                    "Sistema",
-                    "Eventos da empresa carregados com sucesso.",
-                    "Informação"
-                );
-
                 tabela.replaceChildren();
 
                 if (!Array.isArray(eventos) || eventos.length === 0) {
                     const linha = document.createElement('tr');
                     const coluna = document.createElement('td');
-
                     coluna.colSpan = 4;
-                    coluna.textContent = 'Nenhum evento cadastrado.';
-
+                    coluna.textContent = 'Nenhum evento encontrado para este filtro.';
                     linha.appendChild(coluna);
                     tabela.appendChild(linha);
-
                     return;
                 }
 
@@ -257,165 +301,174 @@
 
                     const colunaStatus = document.createElement('td');
                     const status = document.createElement('span');
-
                     status.classList.add('status');
 
                     switch (evento.status_evento) {
-                        case 'Confirmado':
-                            status.classList.add('status-ok');
-                            break;
-
-                        case 'Planejado':
-                            status.classList.add('status-pendente');
-                            break;
-
-                        case 'Cancelado':
-                            status.classList.add('status-cancelado');
-                            break;
-
-                        case 'Finalizado':
-                            status.classList.add('status-finalizado');
-                            break;
-
-                        default:
-                            status.classList.add('status-pendente');
+                        case 'Confirmado': status.classList.add('status-ok'); break;
+                        case 'Planejado': status.classList.add('status-pendente'); break;
+                        case 'Cancelado': status.classList.add('status-cancelado'); break;
+                        case 'Finalizado': status.classList.add('status-finalizado'); break;
+                        default: status.classList.add('status-pendente');
                     }
 
                     status.textContent = evento.status_evento;
-
                     colunaStatus.appendChild(status);
-
-                    linha.append(
-                        colunaNome,
-                        colunaData,
-                        colunaLocal,
-                        colunaStatus
-                    );
-
+                    linha.append(colunaNome, colunaData, colunaLocal, colunaStatus);
                     tabela.appendChild(linha);
                 });
 
             } catch (erro) {
                 console.error('Erro ao listar eventos:', erro);
-
-                if (
-                    erro.message !== 'Erro ao buscar eventos.'
-                ) {
-                    registrarLog(
-                        "Integração",
-                        "Falha na comunicação ao carregar os eventos da empresa.",
-                        "Crítico"
-                    );
-                }
-
                 tabela.replaceChildren();
-
                 const linha = document.createElement('tr');
                 const coluna = document.createElement('td');
-
                 coluna.colSpan = 4;
                 coluna.textContent = 'Não foi possível carregar os eventos.';
-
                 linha.appendChild(coluna);
                 tabela.appendChild(linha);
             }
         }
 
-        const corDestaque = '#242424';
-        const corNeutra = '#bdbdbd';
-        const corAcima = '#2e7d32';
-        const corAbaixo = '#b42318';
-        const mediaPlataforma = 7;
+        let chartArtistasInstancia = null;
+        let chartMusicasInstancia = null;
+        let chartEngajamentoInstancia = null;
 
-        const opcoesBase = {
-            responsive: true,
-            maintainAspectRatio: false,
-            animation: false,
-            events: [],
-            plugins: {
-                legend: { display: false },
-                tooltip: { enabled: false }
-            }
-        };
+        async function carregarGraficos(queryString = '') {
+            const corDestaque = '#242424';
+            const corNeutra = '#bdbdbd';
+            const corAcima = '#2e7d32';
+            const corAbaixo = '#b42318';
+            const mediaPlataforma = 7;
 
-        const grade = { color: '#ececec' };
-        const semGrade = { display: false };
-        const textoEixo = { color: '#555', font: { size: 12 } };
-
-        function criarBarrasHorizontais(id, nomes, valores) {
-            new Chart(document.getElementById(id), {
-                type: 'bar',
-                data: {
-                    labels: nomes,
-                    datasets: [{
-                        data: valores,
-                        backgroundColor: valores.map((_, indice) => indice === 0 ? corDestaque : corNeutra),
-                        borderRadius: 4,
-                        maxBarThickness: 18
-                    }]
-                },
-                options: {
-                    ...opcoesBase,
-                    indexAxis: 'y',
-                    scales: {
-                        x: { beginAtZero: true, grid: grade, ticks: textoEixo },
-                        y: { grid: semGrade, ticks: textoEixo }
-                    }
+            const opcoesBase = {
+                responsive: true,
+                maintainAspectRatio: false,
+                animation: false,
+                plugins: {
+                    legend: { display: false },
+                    tooltip: { enabled: true }
                 }
-            });
-        }
+            };
 
-        criarBarrasHorizontais(
-            'chartArtistas',
-            ['Anitta', 'Matuê', 'Jorge & Mateus', 'Ludmilla', 'Luísa Sonza'],
-            [487.3, 402.7, 376.4, 333.1, 288.5]
-        );
+            const grade = { color: '#ececec' };
+            const semGrade = { display: false };
+            const textoEixo = { color: '#555', font: { size: 12 } };
 
-        criarBarrasHorizontais(
-            'chartMusicas',
-            ['Okê', 'Envolver', 'Medicina', 'Tá Rocheda', 'Sem Você'],
-            [68.4, 61.6, 54, 48.2, 41.5]
-        );
+            try {
+                // 1. Artistas Mais Ouvidos
+                const resArtistas = await fetch(`/artista/maisOuvidos?${queryString}`);
+                const dadosArtistas = await resArtistas.json();
 
-        const engajamento = [8.4, 7.9, 7.1, 6.4, 5.8];
+                const nomesArtistas = dadosArtistas.map(a => a.nome);
+                const valoresArtistas = dadosArtistas.map(a => Number(a.streams) / 1000000);
 
-        new Chart(document.getElementById('chartEngajamento'), {
-            type: 'bar',
-            data: {
-                labels: ['Ludmilla', 'Anitta', 'Matuê', ['Luísa', 'Sonza'], ['Jorge &', 'Mateus']],
-                datasets: [
-                    {
-                        type: 'bar',
-                        data: engajamento,
-                        backgroundColor: engajamento.map(valor => valor >= mediaPlataforma ? corAcima : corAbaixo),
-                        borderRadius: 4,
-                        maxBarThickness: 56,
-                        order: 2
+                const ctxArtistas = document.getElementById('chartArtistas').getContext('2d');
+                if (chartArtistasInstancia) chartArtistasInstancia.destroy();
+
+                chartArtistasInstancia = new Chart(ctxArtistas, {
+                    type: 'bar',
+                    data: {
+                        labels: nomesArtistas,
+                        datasets: [{
+                            data: valoresArtistas,
+                            backgroundColor: valoresArtistas.map((_, i) => i === 0 ? corDestaque : corNeutra),
+                            borderRadius: 4,
+                            maxBarThickness: 18
+                        }]
                     },
-                    {
-                        type: 'line',
-                        data: engajamento.map(() => mediaPlataforma),
-                        borderColor: corDestaque,
-                        borderWidth: 2,
-                        borderDash: [6, 4],
-                        pointRadius: 0,
-                        order: 1
+                    options: {
+                        ...opcoesBase,
+                        indexAxis: 'y',
+                        scales: {
+                            x: { beginAtZero: true, grid: grade, ticks: textoEixo },
+                            y: { grid: semGrade, ticks: textoEixo }
+                        }
                     }
-                ]
-            },
-            options: {
-                ...opcoesBase,
-                scales: {
-                    x: { grid: semGrade, ticks: { ...textoEixo, maxRotation: 0 } },
-                    y: {
-                        beginAtZero: true,
-                        max: 10,
-                        grid: grade,
-                        ticks: { ...textoEixo, stepSize: 2, autoSkip: false, callback: valor => valor + '%' }
+                });
+
+                // 2. Músicas Mais Ouvidas
+                const resMusicas = await fetch(`/artista/musicasMaisOuvidas?${queryString}`);
+                const dadosMusicas = await resMusicas.json();
+
+                const nomesMusicas = dadosMusicas.map(m => m.titulo);
+                const valoresMusicas = dadosMusicas.map(m => Number(m.streams) / 1000000);
+
+                const ctxMusicas = document.getElementById('chartMusicas').getContext('2d');
+                if (chartMusicasInstancia) chartMusicasInstancia.destroy();
+
+                chartMusicasInstancia = new Chart(ctxMusicas, {
+                    type: 'bar',
+                    data: {
+                        labels: nomesMusicas,
+                        datasets: [{
+                            data: valoresMusicas,
+                            backgroundColor: valoresMusicas.map((_, i) => i === 0 ? corDestaque : corNeutra),
+                            borderRadius: 4,
+                            maxBarThickness: 18
+                        }]
+                    },
+                    options: {
+                        ...opcoesBase,
+                        indexAxis: 'y',
+                        scales: {
+                            x: { beginAtZero: true, grid: grade, ticks: textoEixo },
+                            y: { grid: semGrade, ticks: textoEixo }
+                        }
                     }
-                }
+                });
+
+                // 3. Engajamento
+                const resEng = await fetch(`/artista/engajamento?${queryString}`);
+                const dadosEng = await resEng.json();
+
+                const nomesEng = dadosEng.map(e => e.nome);
+                const valoresEng = dadosEng.map(e => Number(e.engajamento));
+
+                const ctxEng = document.getElementById('chartEngajamento').getContext('2d');
+                if (chartEngajamentoInstancia) chartEngajamentoInstancia.destroy();
+
+                chartEngajamentoInstancia = new Chart(ctxEng, {
+                    type: 'bar',
+                    data: {
+                        labels: nomesEng,
+                        datasets: [
+                            {
+                                type: 'bar',
+                                data: valoresEng,
+                                backgroundColor: valoresEng.map(v => v >= mediaPlataforma ? corAcima : corAbaixo),
+                                borderRadius: 4,
+                                maxBarThickness: 56,
+                                order: 2
+                            },
+                            {
+                                type: 'line',
+                                data: valoresEng.map(() => mediaPlataforma),
+                                borderColor: corDestaque,
+                                borderWidth: 2,
+                                borderDash: [6, 4],
+                                pointRadius: 0,
+                                order: 1
+                            }
+                        ]
+                    },
+                    options: {
+                        ...opcoesBase,
+                        scales: {
+                            x: { grid: semGrade, ticks: { ...textoEixo, maxRotation: 0 } },
+                            y: {
+                                beginAtZero: true,
+                                max: 10,
+                                grid: grade,
+                                ticks: { ...textoEixo, stepSize: 2, autoSkip: false, callback: v => v + '%' }
+                            }
+                        }
+                    }
+                });
+
+            } catch (erro) {
+                console.error("Erro ao carregar dados dos gráficos:", erro);
             }
-        });
+        }
     </script>
 </body>
 

@@ -7,7 +7,6 @@
     <title>Suporte | Sonora</title>
     <script src="https://kit.fontawesome.com/d840916580.js" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
     <link rel="stylesheet" href="../css/menu.css">
     <link rel="stylesheet" href="../css/suporte/dashboard.css">
 </head>
@@ -25,13 +24,35 @@
         </div>
 
         <ul class="lista">
-            <li class="ativo"><a href="logs.html"><i class="fa-solid fa-house"></i>Início</a></li>
-            <li><a href="logsEx.html"><i class="fa-solid fa-clipboard-list"></i>Logs</a></li>
-            <li><a href="monitoramento.html"><i class="fa-solid fa-heart-pulse" aria-hidden="true"></i>Monitoramento</a></li>
-            <li><a href="perfil.html"><i class="fa-solid fa-user"></i>Perfil</a></li>
-
+            <li class="ativo">
+                <a href="logs.html">
+                    <i class="fa-solid fa-house"></i>
+                    Início
+                </a>
+            </li>
+            <li>
+                <a href="logsEx.html">
+                    <i class="fa-solid fa-clipboard-list"></i>
+                    Logs
+                </a>
+            </li>
+            <li>
+                <a href="monitoramento.html">
+                    <i class="fa-solid fa-heart-pulse" aria-hidden="true"></i>
+                    Monitoramento
+                </a>
+            </li>
+            <li>
+                <a href="perfil.html">
+                    <i class="fa-solid fa-user"></i>
+                    Perfil
+                </a>
+            </li>
             <li class="box-sair">
-                <a class="botao-sair" href="../index.html"><i class="fa-solid fa-right-from-bracket"></i> Sair</a>
+                <a class="botao-sair" href="../index.html">
+                    <i class="fa-solid fa-right-from-bracket"></i>
+                    Sair
+                </a>
             </li>
         </ul>
     </aside>
@@ -41,12 +62,32 @@
         <header class="cabecalho-pagina">
             <div class="cabecalho-info">
                 <span class="sobretitulo">SONORA / SUPORTE</span>
-
                 <h1>Suporte</h1>
-
                 <p>
                     Monitore falhas, atrasos e ocorrências do sistema.
                 </p>
+            </div>
+
+            <div class="filtro-suporte">
+                <label for="tipoPeriodo">Período</label>
+
+                <select id="tipoPeriodo" onchange="alterarPeriodo()">
+                    <option value="dia">Dia</option>
+                    <option value="mes">Mês</option>
+                </select>
+
+                <input
+                    type="date"
+                    id="filtroData"
+                    onchange="carregarDashboard()"
+                >
+
+                <input
+                    type="month"
+                    id="filtroMes"
+                    onchange="carregarDashboard()"
+                    style="display: none;"
+                >
             </div>
         </header>
 
@@ -58,11 +99,12 @@
                     <div class="kpi-icone">
                         <i class="fa-solid fa-triangle-exclamation"></i>
                     </div>
+
                     <div class="kpi-info">
-                        <h2>5</h2>
+                        <h2 id="kpi-falhas">0</h2>
                         <span class="kpi-rotulo">Falhas críticas</span>
                         <span class="kpi-tendencia tendencia-ruim">
-                            <i class="fa-solid fa-arrow-up"></i> +2 ontem
+                            Ocorrências com status crítico
                         </span>
                     </div>
                 </div>
@@ -71,11 +113,12 @@
                     <div class="kpi-icone">
                         <i class="fa-regular fa-clock"></i>
                     </div>
+
                     <div class="kpi-info">
-                        <h2>8</h2>
+                        <h2 id="kpi-atrasos">0</h2>
                         <span class="kpi-rotulo">Atrasos detectados</span>
                         <span class="kpi-tendencia tendencia-ruim">
-                            <i class="fa-solid fa-arrow-up"></i> +1 ontem
+                            Registros de atraso
                         </span>
                     </div>
                 </div>
@@ -84,11 +127,12 @@
                     <div class="kpi-icone">
                         <i class="fa-solid fa-list"></i>
                     </div>
+
                     <div class="kpi-info">
-                        <h2>39</h2>
-                        <span class="kpi-rotulo">Ocorrências hoje</span>
+                        <h2 id="kpi-ocorrencias">0</h2>
+                        <span class="kpi-rotulo">Ocorrências no período</span>
                         <span class="kpi-tendencia tendencia-boa">
-                            <i class="fa-solid fa-arrow-down"></i> -2 ontem
+                            Total de registros
                         </span>
                     </div>
                 </div>
@@ -97,19 +141,27 @@
                     <div class="kpi-icone">
                         <i class="fa-solid fa-building"></i>
                     </div>
+
                     <div class="kpi-info">
-                        <h2>5</h2>
+                        <h2 id="kpi-empresas">0</h2>
                         <span class="kpi-rotulo">Empresas monitoradas</span>
+                        <span class="kpi-tendencia">
+                            Empresas cadastradas
+                        </span>
                     </div>
                 </div>
 
             </section>
 
             <section class="secao-graficos">
+
                 <div class="cartao">
                     <div class="cartao-cabecalho">
-                        <h3>Ocorrências do mês de <strong>outubro</strong></h3>
+                        <h3 id="tituloGraficoHora">
+                            Ocorrências por hora
+                        </h3>
                     </div>
+
                     <div class="area-grafico">
                         <canvas id="chartOcorrenciasTempo"></canvas>
                     </div>
@@ -117,18 +169,26 @@
 
                 <div class="cartao">
                     <div class="cartao-cabecalho">
-                        <h3>Tipos de ocorrência de <strong>outubro</strong></h3>
+                        <h3 id="tituloGraficoTipo">
+                            Tipos de ocorrência
+                        </h3>
                     </div>
+
                     <div class="area-grafico">
                         <canvas id="chartOcorrenciasTipo"></canvas>
                     </div>
                 </div>
+
             </section>
 
             <section class="secao-tabela">
+
                 <div class="cartao">
                     <div class="cartao-cabecalho">
-                        <h3><i class="fa-solid fa-triangle-exclamation"></i> Falhas críticas</h3>
+                        <h3>
+                            <i class="fa-solid fa-triangle-exclamation"></i>
+                            Falhas críticas
+                        </h3>
                     </div>
 
                     <div class="tabela-rolagem">
@@ -136,7 +196,6 @@
                             <thead>
                                 <tr>
                                     <th>Data/Hora</th>
-                                    <th>Cliente</th>
                                     <th>Tipo</th>
                                     <th>Mensagem</th>
                                     <th>Status</th>
@@ -146,13 +205,21 @@
                         </table>
                     </div>
                 </div>
+
             </section>
 
             <section class="secao-tabela">
+
                 <div class="cartao">
                     <div class="cartao-cabecalho">
-                        <h3><i class="fa-solid fa-list"></i> Últimas ocorrências</h3>
-                        <a href="logsEx.html" class="link-ver-todas">Ver todas</a>
+                        <h3>
+                            <i class="fa-solid fa-list"></i>
+                            Últimas ocorrências
+                        </h3>
+
+                        <a href="logsEx.html" class="link-ver-todas">
+                            Ver todas
+                        </a>
                     </div>
 
                     <div class="tabela-rolagem">
@@ -160,7 +227,6 @@
                             <thead>
                                 <tr>
                                     <th>Data/Hora</th>
-                                    <th>Cliente</th>
                                     <th>Tipo</th>
                                     <th>Mensagem</th>
                                     <th>Status</th>
@@ -170,6 +236,7 @@
                         </table>
                     </div>
                 </div>
+
             </section>
 
         </div>
@@ -177,261 +244,740 @@
     </main>
 
     <script>
-        const ocorrencias = [
-            { dataHora: "17/10/2026 09:14", cliente: "Nova Som Ltda", tipo: "Falha", mensagem: "Erro ao buscar métricas do Spotify", status: "Crítico" },
-            { dataHora: "17/10/2026 08:55", cliente: "Beat Produções", tipo: "Atraso", mensagem: "Processamento de dados acima do tempo esperado", status: "Atenção" },
-            { dataHora: "17/10/2026 08:30", cliente: "Som Livre Eventos", tipo: "Falha", mensagem: "Falha na integração com o YouTube", status: "Crítico" },
-            { dataHora: "17/10/2026 07:12", cliente: "Alpha Music", tipo: "Sistema", mensagem: "Rotina de importação finalizada com sucesso", status: "Informação" },
-            { dataHora: "17/10/2026 06:48", cliente: "Vibe Records", tipo: "Atraso", mensagem: "Atualização de métricas atrasada", status: "Atenção" },
-            { dataHora: "16/10/2026 23:32", cliente: "Nova Som Ltda", tipo: "Integração", mensagem: "Tempo limite excedido na API do Spotify", status: "Resolvido" },
-            { dataHora: "16/10/2026 21:40", cliente: "Beat Produções", tipo: "Falha", mensagem: "Erro ao processar dados de streams", status: "Crítico" },
-            { dataHora: "16/10/2026 20:15", cliente: "Som Livre Eventos", tipo: "Integração", mensagem: "Falha na sincronização de artistas", status: "Em análise" },
-            { dataHora: "16/10/2026 18:05", cliente: "Alpha Music", tipo: "Sistema", mensagem: "Backup dos dados concluído", status: "Resolvido" },
-            { dataHora: "16/10/2026 16:32", cliente: "Vibe Records", tipo: "Falha", mensagem: "Erro ao importar catálogo musical", status: "Crítico" }
-        ];
+        let chartOcorrenciasTempo;
+        let chartOcorrenciasTipo;
+
+        const cores = {
+            falha: '#f04450',
+            atraso: '#f8bd43',
+            sistema: '#6489e8',
+            integracao: '#a5afc2',
+            outros: '#9ca3af'
+        };
+
+        document.addEventListener("DOMContentLoaded", function () {
+            const hoje = new Date();
+
+            const dataHoje =
+                hoje.getFullYear() +
+                "-" +
+                String(hoje.getMonth() + 1).padStart(2, "0") +
+                "-" +
+                String(hoje.getDate()).padStart(2, "0");
+
+            document.getElementById("filtroData").value = dataHoje;
+
+            carregarDashboard();
+        });
+
+        function alterarPeriodo() {
+            const tipoPeriodo =
+                document.getElementById("tipoPeriodo").value;
+
+            const filtroData =
+                document.getElementById("filtroData");
+
+            const filtroMes =
+                document.getElementById("filtroMes");
+
+            if (tipoPeriodo === "dia") {
+                filtroData.style.display = "block";
+                filtroMes.style.display = "none";
+                carregarDashboard();
+            } else {
+                filtroData.style.display = "none";
+                filtroMes.style.display = "block";
+
+                const hoje = new Date();
+
+                const mesAtual =
+                    hoje.getFullYear() +
+                    "-" +
+                    String(hoje.getMonth() + 1).padStart(2, "0");
+
+                filtroMes.value = mesAtual;
+
+                carregarDashboard();
+            }
+        }
+
+        function obterPeriodo() {
+            const tipoPeriodo =
+                document.getElementById("tipoPeriodo").value;
+
+            if (tipoPeriodo === "dia") {
+                const data =
+                    document.getElementById("filtroData").value;
+
+                return {
+                    tipo: "dia",
+                    dataInicio: data + " 00:00:00",
+                    dataFim: adicionarDias(data, 1) + " 00:00:00",
+                    data
+                };
+            }
+
+            const mes =
+                document.getElementById("filtroMes").value;
+
+            const partes = mes.split("-");
+            const ano = Number(partes[0]);
+            const numeroMes = Number(partes[1]);
+
+            const dataInicio =
+                `${ano}-${String(numeroMes).padStart(2, "0")}-01`;
+
+            const proximoMes =
+                new Date(ano, numeroMes, 1);
+
+            const dataFim =
+                `${proximoMes.getFullYear()}-` +
+                `${String(proximoMes.getMonth() + 1).padStart(2, "0")}-01`;
+
+            return {
+                tipo: "mes",
+                dataInicio: dataInicio + " 00:00:00",
+                dataFim: dataFim + " 00:00:00",
+                data: dataInicio
+            };
+        }
+
+        function adicionarDias(data, quantidade) {
+            const partes = data.split("-");
+
+            const dataObj = new Date(
+                Number(partes[0]),
+                Number(partes[1]) - 1,
+                Number(partes[2])
+            );
+
+            dataObj.setDate(
+                dataObj.getDate() + quantidade
+            );
+
+            return (
+                dataObj.getFullYear() +
+                "-" +
+                String(dataObj.getMonth() + 1).padStart(2, "0") +
+                "-" +
+                String(dataObj.getDate()).padStart(2, "0")
+            );
+        }
+
+        async function carregarDashboard() {
+            const periodo = obterPeriodo();
+
+            try {
+                await Promise.all([
+                    carregarKpis(),
+                    carregarGraficoHora(periodo),
+                    carregarGraficoTipo(periodo),
+                    carregarTabelaCriticos(periodo),
+                    carregarTabelaRecentes(periodo)
+                ]);
+            } catch (erro) {
+                console.error(
+                    "Erro ao carregar dashboard de suporte:",
+                    erro
+                );
+            }
+        }
+
+        async function carregarKpis() {
+            const resposta =
+                await fetch("/suporte/kpis");
+
+            if (!resposta.ok) {
+                throw new Error("Erro ao carregar KPIs.");
+            }
+
+            const dados =
+                await resposta.json();
+
+            document.getElementById("kpi-falhas").textContent =
+                dados.falhas_criticas || 0;
+
+            document.getElementById("kpi-atrasos").textContent =
+                dados.atrasos || 0;
+
+            document.getElementById("kpi-ocorrencias").textContent =
+                dados.ocorrencias || 0;
+
+            document.getElementById("kpi-empresas").textContent =
+                dados.empresas || 0;
+        }
+
+        async function carregarGraficoHora(periodo) {
+            let dados;
+            let labels;
+            let datasets;
+
+            if (periodo.tipo === "dia") {
+                const resposta =
+                    await fetch(
+                        `/suporte/ocorrencias-hora?data=${periodo.data}`
+                    );
+
+                if (!resposta.ok) {
+                    throw new Error(
+                        "Erro ao carregar ocorrências por hora."
+                    );
+                }
+
+                dados = await resposta.json();
+
+                labels = [];
+
+                for (let i = 0; i < 24; i++) {
+                    labels.push(
+                        String(i).padStart(2, "0") + "h"
+                    );
+                }
+
+                const tipos = [
+                    "Falha",
+                    "Atraso",
+                    "Sistema",
+                    "Integração"
+                ];
+
+                datasets =
+                    tipos.map(function (tipo) {
+                        return {
+                            label: tipo,
+                            data: labels.map(function (_, indice) {
+                                const registro =
+                                    dados.find(function (item) {
+                                        return (
+                                            Number(item.hora) === indice &&
+                                            item.tipo === tipo
+                                        );
+                                    });
+
+                                return registro
+                                    ? Number(registro.quantidade)
+                                    : 0;
+                            }),
+                            backgroundColor:
+                                obterCorTipo(tipo),
+                            borderRadius: 4,
+                            maxBarThickness: 22
+                        };
+                    });
+
+                document.getElementById(
+                    "tituloGraficoHora"
+                ).textContent =
+                    `Ocorrências por hora — ${formatarData(periodo.data)}`;
+
+            } else {
+                const resposta =
+                    await fetch(
+                        `/suporte/ocorrencias-dia?` +
+                        `dataInicio=${encodeURIComponent(periodo.dataInicio)}` +
+                        `&dataFim=${encodeURIComponent(periodo.dataFim)}`
+                    );
+
+                if (!resposta.ok) {
+                    throw new Error(
+                        "Erro ao carregar ocorrências por dia."
+                    );
+                }
+
+                dados = await resposta.json();
+
+                labels =
+                    dados.map(function (item) {
+                        return formatarData(
+                            item.data.substring(0, 10)
+                        );
+                    });
+
+                datasets = [{
+                    label: "Ocorrências",
+                    data:
+                        dados.map(function (item) {
+                            return Number(item.quantidade);
+                        }),
+                    backgroundColor:
+                        obterCorTipo("Sistema"),
+                    borderRadius: 4,
+                    maxBarThickness: 30
+                }];
+
+                document.getElementById(
+                    "tituloGraficoHora"
+                ).textContent =
+                    "Ocorrências por dia";
+            }
+
+            if (chartOcorrenciasTempo) {
+                chartOcorrenciasTempo.destroy();
+            }
+
+            chartOcorrenciasTempo =
+                new Chart(
+                    document
+                        .getElementById(
+                            "chartOcorrenciasTempo"
+                        )
+                        .getContext("2d"),
+                    {
+                        type: "bar",
+                        data: {
+                            labels: labels,
+                            datasets: datasets
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            interaction: {
+                                intersect: false,
+                                mode: "index"
+                            },
+                            plugins: {
+                                legend: {
+                                    display:
+                                        periodo.tipo === "dia",
+                                    position: "top",
+                                    align: "end",
+                                    labels: {
+                                        usePointStyle: true,
+                                        pointStyle: "circle",
+                                        boxWidth: 17,
+                                        padding: 10,
+                                        color: "#647084",
+                                        font: {
+                                            size: 10
+                                        }
+                                    }
+                                },
+                                tooltip: {
+                                    callbacks: {
+                                        footer: function (itens) {
+                                            const total =
+                                                itens.reduce(
+                                                    function (
+                                                        soma,
+                                                        item
+                                                    ) {
+                                                        return (
+                                                            soma +
+                                                            item.parsed.y
+                                                        );
+                                                    },
+                                                    0
+                                                );
+
+                                            return (
+                                                "Total: " +
+                                                total +
+                                                " ocorrências"
+                                            );
+                                        }
+                                    }
+                                }
+                            },
+                            scales: {
+                                x: {
+                                    grid: {
+                                        display: false
+                                    },
+                                    border: {
+                                        display: false
+                                    },
+                                    ticks: {
+                                        color: "#647084",
+                                        font: {
+                                            size: 10
+                                        }
+                                    }
+                                },
+                                y: {
+                                    beginAtZero: true,
+                                    ticks: {
+                                        stepSize: 1,
+                                        color: "#647084",
+                                        font: {
+                                            size: 10
+                                        }
+                                    },
+                                    grid: {
+                                        color: "#edf0f5"
+                                    },
+                                    border: {
+                                        display: false
+                                    }
+                                }
+                            }
+                        }
+                    }
+                );
+        }
+
+        async function carregarGraficoTipo(periodo) {
+            const resposta =
+                await fetch(
+                    `/suporte/ocorrencias-tipo?` +
+                    `dataInicio=${encodeURIComponent(periodo.dataInicio)}` +
+                    `&dataFim=${encodeURIComponent(periodo.dataFim)}`
+                );
+
+            if (!resposta.ok) {
+                throw new Error(
+                    "Erro ao carregar tipos de ocorrência."
+                );
+            }
+
+            const dados =
+                await resposta.json();
+
+            const labels =
+                dados.map(function (item) {
+                    return item.tipo;
+                });
+
+            const valores =
+                dados.map(function (item) {
+                    return Number(item.quantidade);
+                });
+
+            const total =
+                valores.reduce(
+                    function (soma, valor) {
+                        return soma + valor;
+                    },
+                    0
+                );
+
+            document.getElementById(
+                "tituloGraficoTipo"
+            ).textContent =
+                periodo.tipo === "dia"
+                    ? `Tipos de ocorrência — ${formatarData(periodo.data)}`
+                    : "Tipos de ocorrência no mês";
+
+            if (chartOcorrenciasTipo) {
+                chartOcorrenciasTipo.destroy();
+            }
+
+            chartOcorrenciasTipo =
+                new Chart(
+                    document
+                        .getElementById(
+                            "chartOcorrenciasTipo"
+                        )
+                        .getContext("2d"),
+                    {
+                        type: "doughnut",
+                        data: {
+                            labels: labels,
+                            datasets: [{
+                                data: valores,
+                                backgroundColor:
+                                    labels.map(function (tipo) {
+                                        return obterCorTipo(tipo);
+                                    }),
+                                borderColor: "#ffffff",
+                                borderWidth: 2,
+                                hoverOffset: 5
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            cutout: "65%",
+                            plugins: {
+                                legend: {
+                                    display: true,
+                                    position:
+                                        window.innerWidth <= 600
+                                            ? "bottom"
+                                            : "right",
+                                    labels: {
+                                        usePointStyle: true,
+                                        pointStyle: "circle",
+                                        boxWidth: 7,
+                                        padding: 12,
+                                        color: "#374151",
+                                        font: {
+                                            size: 11
+                                        }
+                                    }
+                                },
+                                tooltip: {
+                                    callbacks: {
+                                        label: function (contexto) {
+                                            const quantidade =
+                                                contexto.raw;
+
+                                            const percentual =
+                                                total > 0
+                                                    ? (
+                                                        quantidade /
+                                                        total *
+                                                        100
+                                                    ).toFixed(1)
+                                                    : 0;
+
+                                            return (
+                                                ` ${contexto.label}: ` +
+                                                `${quantidade} ` +
+                                                `(${percentual}%)`
+                                            );
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        plugins: [{
+                            id: "textoCentro",
+                            afterDraw(grafico) {
+                                const {
+                                    ctx,
+                                    chartArea
+                                } = grafico;
+
+                                if (!chartArea) {
+                                    return;
+                                }
+
+                                const x =
+                                    (
+                                        chartArea.left +
+                                        chartArea.right
+                                    ) / 2;
+
+                                const y =
+                                    (
+                                        chartArea.top +
+                                        chartArea.bottom
+                                    ) / 2;
+
+                                ctx.save();
+                                ctx.textAlign = "center";
+                                ctx.textBaseline = "middle";
+                                ctx.fillStyle = "#20283a";
+                                ctx.font =
+                                    "bold 22px system-ui, sans-serif";
+
+                                ctx.fillText(
+                                    total,
+                                    x,
+                                    y - 8
+                                );
+
+                                ctx.fillStyle = "#647084";
+                                ctx.font =
+                                    "11px system-ui, sans-serif";
+
+                                ctx.fillText(
+                                    "Total",
+                                    x,
+                                    y + 12
+                                );
+
+                                ctx.restore();
+                            }
+                        }]
+                    }
+                );
+        }
+
+        async function carregarTabelaCriticos(periodo) {
+            const resposta =
+                await fetch(
+                    `/suporte/criticos?` +
+                    `dataInicio=${encodeURIComponent(periodo.dataInicio)}` +
+                    `&dataFim=${encodeURIComponent(periodo.dataFim)}`
+                );
+
+            if (!resposta.ok) {
+                throw new Error(
+                    "Erro ao carregar falhas críticas."
+                );
+            }
+
+            const dados =
+                await resposta.json();
+
+            preencherTabela(
+                "tabela",
+                dados
+            );
+        }
+
+        async function carregarTabelaRecentes(periodo) {
+            const resposta =
+                await fetch(
+                    `/suporte/recentes?` +
+                    `dataInicio=${encodeURIComponent(periodo.dataInicio)}` +
+                    `&dataFim=${encodeURIComponent(periodo.dataFim)}`
+                );
+
+            if (!resposta.ok) {
+                throw new Error(
+                    "Erro ao carregar últimas ocorrências."
+                );
+            }
+
+            const dados =
+                await resposta.json();
+
+            preencherTabela(
+                "tabela1",
+                dados
+            );
+        }
+
+        function preencherTabela(idTabela, lista) {
+            const corpo =
+                document.getElementById(idTabela);
+
+            corpo.replaceChildren();
+
+            if (!Array.isArray(lista) || lista.length === 0) {
+                const linha =
+                    document.createElement("tr");
+
+                const coluna =
+                    document.createElement("td");
+
+                coluna.colSpan = 4;
+                coluna.textContent =
+                    "Nenhuma ocorrência encontrada.";
+
+                linha.appendChild(coluna);
+                corpo.appendChild(linha);
+
+                return;
+            }
+
+            lista.forEach(function (item) {
+                const linha =
+                    document.createElement("tr");
+
+                const colunaData =
+                    document.createElement("td");
+
+                colunaData.textContent =
+                    formatarDataHora(
+                        item.data_hora
+                    );
+
+                const colunaTipo =
+                    document.createElement("td");
+
+                colunaTipo.textContent =
+                    item.tipo;
+
+                const colunaMensagem =
+                    document.createElement("td");
+
+                colunaMensagem.textContent =
+                    item.mensagem;
+
+                const colunaStatus =
+                    document.createElement("td");
+
+                const selo =
+                    document.createElement("span");
+
+                selo.classList.add(
+                    "selo-status",
+                    classeStatus(item.status)
+                );
+
+                selo.textContent =
+                    item.status;
+
+                colunaStatus.appendChild(selo);
+
+                linha.append(
+                    colunaData,
+                    colunaTipo,
+                    colunaMensagem,
+                    colunaStatus
+                );
+
+                corpo.appendChild(linha);
+            });
+        }
 
         function classeStatus(status) {
-            if (status === "Crítico" || status === "Falha") {
+            if (
+                status === "Crítico" ||
+                status === "Falha"
+            ) {
                 return "status-critico";
             }
 
-            if (status === "Atenção" || status === "Em análise") {
+            if (
+                status === "Atenção" ||
+                status === "Em análise"
+            ) {
                 return "status-atencao";
             }
 
             return "status-resolvido";
         }
 
-        function preencherTabela(idTabela, lista) {
-            const corpo = document.getElementById(idTabela);
+        function obterCorTipo(tipo) {
+            const tipoNormalizado =
+                tipo.toLowerCase();
 
-            corpo.innerHTML = "";
+            if (tipoNormalizado === "falha") {
+                return cores.falha;
+            }
 
-            lista.forEach(function (item) {
-                corpo.innerHTML += `
-                    <tr>
-                        <td>${item.dataHora}</td>
-                        <td><strong>${item.cliente}</strong></td>
-                        <td>${item.tipo}</td>
-                        <td>${item.mensagem}</td>
-                        <td>
-                            <span class="selo-status ${classeStatus(item.status)}">
-                                ${item.status}
-                            </span>
-                        </td>
-                    </tr>
-                `;
-            });
+            if (tipoNormalizado === "atraso") {
+                return cores.atraso;
+            }
+
+            if (tipoNormalizado === "sistema") {
+                return cores.sistema;
+            }
+
+            if (
+                tipoNormalizado === "integração" ||
+                tipoNormalizado === "integracao"
+            ) {
+                return cores.integracao;
+            }
+
+            return cores.outros;
         }
 
-        // Primeira tabela: só as falhas críticas
-        preencherTabela(
-            "tabela",
-            ocorrencias.filter(function (item) {
-                return item.status === "Crítico";
-            })
-        );
+        function formatarData(data) {
+            const partes =
+                data.split("-");
 
-        // Segunda tabela: as 4 ocorrências mais recentes
-        preencherTabela("tabela1", ocorrencias.slice(0, 4));
+            return (
+                partes[2] +
+                "/" +
+                partes[1] +
+                "/" +
+                partes[0]
+            );
+        }
 
-        const cores = {
-            falha: '#f04450',
-            atraso: '#f8bd43',
-            sistema: '#6489e8',
-            integracao: '#a5afc2'
-        };
+        function formatarDataHora(dataHora) {
+            const data =
+                new Date(dataHora);
 
-        // Gráfico 1: ocorrências por dia
-        new Chart(document.getElementById('chartOcorrenciasTempo').getContext('2d'), {
-            type: 'bar',
-
-            data: {
-                labels: ['10/10', '11/10', '12/10', '13/10', '14/10', '15/10', '16/10'],
-
-                datasets: [
+            return (
+                data.toLocaleDateString("pt-BR") +
+                " " +
+                data.toLocaleTimeString(
+                    "pt-BR",
                     {
-                        label: 'Falha',
-                        data: [5, 6, 4, 7, 5, 6, 15],
-                        backgroundColor: cores.falha,
-                        borderRadius: 4,
-                        maxBarThickness: 22
-                    },
-                    {
-                        label: 'Atraso',
-                        data: [4, 3, 4, 3, 4, 3, 12],
-                        backgroundColor: cores.atraso,
-                        borderRadius: 4,
-                        maxBarThickness: 22
-                    },
-                    {
-                        label: 'Outros',
-                        data: [3, 4, 3, 4, 4, 5, 12],
-                        backgroundColor: cores.sistema,
-                        borderRadius: 4,
-                        maxBarThickness: 22
+                        hour: "2-digit",
+                        minute: "2-digit"
                     }
-                ]
-            },
-
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-
-                interaction: {
-                    intersect: false,
-                    mode: 'index'
-                },
-
-                plugins: {
-                    legend: {
-                        display: true,
-                        position: 'top',
-                        align: 'end',
-
-                        labels: {
-                            usePointStyle: true,
-                            pointStyle: 'circle',
-                            boxWidth: 17,
-                            padding: 10,
-                            color: '#647084',
-                            font: { size: 10 }
-                        }
-                    },
-
-                    tooltip: {
-                        callbacks: {
-                            footer: function (itens) {
-                                const total = itens.reduce(
-                                    function (soma, item) {
-                                        return soma + item.parsed.y;
-                                    },
-                                    0
-                                );
-
-                                return 'Total: ' + total + ' ocorrências';
-                            }
-                        }
-                    }
-                },
-
-                scales: {
-                    x: {
-                        grid: { display: false },
-                        border: { display: false },
-                        ticks: {
-                            color: '#647084',
-                            font: { size: 10 }
-                        }
-                    },
-
-                    y: {
-                        beginAtZero: true,
-                        max: 20,
-
-                        ticks: {
-                            stepSize: 10,
-                            color: '#647084',
-                            font: { size: 10 }
-                        },
-
-                        grid: { color: '#edf0f5' },
-                        border: { display: false }
-                    }
-                }
-            }
-        });
-
-        // Gráfico 2: ocorrências por tipo
-        const dadosTipo = [48, 33, 20, 15];
-        const totalTipo = dadosTipo.reduce(function (soma, valor) {
-            return soma + valor;
-        }, 0);
-
-        new Chart(document.getElementById('chartOcorrenciasTipo').getContext('2d'), {
-            type: 'doughnut',
-
-            data: {
-                labels: ['Falha', 'Atraso', 'Sistema', 'Integração'],
-
-                datasets: [{
-                    data: dadosTipo,
-
-                    backgroundColor: [
-                        cores.falha,
-                        cores.atraso,
-                        cores.sistema,
-                        cores.integracao
-                    ],
-
-                    borderColor: '#ffffff',
-                    borderWidth: 2,
-                    hoverOffset: 5
-                }]
-            },
-
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                cutout: '65%',
-
-                plugins: {
-                    legend: {
-                        display: true,
-                        // Em tela pequena a legenda vai para baixo
-                        position: window.innerWidth <= 600 ? 'bottom' : 'right',
-
-                        labels: {
-                            usePointStyle: true,
-                            pointStyle: 'circle',
-                            boxWidth: 7,
-                            padding: 12,
-                            color: '#374151',
-                            font: { size: 11 }
-                        }
-                    },
-
-                    tooltip: {
-                        callbacks: {
-                            label: function (contexto) {
-                                const quantidade = contexto.raw;
-                                const percentual = ((quantidade / totalTipo) * 100).toFixed(1);
-
-                                return ` ${contexto.label}: ${quantidade} (${percentual}%)`;
-                            }
-                        }
-                    }
-                }
-            },
-
-            plugins: [{
-                id: 'textoCentro',
-
-                afterDraw(grafico) {
-                    const { ctx, chartArea } = grafico;
-
-                    if (!chartArea) return;
-
-                    const x = (chartArea.left + chartArea.right) / 2;
-                    const y = (chartArea.top + chartArea.bottom) / 2;
-
-                    ctx.save();
-                    ctx.textAlign = 'center';
-                    ctx.textBaseline = 'middle';
-
-                    ctx.fillStyle = '#20283a';
-                    ctx.font = 'bold 22px system-ui, sans-serif';
-                    ctx.fillText(totalTipo, x, y - 8);
-
-                    ctx.fillStyle = '#647084';
-                    ctx.font = '11px system-ui, sans-serif';
-                    ctx.fillText('Total', x, y + 12);
-
-                    ctx.restore();
-                }
-            }]
-        });
+                )
+            );
+        }
     </script>
-</body>
 
+</body>
 </html>

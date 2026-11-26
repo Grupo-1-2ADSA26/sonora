@@ -145,17 +145,37 @@ async function enviarEventosProximos() {
             await notificacaoModel.buscarEventosProximos();
 
         for (const evento of eventos) {
+            const dataEvento = new Date(evento.data_evento).toLocaleDateString(
+                "pt-BR",
+                {
+                    day: "2-digit",
+                    month: "2-digit",
+                    year: "numeric"
+                }
+            );
+
             const mensagem =
-                `O evento ${evento.nome_evento} está se aproximando.\n\n` +
-                `Data do evento: ${evento.data_evento}\n` +
+                `Olá, ${evento.nome_usuario}!\n\n` +
+                `Lembrete: o evento "${evento.nome_evento}" está se aproximando.\n\n` +
+                `Data: ${dataEvento}\n` +
                 `Local: ${evento.local_evento}\n\n` +
-                `Faltam apenas 3 dias para a realização do evento.`;
+                `Faltam apenas 3 dias para o evento.\n\n` +
+                `Acesse a Sonora para conferir os detalhes.\n\n` +
+                `Atenciosamente,\n` +
+                `Equipe Sonora`;
 
             await springService.enviarNotificacao({
                 destinatarios: [evento.email],
-                assunto: "Evento se aproxima na Sonora",
+                assunto: "Lembrete: evento se aproxima na Sonora",
                 mensagem: mensagem
             });
+
+            await notificacaoModel.salvarMensagem(
+                evento.id_usuario,
+                "evento_proximo",
+                "Lembrete: evento se aproxima na Sonora",
+                mensagem
+            );
         }
 
         console.log(

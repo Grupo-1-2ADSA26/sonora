@@ -91,17 +91,16 @@ function buscarImportanciaEvento(idEmpresa, filtroPeriodo, inicio, fim) {
     return database.executar(instrucaoSql, [idEmpresa]);
 }
 
-function buscarAprovacoesMensais(idEmpresa, filtroPeriodo, inicio, fim) {
-    var condicao = obterCondicaoPeriodo(filtroPeriodo, 'e.data_evento', inicio, fim);
+function buscarShowsMensais(idEmpresa, filtroPeriodo, inicio, fim) {
+    var condicao = obterCondicaoPeriodo(filtroPeriodo, 'data_evento', inicio, fim);
     var instrucaoSql = `
         SELECT 
-            DATE_FORMAT(ap.data_atualizacao, '%b/%Y') AS mes,
+            DATE_FORMAT(data_evento, '%b/%Y') AS mes,
             COUNT(*) AS total
-        FROM artista_aprovado ap
-        JOIN evento e ON ap.id_evento = e.id_evento
-        WHERE ap.id_empresa = ? AND ap.status_aprovacao = 'APROVADO' ${condicao}
-        GROUP BY DATE_FORMAT(ap.data_atualizacao, '%b/%Y'), YEAR(ap.data_atualizacao), MONTH(ap.data_atualizacao)
-        ORDER BY YEAR(ap.data_atualizacao), MONTH(ap.data_atualizacao) ASC;
+        FROM evento
+        WHERE id_empresa = ? ${condicao}
+        GROUP BY DATE_FORMAT(data_evento, '%b/%Y'), YEAR(data_evento), MONTH(data_evento)
+        ORDER BY YEAR(data_evento), MONTH(data_evento) ASC;
     `;
     return database.executar(instrucaoSql, [idEmpresa]);
 }
@@ -112,5 +111,5 @@ module.exports = {
     buscarArtistasPendentesTotal,
     buscarArtistasPorEvento,
     buscarImportanciaEvento,
-    buscarAprovacoesMensais
+    buscarShowsMensais
 };

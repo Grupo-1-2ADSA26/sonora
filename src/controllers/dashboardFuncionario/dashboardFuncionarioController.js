@@ -55,13 +55,13 @@ function buscarImportanciaEvento(req, res) {
         .catch(erro => res.status(500).json(erro.sqlMessage));
 }
 
-function buscarAprovacoesMensais(req, res) {
+function buscarShowsMensais(req, res) {
     var idEmpresa = req.params.idEmpresa;
     var periodo = req.query.periodo || 'todos';
     var inicio = req.query.inicio || null;
     var fim = req.query.fim || null;
 
-    dashboardFuncionarioModel.buscarAprovacoesMensais(idEmpresa, periodo, inicio, fim)
+    dashboardFuncionarioModel.buscarShowsMensais(idEmpresa, periodo, inicio, fim)
         .then(resultado => res.status(200).json(resultado))
         .catch(erro => res.status(500).json(erro.sqlMessage));
 }
@@ -72,5 +72,5 @@ module.exports = {
     buscarArtistasPendentesTotal,
     buscarArtistasPorEvento,
     buscarImportanciaEvento,
-    buscarAprovacoesMensais
+    buscarShowsMensais
 };

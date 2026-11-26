@@ -22,8 +22,8 @@ router.get("/importancia-evento/:idEmpresa", function (req, res) {
     dashboardFuncionarioController.buscarImportanciaEvento(req, res);
 });
 
-router.get("/aprovacoes-mensais/:idEmpresa", function (req, res) {
-    dashboardFuncionarioController.buscarAprovacoesMensais(req, res);
+router.get("/shows-mensais/:idEmpresa", function (req, res) {
+    dashboardFuncionarioController.buscarShowsMensais(req, res);
 });
 
 module.exports = router;

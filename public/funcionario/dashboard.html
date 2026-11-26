@@ -99,7 +99,7 @@
 
         <section class="summary">
             <!-- KPI 1: Show mais próximo -->
-            <article class="summary-card">
+            <div class="summary-card">
                 <div class="summary-icon">
                     <i class="fa-solid fa-calendar-days"></i>
                 </div>
@@ -108,10 +108,10 @@
                     <strong id="kpiShowProximo" style="font-size: 16px;">Carregando...</strong>
                     <small id="kpiDataProximo">Próximo evento</small>
                 </div>
-            </article>
+            </div>
 
             <!-- KPI 2: Gênero predominante -->
-            <article class="summary-card">
+            <div class="summary-card">
                 <div class="summary-icon">
                     <i class="fa-solid fa-music"></i>
                 </div>
@@ -120,10 +120,10 @@
                     <strong id="topGenre">Carregando...</strong>
                     <small>Mais frequente entre artistas aprovados</small>
                 </div>
-            </article>
+            </div>
 
             <!-- KPI 3: Artistas pendentes de análise -->
-            <article class="summary-card">
+            <div class="summary-card">
                 <div class="summary-icon">
                     <i class="fa-solid fa-users-clock"></i>
                 </div>
@@ -132,7 +132,7 @@
                     <strong id="kpiArtistasPendentes">—/—</strong>
                     <small>Pendentes / Total</small>
                 </div>
-            </article>
+            </div>
         </section>
 
         <div id="emptyState" class="empty-state" hidden>
@@ -143,7 +143,7 @@
 
         <section class="dashboard-grid">
             <!-- GRÁFICO 1: Artistas por Evento -->
-            <article class="dashboard-card">
+            <div class="dashboard-card">
                 <div class="card-header">
                     <div>
                         <span class="card-label">DISTRIBUIÇÃO</span>
@@ -161,10 +161,10 @@
                     <span class="footer-dot"></span>
                     <span>Empilhado por status</span>
                 </div>
-            </article>
+            </div>
 
             <!-- GRÁFICO 2: Importância do Evento -->
-            <article class="dashboard-card">
+            <div class="dashboard-card">
                 <div class="card-header">
                     <div>
                         <span class="card-label">RELEVÂNCIA</span>
@@ -182,28 +182,28 @@
                     <span class="footer-dot"></span>
                     <span>Volume de engajamento por evento</span>
                 </div>
-            </article>
+            </div>
 
-            <!-- GRÁFICO 3: Aprovações mensais -->
-            <article class="dashboard-card" style="grid-column: span 2;">
+            <!-- GRÁFICO 3: Shows mensais -->
+            <div class="dashboard-card" style="grid-column: span 2;">
                 <div class="card-header">
                     <div>
                         <span class="card-label">ACOMPANHAMENTO</span>
-                        <h2>Aprovações mensais</h2>
-                        <p>Evolução mensal da quantidade de artistas aprovados.</p>
+                        <h2>Shows mensais</h2>
+                        <p>Evolução mensal da quantidade de eventos cadastrados.</p>
                     </div>
                     <div class="card-icon">
-                        <i class="fa-solid fa-chart-line"></i>
+                        <i class="fa-solid fa-calendar-check"></i>
                     </div>
                 </div>
                 <div class="chart-container">
-                    <canvas id="monthlyApprovalsChart"></canvas>
+                    <canvas id="monthlyShowsChart"></canvas>
                 </div>
                 <div class="card-footer">
                     <span class="footer-dot"></span>
-                    <span>Total de artistas aprovados por mês</span>
+                    <span>Total de shows por mês</span>
                 </div>
-            </article>
+            </div>
         </section>
     </main>
 
@@ -212,7 +212,7 @@
 
         let chartArtistasEvento = null;
         let chartImportanciaEvento = null;
-        let chartAprovasMensais = null;
+        let chartShowsMensais = null;
 
         document.addEventListener("DOMContentLoaded", () => {
             atualizarDashboard();
@@ -247,7 +247,7 @@
             carregarKPIs(queryParams);
             carregarGraficoArtistasPorEvento(queryParams);
             carregarGraficoImportanciaEvento(queryParams);
-            carregarGraficoAprovacoesMensais(queryParams);
+            carregarGraficoShowsMensais(queryParams);
         }
 
         // CARREGAR KPIS COM SUPORTE A FILTROS
@@ -351,22 +351,22 @@
                 });
         }
 
-        function carregarGraficoAprovacoesMensais(queryString) {
-            fetch(`/dashboardFuncionario/aprovacoes-mensais/${idEmpresa}?${queryString}`)
+        function carregarGraficoShowsMensais(queryString) {
+            fetch(`/dashboardFuncionario/shows-mensais/${idEmpresa}?${queryString}`)
                 .then(res => res.json())
                 .then(dados => {
                     const meses = dados.map(item => item.mes);
                     const totais = dados.map(item => item.total);
 
-                    const ctx = document.getElementById("monthlyApprovalsChart").getContext("2d");
-                    if (chartAprovasMensais) chartAprovasMensais.destroy();
+                    const ctx = document.getElementById("monthlyShowsChart").getContext("2d");
+                    if (chartShowsMensais) chartShowsMensais.destroy();
 
-                    chartAprovasMensais = new Chart(ctx, {
+                    chartShowsMensais = new Chart(ctx, {
                         type: 'line',
                         data: {
                             labels: meses.length ? meses : ["Jan", "Fev", "Mar", "Abr", "Mai", "Jun"],
                             datasets: [{
-                                label: "Artistas aprovados",
+                                label: "Shows previstos",
                                 data: totais.length ? totais : [0, 0, 0, 0, 0, 0],
                                 borderColor: "#292929",
                                 backgroundColor: "rgba(41, 41, 41, 0.08)",

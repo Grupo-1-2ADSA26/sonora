@@ -6,7 +6,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Logs | Sonora</title>
     <script src="https://kit.fontawesome.com/d840916580.js" crossorigin="anonymous"></script>
-
     <link rel="stylesheet" href="../css/menu.css">
     <link rel="stylesheet" href="../css/suporte/logs.css">
 </head>
@@ -40,11 +39,9 @@
         <header class="cabecalho-pagina">
             <div class="cabecalho-info">
                 <span class="sobretitulo">SONORA / LOGS</span>
-
                 <h1>Logs</h1>
-
                 <p>
-                    Consulte todas as ocorrências registradas e filtre por cliente, tipo ou status.
+                    Consulte todas as ocorrências registradas e filtre por tipo ou status.
                 </p>
             </div>
         </header>
@@ -53,15 +50,10 @@
             <h3><i class="fa-solid fa-filter"></i> Filtros</h3>
 
             <div class="grade-filtros">
-                <div class="campo-filtro">
-                    <label for="filtro-cliente">Cliente</label>
-                    <select id="filtro-cliente">
-                        <option value="">Todos</option>
-                    </select>
-                </div>
 
                 <div class="campo-filtro">
                     <label for="filtro-tipo">Tipo</label>
+
                     <select id="filtro-tipo">
                         <option value="">Todos</option>
                         <option value="Falha">Falha</option>
@@ -73,6 +65,7 @@
 
                 <div class="campo-filtro">
                     <label for="filtro-status">Status</label>
+
                     <select id="filtro-status">
                         <option value="">Todos</option>
                         <option value="Crítico">Crítico</option>
@@ -88,6 +81,7 @@
                         <i class="fa-solid fa-eraser"></i> Limpar
                     </button>
                 </div>
+
             </div>
         </section>
 
@@ -102,12 +96,12 @@
                     <thead>
                         <tr>
                             <th>Data/Hora</th>
-                            <th>Cliente</th>
                             <th>Tipo</th>
                             <th>Mensagem</th>
                             <th>Status</th>
                         </tr>
                     </thead>
+
                     <tbody id="tabela-logs"></tbody>
                 </table>
             </div>
@@ -120,102 +114,196 @@
     </main>
 
     <script>
-        const ocorrencias = [
-            { dataHora: "17/10/2026 09:14", cliente: "Nova Som Ltda", tipo: "Falha", mensagem: "Erro ao buscar métricas do Spotify", status: "Crítico" },
-            { dataHora: "17/10/2026 08:55", cliente: "Beat Produções", tipo: "Atraso", mensagem: "Processamento de dados acima do tempo esperado", status: "Atenção" },
-            { dataHora: "17/10/2026 08:30", cliente: "Som Livre Eventos", tipo: "Falha", mensagem: "Falha na integração com o YouTube", status: "Crítico" },
-            { dataHora: "17/10/2026 07:12", cliente: "Alpha Music", tipo: "Sistema", mensagem: "Rotina de importação finalizada com sucesso", status: "Informação" },
-            { dataHora: "17/10/2026 06:48", cliente: "Vibe Records", tipo: "Atraso", mensagem: "Atualização de métricas atrasada", status: "Atenção" },
-            { dataHora: "16/10/2026 23:32", cliente: "Nova Som Ltda", tipo: "Integração", mensagem: "Tempo limite excedido na API do Spotify", status: "Resolvido" },
-            { dataHora: "16/10/2026 21:40", cliente: "Beat Produções", tipo: "Falha", mensagem: "Erro ao processar dados de streams", status: "Crítico" },
-            { dataHora: "16/10/2026 20:15", cliente: "Som Livre Eventos", tipo: "Integração", mensagem: "Falha na sincronização de artistas", status: "Em análise" },
-            { dataHora: "16/10/2026 18:05", cliente: "Alpha Music", tipo: "Sistema", mensagem: "Backup dos dados concluído", status: "Resolvido" },
-            { dataHora: "16/10/2026 16:32", cliente: "Vibe Records", tipo: "Falha", mensagem: "Erro ao importar catálogo musical", status: "Crítico" }
-        ];
+        let ocorrencias = [];
 
-        const filtroCliente = document.getElementById("filtro-cliente");
-        const filtroTipo = document.getElementById("filtro-tipo");
-        const filtroStatus = document.getElementById("filtro-status");
-        const botaoLimpar = document.getElementById("botao-limpar");
-        const corpoTabela = document.getElementById("tabela-logs");
-        const contador = document.getElementById("contador");
-        const mensagemVazia = document.getElementById("mensagem-vazia");
+        const filtroTipo =
+            document.getElementById("filtro-tipo");
+
+        const filtroStatus =
+            document.getElementById("filtro-status");
+
+        const botaoLimpar =
+            document.getElementById("botao-limpar");
+
+        const corpoTabela =
+            document.getElementById("tabela-logs");
+
+        const contador =
+            document.getElementById("contador");
+
+        const mensagemVazia =
+            document.getElementById("mensagem-vazia");
+
+        document.addEventListener(
+            "DOMContentLoaded",
+            carregarLogs
+        );
+
+        async function carregarLogs() {
+            try {
+                const resposta =
+                    await fetch("/suporte/listar");
+
+                if (!resposta.ok) {
+                    throw new Error(
+                        "Erro ao carregar os logs."
+                    );
+                }
+
+                ocorrencias =
+                    await resposta.json();
+
+                mostrarOcorrencias();
+
+            } catch (erro) {
+                console.error(
+                    "Erro ao carregar logs:",
+                    erro
+                );
+
+                corpoTabela.innerHTML = "";
+
+                mensagemVazia.hidden = false;
+                mensagemVazia.textContent =
+                    "Não foi possível carregar os logs.";
+            }
+        }
 
         function classeStatus(status) {
-            if (status === "Crítico" || status === "Falha") {
+            if (
+                status === "Crítico" ||
+                status === "Falha"
+            ) {
                 return "status-critico";
             }
 
-            if (status === "Atenção" || status === "Em análise") {
+            if (
+                status === "Atenção" ||
+                status === "Em análise"
+            ) {
                 return "status-atencao";
             }
 
             return "status-resolvido";
         }
 
-        // Preenche o filtro de clientes sem repetir nomes
-        const clientes = [];
+        function formatarDataHora(dataHora) {
+            const data =
+                new Date(dataHora);
 
-        ocorrencias.forEach(function (item) {
-            if (!clientes.includes(item.cliente)) {
-                clientes.push(item.cliente);
-            }
-        });
-
-        clientes.sort().forEach(function (cliente) {
-            const opcao = document.createElement("option");
-            opcao.value = cliente;
-            opcao.textContent = cliente;
-            filtroCliente.appendChild(opcao);
-        });
+            return (
+                data.toLocaleDateString(
+                    "pt-BR"
+                ) +
+                " " +
+                data.toLocaleTimeString(
+                    "pt-BR",
+                    {
+                        hour: "2-digit",
+                        minute: "2-digit"
+                    }
+                )
+            );
+        }
 
         function mostrarOcorrencias() {
-            const lista = ocorrencias.filter(function (item) {
-                const clienteOk = !filtroCliente.value || item.cliente === filtroCliente.value;
-                const tipoOk = !filtroTipo.value || item.tipo === filtroTipo.value;
-                const statusOk = !filtroStatus.value || item.status === filtroStatus.value;
+            const lista =
+                ocorrencias.filter(function (item) {
+                    const tipoOk =
+                        !filtroTipo.value ||
+                        item.tipo === filtroTipo.value;
 
-                return clienteOk && tipoOk && statusOk;
-            });
+                    const statusOk =
+                        !filtroStatus.value ||
+                        item.status === filtroStatus.value;
+
+                    return tipoOk && statusOk;
+                });
 
             corpoTabela.innerHTML = "";
 
             lista.forEach(function (item) {
-                corpoTabela.innerHTML += `
-                    <tr>
-                        <td>${item.dataHora}</td>
-                        <td><strong>${item.cliente}</strong></td>
-                        <td>${item.tipo}</td>
-                        <td>${item.mensagem}</td>
-                        <td>
-                            <span class="selo-status ${classeStatus(item.status)}">
-                                ${item.status}
-                            </span>
-                        </td>
-                    </tr>
-                `;
+                const linha =
+                    document.createElement("tr");
+
+                const colunaData =
+                    document.createElement("td");
+
+                colunaData.textContent =
+                    formatarDataHora(
+                        item.data_hora
+                    );
+
+                const colunaTipo =
+                    document.createElement("td");
+
+                colunaTipo.textContent =
+                    item.tipo;
+
+                const colunaMensagem =
+                    document.createElement("td");
+
+                colunaMensagem.textContent =
+                    item.mensagem;
+
+                const colunaStatus =
+                    document.createElement("td");
+
+                const selo =
+                    document.createElement("span");
+
+                selo.classList.add(
+                    "selo-status",
+                    classeStatus(item.status)
+                );
+
+                selo.textContent =
+                    item.status;
+
+                colunaStatus.appendChild(
+                    selo
+                );
+
+                linha.append(
+                    colunaData,
+                    colunaTipo,
+                    colunaMensagem,
+                    colunaStatus
+                );
+
+                corpoTabela.appendChild(
+                    linha
+                );
             });
 
-            contador.textContent = lista.length === 1
-                ? "1 registro"
-                : lista.length + " registros";
+            contador.textContent =
+                lista.length === 1
+                    ? "1 registro"
+                    : lista.length + " registros";
 
-            mensagemVazia.hidden = lista.length > 0;
+            mensagemVazia.hidden =
+                lista.length > 0;
         }
 
-        filtroCliente.addEventListener("change", mostrarOcorrencias);
-        filtroTipo.addEventListener("change", mostrarOcorrencias);
-        filtroStatus.addEventListener("change", mostrarOcorrencias);
+        filtroTipo.addEventListener(
+            "change",
+            mostrarOcorrencias
+        );
 
-        botaoLimpar.addEventListener("click", function () {
-            filtroCliente.value = "";
-            filtroTipo.value = "";
-            filtroStatus.value = "";
+        filtroStatus.addEventListener(
+            "change",
+            mostrarOcorrencias
+        );
 
-            mostrarOcorrencias();
-        });
+        botaoLimpar.addEventListener(
+            "click",
+            function () {
+                filtroTipo.value = "";
+                filtroStatus.value = "";
 
-        mostrarOcorrencias();
+                mostrarOcorrencias();
+            }
+        );
     </script>
 
 </body>
